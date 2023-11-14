@@ -1,0 +1,184 @@
+---
+output: html_document
+---
+
+# build DPR repo
+
+```{r 1}
+
+unlink("test.dpr.git.collision", recursive=T)
+
+library(DataPackageR)
+
+addData <- function(dataset, toBuild = TRUE){
+
+    fil <- sprintf("
+library(data.table)
+data(%s, envir=environment())
+setDT(%s)
+", dataset, dataset)
+
+    writeLines(fil, sprintf("./data-raw/%s.R", dataset))
+    
+    yml <- DataPackageR::yml_add_files(".", filenames=c(sprintf("%s.R", dataset)))
+    yml <- DataPackageR::yml_add_objects(yml, objects=dataset)
+    yml_write(yml, path = NULL)
+
+    if(toBuild) { buildPackage() }
+    
+}
+
+buildPackage <- function(){
+    DataPackageR::package_build()
+    "test"
+}
+
+removeData <- function(dataset){
+    yml <- yml_remove_objects(".", dataset)     
+    yml <- yml_remove_files(yml, sprintf("%s.R", dataset))
+    yml_write(yml, path = NULL)
+    unlink(sprintf("/data/%s.rda", dataset))
+}
+
+conflix <- list()
+gstatus <- list()
+
+datapackage_skeleton("test.dpr.git.collision")
+
+## setwd("test.dpr.git.collision")
+
+knitr::opts_knit$set(root.dir = "test.dpr.git.collision")
+
+```
+
+# init ics branch to main, branch bama, edit ics, merge bama, check for conflicts
+
+## add mtcars to main
+
+```{r 2}
+
+addData("mtcars")
+
+system("
+git init;
+git checkout -b main;
+git add .;
+git commit -m 'Init commit';
+")
+
+```
+
+## make new iris branch
+
+```{r 3}
+
+system("
+git checkout -b add_iris;
+")
+
+addData("iris")    
+
+system("
+git add .;
+git commit -m 'add iris';
+")
+
+```
+
+## edit mtcars (main) branch
+
+```{r 4}
+
+system("
+git checkout main;
+")
+
+write("mtcars[,test:='test']", "./data-raw/mtcars.R", append = T)
+
+buildPackage()
+
+system("
+git add .;
+git commit -m 'mtcars edit';
+")
+
+```
+
+## merge back to main, check conflicts
+
+```{r 5}
+
+res <- system2("git", "merge add_iris", stdout=TRUE, stderr=TRUE);
+conflix["add mtcars, create iris branch, edit mtcars, merge iris"] <- list(res[grep("CONFLICT ", res)])
+
+```
+
+## fix conflicts and rebuild
+
+```{r 6}
+
+system("git merge --abort")
+system("git merge add_iris --strategy-option theirs -m 'test'")
+gstatus["merge iris to mtcars, take iris edits"] <- system2("git", "status", stdout=TRUE, stderr=TRUE)
+
+buildPackage()
+
+```
+
+# make a new branch off main, add data to it and build, remove data from main, merge, check conflicts
+
+```{r 7}
+
+system("
+git checkout -b add_trees;
+")
+
+addData("trees")
+
+system("
+git add .;
+git commit -m 'add trees';
+")
+
+system("
+git checkout main;
+")
+
+removeData("iris")
+
+buildPackage()
+
+system("
+git add .;
+git commit -m 'remove iris';
+")
+
+res <- system2("git", "merge add_trees", stdout=TRUE, stderr=TRUE);
+conflix["create trees, remove iris, merge trees"] <- list(res[grep("CONFLICT ", res)])
+
+system("git merge --abort")
+system("git merge add_trees --strategy-option theirs -m 'test'")
+gstatus["merge trees to main, take trees edits"] <- system2("git", "status", stdout=TRUE, stderr=TRUE)
+
+## setwd("..")
+
+## unlink("inst/extdata/Logfiles/processing.log")
+## system("
+## git merge bama_edit;
+## ")
+
+## system("
+## git checkout ics_edit
+
+```
+
+# toggle assay in yml datapackager.yml "enabled:no"
+
+# report conflicts
+
+```{r 8}
+
+conflix
+gstatus
+
+```

@@ -1,0 +1,8 @@
+source_data_directory: "inst/extdata"
+process_directory: "processing"
+process_on_build:
+        - "myScript.R"
+        - "myMarkdown.Rmd"
+write_to_vignettes:
+        -"all"
+auto_increment_data_versions: TRUE

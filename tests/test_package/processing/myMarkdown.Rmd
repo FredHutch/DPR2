@@ -1,0 +1,13 @@
+---
+title: myProcessing
+---
+
+```{r}
+getwd()
+x <- read.csv("inst/data/src.csv") |>
+    (\(.){ .$x <- .$x^2; return(.) })()
+
+barplot(x$x, names.arg=x$y)
+
+save(x, file="data/mySquareData.rda")
+```
