@@ -1,12 +1,12 @@
-dpr_yaml_exists <- function(yml_path = "datapackager.yml"){
-  if( !file.exists(yml_path) )
-    return(FALSE)
-  return(TRUE)
+dpr_yaml_exists <- function(args){
+  if( file.exists(file.path(args[["package_root"]], "datapackager.yml")) )
+    return(TRUE)
+  return(FALSE)
 }
 
 dpr_read_yml <- function(){
   if( !dpr_yaml_exists() )
-    stop("Either R session is not in DPR2 package root or 'datapackager.yml' is not available in data package.")
+    stop("Either R `package_root` argument (see ?datapackager.yml) is not a data package, or 'datapackager.yml' is not found in data package.")
   return(yaml::yaml.load_file("datapackager.yml"))
 }
 
@@ -20,20 +20,15 @@ dpr_args <- function(...){
   return(yaml)
 }
 
-dpr_purge_data <- function(...){
-  args <- dpr_args(...)
-  if(dpr_args[["data_purge"]]){
-    for(d in list.files("data")){
-      unlink(d)
-    }
+dpr_purge_data <- function(args){
+  for(d in list.files(file.path(args[["package_root"]], "data"))){
+    unlink(d)
   }
 }
 
-dpr_update_data_digest <- function(...){
-  args <- dpr_args(...)
-  ddir <- "data"
-  ddat <- list.files(ddir)
-  for(d in file.path(ddir, ddat)){
+dpr_update_data_digest <- function(args){
+  dat <- list.files(file.path(args[["package_root"]], "data"))
+  for(d in dat){
     write(
       digest::sha1(d),
       file.path(
@@ -44,22 +39,29 @@ dpr_update_data_digest <- function(...){
   }
 }
 
-dpr_build <- function(..., dpr_path = getwd()){
-  args <- dpr_args(...)
-  if(args[["purge_data"]]) dpr_purge_data(...)
+dpr_render <- function(args){
+  if(args[["purge_data"]]) dpr_purge_data(args)
   for(src in args[["process_on_build"]]){
     ## knitr::knit or rmarkdown::render?
     rmarkdown::render(
       src,
-      knit_root_dir = getwd(),
-      output_dir = file.path(getwd(), "vignettes"),
+      knit_root_dir = args[["package_root"]],
+      output_dir = file.path(args[["package_root"]], "vignettes"),
       output_format = "md_document"
     )
   }
-  dpr_update_data_digest(...)
+}
+
+dpr_install <- function(args){
+}
+
+dpr_build <- function(...){
+  args <- dpr_args(...)
+  dpr_render(args)
+  dpr_update_data_digest(args)
   ## could use functions in callr, or processx, or sys. 
-  system(paste("cd", args[["build_ouput"]], "&& R CMD build", dpr_path))
+  system(paste("cd", args[["build_ouput"]], "&& R CMD build", args[["package_root"]]))
   if(args[["install"]]){
-    
+    dpr_install(args)
   }
 }
