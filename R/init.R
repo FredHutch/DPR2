@@ -1,32 +1,28 @@
-datapackager.yml <- function(...){
-  add_args <- list(...)
-  args <- list(
-    "package_root"                 = "./",
+dpr_yml_init <- function(...){
+  yml_set <- list(...)
+  yml <- list(
     "build_output"                 = "../",
     "source_data_directory"        = "inst/extdata",
     "process_directory"            = "processing",
     "process_on_build"             = c(),
     "write_to_vignettes"           = TRUE,
-    "auto_increment_data_versions" = TRUE
-  ) |>
-    populate_process_on_build()
+    "auto_increment_data_versions" = TRUE,
+    "purge_data_directory"         = TRUE,
+    "data_digest_directory"        = "inst"
+  )
 
-  for(a in names(add_args))
-    args[[a]] <- add_args[[a]]
+  ## override defaults and add options with arguments
+  for( a in names(yml_set) )
+    yml[[a]] <- yml_set[[a]]
   
-  return(args)
+  return(yml)
 }
 
-populate_process_on_build <- function(args){
-    args[["process_on_build"]] <- list.files(args[["process_directory"]])
-    return(args)
-}
-
-dpr_init_package <- function(dpr_yml){
+dpr_package_init <- function(...){
   ## build package skeleton
-  ## write datapackager.yml from datapackager.yml()
-  args <- datapackager.yml()
-  browser()
-  yaml::write_yaml(args, file.path(args[["package_root"]], "datapackager.yml"))
+  yml <- dpr_yml_get_default(...)
+
+  ## write yml
+  yaml::write_yaml(yml, file.path(here::here(), "datapackager.yml"))
 }
 
