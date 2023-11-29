@@ -18,11 +18,33 @@ dpr_yml_init <- function(...){
   return(yml)
 }
 
-dpr_package_init <- function(...){
-  ## build package skeleton
-  yml <- dpr_yml_get_default(...)
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @title 
+##' @param path 
+##' @param ... 
+##' @return 
+##' @author jmtaylor
+##' @export
+dpr_init <- function(path = "./", ...){
 
-  ## write yml
-  yaml::write_yaml(yml, file.path(here::here(), "datapackager.yml"))
+  tryCatch(
+    {
+      yml <- dpr_yml_init(...)
+
+    ## build package skeleton
+    devtools::create(path)
+
+    dirs <- c("data", "inst", yml$process_directory, yml$source_data_directory)
+    for( d in dirs )
+      dir.create(file.path(path, d))
+    
+    ## write yml
+      yaml::write_yaml(yml, file.path(path, "datapackager.yml"))
+    },
+    error = \(e) message(paste("There was an error.", e, collapse = "\n"))
+  )
+    
 }
 
