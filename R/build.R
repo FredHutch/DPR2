@@ -48,10 +48,7 @@ dpr_build <- function(...){
     assign("yml", DPR2::dpr_yml_get(...), envir = dpr_build_env)
     dpr_render(dpr_build_env$yml)
     dpr_update_data_digest(dpr_build_env$yml)
-    ## could use functions in callr, or processx, or sys. 
-    system(
-      paste("cd ", dpr_build_env$yml$build_ouput, " && R CMD build ", dpr_build_env$yml$package_root)
-    )
+    pkgbuild::build(dpr_build_env$yml$package_root)
     if(dpr_build_env$yml$install){
       dpr_install(dpr_build_env$yml)
     }
