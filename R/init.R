@@ -1,6 +1,7 @@
 dpr_yml_init <- function(...){
   yml_set <- list(...)
   yml <- list(
+    "project_root"                 = "./",
     "build_output"                 = "../",
     "source_data_directory"        = "inst/extdata",
     "process_directory"            = "processing",

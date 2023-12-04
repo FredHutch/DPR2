@@ -22,7 +22,7 @@ dpr_render <- function(yml){
   for(src in yml$process_on_build){
     ## knitr::knit or rmarkdown::render?
     rmarkdown::render(
-      src,
+      input = file.path(yml$process_directory, src),
       knit_root_dir = normalizePath(yml$package_root),
       output_dir = file.path(yml$package_root, "vignettes"),
       output_format = "md_document"
