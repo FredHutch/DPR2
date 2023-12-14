@@ -49,7 +49,7 @@ dpr_build <- function(...){
     dpr_render(dpr_build_env$yml)
     dpr_update_data_digest(dpr_build_env$yml)
     pkgbuild::build(dpr_build_env$yml$package_root)
-    if(dpr_build_env$yml$install){
+    if(dpr_build_env$yml$install_on_build){
       dpr_install(dpr_build_env$yml)
     }
   },

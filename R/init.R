@@ -4,6 +4,7 @@ dpr_yml_init <- function(...){
     "project_root"                 = "./",
     "build_output"                 = "../",
     "source_data_directory"        = "inst/extdata",
+    "install_on_build"             = TRUE,
     "process_directory"            = "processing",
     "process_on_build"             = c(),
     "write_to_vignettes"           = TRUE,
