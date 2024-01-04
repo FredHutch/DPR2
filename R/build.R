@@ -1,6 +1,6 @@
 dpr_purge_data_directory <- function(yml){
-  for(d in list.files(file.path(yml$package_root, "data"))){
-    unlink(d)
+  for(d in list.files(file.path(yml$package_root, yml$data_directory))){
+    unlink(file.path(yml$package_root, yml$data_directory, d), recursive=TRUE)
   }
 }
 
@@ -17,21 +17,32 @@ dpr_update_data_digest <- function(yml){
   }
 }
 
-dpr_render <- function(yml){
+##' Render all processing scripts in the for the data package. Does not build. 
+##'
+##' .. content for \details{} ..
+##' @title 
+##' @param ... 
+##' @return 
+##' @author jmtaylor
+##' @export
+dpr_render <- function(...){
   if(yml$purge_data_directory) dpr_purge_data_directory(yml)   
+  if(yml$write_to_vignettes)
+      file.path(yml$package_root, "vignettes") else tempdir()
   for(src in yml$process_on_build){
     ## knitr::knit or rmarkdown::render?
     rmarkdown::render(
-      input = file.path(yml$process_directory, src),
+      input = file.path(yml$package_root, yml$process_directory, src),
       knit_root_dir = normalizePath(yml$package_root),
-      output_dir = file.path(yml$package_root, "vignettes"),
+      output_dir = { if(yml$write_to_vignettes) file.path(yml$package_root, "vignettes") else tempdir() },
       output_format = "md_document",
       envir = { if(exists("dpr_build_env")) dpr_build_env else parent.frame() }
     )
   }
 }
 
-dpr_install <- function(yml){
+dpr_install <- function(...){
+  
 }
 
 ##' .. content for \description{} (no empty lines) ..
@@ -47,9 +58,10 @@ dpr_build <- function(...){
   {
     assign("dpr_build_env", new.env(parent=.GlobalEnv))
     assign("yml", DPR2::dpr_yml_get(...), envir = dpr_build_env)
-    dpr_render(dpr_build_env$yml)
+    if(dpr_build_env$yml$render_on_build)
+      dpr_render(dpr_build_env$yml)
     dpr_update_data_digest(dpr_build_env$yml)
-    pkgbuild::build(dpr_build_env$yml$package_root)
+    pkgbuild::build(dpr_build_env$yml$package_root, dpr_build_env$yml$build_output)
     if(dpr_build_env$yml$install_on_build){
       dpr_install(dpr_build_env$yml)
     }

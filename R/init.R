@@ -3,10 +3,12 @@ dpr_yml_init <- function(...){
   yml <- list(
     "project_root"                 = "./",
     "build_output"                 = "../",
+    "data_directory"               = "data",
     "source_data_directory"        = "inst/extdata",
     "install_on_build"             = TRUE,
     "process_directory"            = "processing",
     "process_on_build"             = c(),
+    "render_on_build"              = TRUE,
     "write_to_vignettes"           = TRUE,
     "auto_increment_data_versions" = TRUE,
     "purge_data_directory"         = TRUE,

@@ -2,5 +2,6 @@
 
 export(dpr_build)
 export(dpr_init)
+export(dpr_render)
 export(dpr_yml_get)
 export(dpr_yml_set)
