@@ -18,14 +18,15 @@ dpr_update_data_digest <- function(yml){
 }
 
 dpr_render <- function(yml){
-  if(yml$purge_data_directory) dpr_purge_data_directory(yml)
+  if(yml$purge_data_directory) dpr_purge_data_directory(yml)   
   for(src in yml$process_on_build){
     ## knitr::knit or rmarkdown::render?
     rmarkdown::render(
       input = file.path(yml$process_directory, src),
       knit_root_dir = normalizePath(yml$package_root),
       output_dir = file.path(yml$package_root, "vignettes"),
-      output_format = "md_document"
+      output_format = "md_document",
+      envir = { if(exists("dpr_build_env")) dpr_build_env else parent.frame() }
     )
   }
 }
