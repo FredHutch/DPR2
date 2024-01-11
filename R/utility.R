@@ -4,7 +4,7 @@ dpr_yml_load <- function(project_root = "./"){
     return( dpr_build_env$yml )
   ## looking for exising yml
   if( !file.exists(file.path(project_root, "datapackager.yml")) )
-    stop("`here::here('datapackager.yml')` returns FALSE. Either R `package_root` argument (see ?datapackager.yml) is not a data package, or 'datapackager.yml' is not found in data package.")
+    stop("`datapackager.yml` does not exist. Either R `package_root` argument (see ?datapackager.yml) is not a data package, or 'datapackager.yml' is not found in data package.")
   return( yaml::yaml.load_file(file.path(project_root, "datapackager.yml")) )
 }
 
