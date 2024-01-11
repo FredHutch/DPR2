@@ -26,9 +26,8 @@ dpr_update_data_digest <- function(yml){
 ##' @author jmtaylor
 ##' @export
 dpr_render <- function(...){
-  if(yml$purge_data_directory) dpr_purge_data_directory(yml)   
-  if(yml$write_to_vignettes)
-      file.path(yml$package_root, "vignettes") else tempdir()
+  yml <- DPR2::dpr_yml_get(...) 
+  if(yml$purge_data_directory) dpr_purge_data_directory(yml)
   for(src in yml$process_on_build){
     ## knitr::knit or rmarkdown::render?
     rmarkdown::render(
@@ -36,7 +35,7 @@ dpr_render <- function(...){
       knit_root_dir = normalizePath(yml$package_root),
       output_dir = { if(yml$write_to_vignettes) file.path(yml$package_root, "vignettes") else tempdir() },
       output_format = "md_document",
-      envir = { if(exists("dpr_build_env")) dpr_build_env else parent.frame() }
+      envir = { if(exists("dpr_build_env", .GlobalEnv)) .GlobalEnv$dpr_build_env else parent.frame() }
     )
   }
 }
@@ -55,11 +54,11 @@ dpr_install <- function(...){
 ##' @export
 dpr_build <- function(...){
   tryCatch(
-  {
-    assign("dpr_build_env", new.env(parent=.GlobalEnv))
+  expr = {
+    assign("dpr_build_env", new.env(), envir = .GlobalEnv)
     assign("yml", DPR2::dpr_yml_get(...), envir = dpr_build_env)
     if(dpr_build_env$yml$render_on_build)
-      dpr_render(dpr_build_env$yml)
+      dpr_render(...)
     dpr_update_data_digest(dpr_build_env$yml)
     pkgbuild::build(dpr_build_env$yml$package_root, dpr_build_env$yml$build_output)
     if(dpr_build_env$yml$install_on_build){
@@ -67,7 +66,7 @@ dpr_build <- function(...){
     }
   },
   error = \(e) message(sprintf("DPR2 build failed. %s", e)),
-  finally = rm(dpr_build_env)
+  finally = rm("dpr_build_env") 
   )
 }
 
