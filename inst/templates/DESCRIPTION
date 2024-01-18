@@ -1,0 +1,7 @@
+Package: {{ Package }}
+Title: {{ Title }}
+Version: {{ Version }}
+Authors: {{ Authors }} 
+Description: {{ Description }}
+License: {{ License }}
+Encoding: UTF-8
