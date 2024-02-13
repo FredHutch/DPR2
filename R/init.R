@@ -5,19 +5,20 @@ dpr_yaml_defaults <- function(){
     "source_data_directory"        = "inst/extdata",
     "install_on_build"             = TRUE,
     "process_directory"            = "processing",
-    "process_on_build"             = c(),
+    "process_on_build"             = "",
     "render_on_build"              = TRUE,
     "write_to_vignettes"           = TRUE,
     "auto_increment_data_versions" = TRUE,
     "purge_data_directory"         = TRUE,
-    "data_digest_directory"        = "inst"
+    "build_tarball"                = TRUE,
+    "data_digest_directory"        = "inst/data_digest"
   )
 }
 
 dpr_description_defaults <- function(){
   list(
-    "Package"     = "MyPackageName",
-    "Title"       = "MyPackageTile",
+    "Package"     = "MyDataPackage",
+    "Title"       = "MyDataPackageTitle",
     "Version"     = "1.0",
     "Authors"     = "FirstName LastName [aut, cre]",
     "Description" = "What the package does (one paragraph).",
