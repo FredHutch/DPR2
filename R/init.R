@@ -1,3 +1,9 @@
+##' Default key:value pairs for the data package datapackager.yml.
+##'
+##' @title dpr_yaml_defaults
+##' @return a list
+##' @author jmtaylor
+##' @export
 dpr_yaml_defaults <- function(){
   list(
     "build_output"                 = "../",
@@ -15,6 +21,12 @@ dpr_yaml_defaults <- function(){
   )
 }
 
+##' Default key:value pairs for the data package DESCRIPTION file.
+##'
+##' @title dpr_description_defaults
+##' @return a list
+##' @author jmtaylor
+##' @export
 dpr_description_defaults <- function(){
   list(
     "Package"     = "MyDataPackage",
@@ -27,6 +39,14 @@ dpr_description_defaults <- function(){
   )
 }
 
+##' Private. A function that generates sets DESCRIPTION file
+##' key:values pairs in a new data package.
+##'
+##' @title dpr_description_init_set
+##' @param desc an R desc object.
+##' @param pkgp the package path 
+##' @return 
+##' @author jmtaylor
 dpr_description_init_set <- function(desc, pkgp){
   defa <- dpr_description_defaults()
   Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp) |>
@@ -35,18 +55,30 @@ dpr_description_init_set <- function(desc, pkgp){
     invisible()
 }
 
+##' Private. A function that generates sets DESCRIPTION file
+##' key:values pairs in a new data package.
+##' 
+##' @title dpr_yaml_init_set
+##' @param yml an R yaml object.
+##' @param pkgp the package path
+##' @return
+##' @author jmtaylor
 dpr_yaml_init_set <- function(yml, pkgp){
   def <- dpr_yaml_defaults()
-  new <- dpr_set_keys(yml, def)
+  new <- dpr_set_keys(def, yml)
   yaml::write_yaml(new, file.path(pkgp, "datapackager.yml"))
 }
 
-##' .. content for \description{} (no empty lines) ..
+##' A function where each argument ammends or adds to the
+##' datapackager.yml file's key:value pairs. No arguments will return the
+##' datapackager.yml default values. see `dpr_yaml_defaults()` for a list of
+##' default values, or call this function with no arguments.
 ##'
-##' .. content for \details{} ..
-##' @title 
-##' @param ... Arguments are treated as key value pairs for the datapackager.yml file.
-##' @return 
+##' @title dpr_yaml_init
+##' @param ... Arguments are treated as key value pairs for the
+##'     datapackager.yml file.
+##' @return A list of key:value pairs for generating a
+##'     datapackager.yml file.
 ##' @author jmtaylor
 ##' @export
 dpr_yaml_init <- function(...){
@@ -58,16 +90,22 @@ dpr_yaml_init <- function(...){
   return(yaml)
 }
 
-##' .. content for \description{} (no empty lines) ..
+##' A function that where each argument converts or adds to the
+##' DESCRIPTION file's key:value pairs. No arguments will return the
+##' default values. See `dpr_description_defaults()` for a list of
+##' default values, or call this function with no arguments.
 ##'
-##' .. content for \details{} ..
-##' @title 
-##' @param ... Arguments are treated as key value pairs for the package DESCRIPTION file.
-##' @return 
+##' @title dpr_description_init
+##' @param ... Arguments are treated as key value pairs for the
+##'     package DESCRIPTION file.
+##' @return A list of key:value pairs for generating a DESCRIPTION
+##'     file.
 ##' @author jmtaylor
 ##' @export
 dpr_description_init <- function(...){
   vals <- list(...)
+  if(!"Package" %in% names(vals))
+    warning("Default package name used.")
   desc <- dpr_description_defaults()
   ## override defaults and add options with arguments
   for(val in names(vals))
@@ -75,27 +113,24 @@ dpr_description_init <- function(...){
   return(desc)
 }
 
-##' .. content for \description{} (no empty lines) ..
+##' Initialize a data package. Package is initialized with
+##' datapackager.yml and DESCRIPTION files as described by
+##' dpr_yaml_init() and dpr_description_init() function calls.
 ##'
-##' .. content for \details{} ..
-##' @title 
-##' @param path 
-##' @param yml 
-##' @param desc 
+##' @title dpr_init
+##' @param path A path to the data package.
+##' @param yml A returned list for dpr_yaml_init()
+##' @param desc A returned list for dpr_description_init()
 ##' @return 
 ##' @author jmtaylor
 ##' @export
-dpr_init <- function(path = "./", yml = dpr_yaml_init(), desc = dpr_description_init()){
-
+dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init()){
   pkgp <- file.path(path, desc[["Package"]])
   tryCatch(
   {
-    ## build package skeleton
-    if(desc[["Package"]] == "MyPackageName")
-      warning("Default package name used. Update DESCRIPTION file and root directory name to change.")
 
-    ## build package skeleton
-    dirnm <- c("data", "inst", yml$process_directory, yml$source_data_directory)
+    ## create package skeleton
+    dirnm <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
     tpath <- path.package("DPR2") |>
       (\(p)
         ifelse(
@@ -112,7 +147,7 @@ dpr_init <- function(path = "./", yml = dpr_yaml_init(), desc = dpr_description_
       file.copy(file.path(tpath, fil), file.path(pkgp, fil))
     
     dpr_description_init_set(desc, pkgp)
-    dpr_yaml_init_set(yml, pkgp)
+    dpr_yaml_init_set(yaml, pkgp)
       
   },
   error = \(e){

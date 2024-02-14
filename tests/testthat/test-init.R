@@ -1,10 +1,10 @@
-library(DPR2)
-tdir <- file.path(tempdir(), "packages")
-dir.create(tdir)
+tdir <- getPkgDir()
 
 test_that("check default package name warning", {
-  dpr_init(tdir, desc=dpr_description_init(Package = "testPackage"))
-  expect_warning(dpr_init(tdir), "Default package name used")
+  dpr_init(tdir, desc=dpr_description_init(Package = "testPackage")) |>
+    expect_silent()
+  dpr_init(tdir, desc=dpr_description_init()) |>
+    expect_warning("Default package name used")
 })
 
 test_that("check DESCRIPTION file has populated fields", {
@@ -26,21 +26,24 @@ test_that("check DESCRIPTION file has populated fields", {
     
 })
 
-test_that("checking package init", {
+test_that("check datapackager.yml", {
 
-  ## init DPR2 package in temp
+  dpr_init(
+    tdir,
+    yaml=dpr_yaml_init(process_directory = "data-raw"),
+    desc=dpr_description_init(Package = "testing")
+  )
 
-  #### check for datapackager.yml elements
-  #### check for clean working environment names
+  ## yml names manually set but have the manual values, other values unchanged
+  yml <- dpr_yaml_get(file.path(tdir, "testing"))
+  ymlInit <- dpr_yaml_init()
 
-  ## init DPR2 package in local dir
-  #### check for datapackager.yml elements
-  #### check for clean working directory names
+  expect_true(yml$process_directory == "data-raw")
+  expect_true(yml$data_digest_directory == ymlInit$data_digest_directory)
+
+  ## all names in init must be in package yaml
+  expect_true(names(ymlInit) %in% names(yml) |> all())
 
 })
 
-## cleanup
-unlink(
-  file.path(tdir, "packages"),
-  recursive=T
-)
+cleanup(tdir)
