@@ -98,7 +98,7 @@ dpr_description_set <- function(path=".", ...){
 
 ##' Retrieve data.frame of data object names and versions rendered to the data directory.
 ##'
-##' @title
+##' @title dpr_data_versions
 ##' @param path The full path to the data package. The default is the
 ##'   working directory.
 ##' @return data.frame
