@@ -61,7 +61,7 @@ dpr_render <- function(path=".", ...){
         quiet = TRUE
       )
     },
-    error = \(e) stop(sprintf("dpr_render() failed: %s", e$message), e$call)
+    error = \(e) stop(sprintf("dpr_render() failed: %s ", e$message), e$call)
     )    
   }
 }
@@ -99,7 +99,7 @@ dpr_build <- function(path=".", ...){
         install.packages(pkgp, repo=NULL)
 
     },
-    error = \(e) stop(sprintf("DPR2 build failed. %s", e$message), e$call),
+    error = \(e) stop(sprintf("DPR2 build failed. %s ", e$message), e$call),
     finally = rm(list="dpr_build_env", envir=.GlobalEnv) 
   )
 }
