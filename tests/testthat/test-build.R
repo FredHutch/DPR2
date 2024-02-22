@@ -24,6 +24,15 @@ writeLines(
   file.path(path, "processing/02.R")
 )
 
+## a processing script that accesses the datapackager.yml
+writeLines(
+  c(
+    "dat <- as.list(LETTERS)",
+    "save(dat, file=file.path(dpr_yaml_get()$data_directory, 'letters.rda'))"
+  ),
+  file.path(path, "processing/A1.R")
+)
+
 testthat::test_that("checking package build", {
 
   dpr_build(path, process_on_build = "01.R")
@@ -33,6 +42,10 @@ testthat::test_that("checking package build", {
   dpr_build(path, process_on_build = "02.R")
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)
+
+  dpr_build(path, process_on_build = "A1.R")
+  vign <- list.files(file.path(path, "vignettes"))
+  expect_true(length(vign) == 3)
   
   expect_equal(
       file.path(path,"..") |> list.files("testPkg.*\\.tar\\.gz") |> length(),
