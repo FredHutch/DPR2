@@ -19,13 +19,13 @@ dpr_purge_data_directory <- function(path=".", yml){
 ##' @return nothing
 ##' @author jmtaylor
 dpr_update_data_digest <- function(path=".", yml){
-  dat <- list.files(file.path(path, "data"))
+  dat <- list.files(file.path(path, "data"), full.names = T)
   dig <- file.path(path, yml$data_digest_directory)
   if(!dir.exists(dig))
     stop(sprintf("Data digest directory does not exist: %s", dig))
   for(d in dat)
     write(
-      digest::sha1(d),
+      digest::digest(d, file=T, algo="sha1"),
       file.path(
         dig,
         tools::file_path_sans_ext(basename(d))
