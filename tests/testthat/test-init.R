@@ -46,4 +46,31 @@ test_that("check datapackager.yml", {
 
 })
 
+test_that("check renv", {
+
+  pkgn <- "testPkg"
+  path <- file.path(tdir, pkgn)
+  
+  initPkg(tdir, pkgn, list(renv_init=TRUE))
+  expect_true(dir.exists(file.path(path, "renv")))
+  unlink(file.path(tdir, pkgn), recursive = TRUE)
+
+  initPkg(tdir, pkgn, list(renv_init=FALSE))
+  expect_true(!dir.exists(file.path(path, "renv")))
+  unlink(file.path(tdir, pkgn), recursive = TRUE)
+
+})
+
+test_that("check stop on existing init directory", {
+
+  pkgn <- "testPkg"
+  path <- file.path(tdir, pkgn)
+  initPkg(tdir, pkgn)
+
+  expect_error(initPkg(tdir, pkgn), "path already exists")
+  unlink(file.path(tdir, pkgn), recursive = TRUE)
+
+
+})
+            
 cleanup(tdir)
