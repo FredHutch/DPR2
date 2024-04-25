@@ -15,7 +15,8 @@ Imports:
     pkgbuild,
     desc,
     rmarkdown,
-    digest
+    digest,
+    yaml
 License: MIT + file LICENSE
 Depends:
     R (>= 4.1.0)
