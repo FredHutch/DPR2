@@ -44,8 +44,7 @@ dpr_description_defaults <- function(){
 ##'
 ##' @title dpr_description_init_set
 ##' @param desc an R desc object.
-##' @param pkgp the package path 
-##' @return 
+##' @param pkgp the package path
 ##' @author jmtaylor
 dpr_description_init_set <- function(desc, pkgp){
   defa <- dpr_description_defaults()
@@ -57,11 +56,10 @@ dpr_description_init_set <- function(desc, pkgp){
 
 ##' Private. A function that generates sets DESCRIPTION file
 ##' key:values pairs in a new data package.
-##' 
+##'
 ##' @title dpr_yaml_init_set
 ##' @param yml an R yaml object.
 ##' @param pkgp the package path
-##' @return
 ##' @author jmtaylor
 dpr_yaml_init_set <- function(yml, pkgp){
   def <- dpr_yaml_defaults()
@@ -121,7 +119,6 @@ dpr_description_init <- function(...){
 ##' @param path A path to the data package.
 ##' @param yml A returned list for dpr_yaml_init()
 ##' @param desc A returned list for dpr_description_init()
-##' @return 
 ##' @author jmtaylor
 ##' @export
 dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init()){
@@ -139,16 +136,16 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
           file.path(p, "templates")
         )
       )()
-        
+
     dir.create(pkgp)
     for( dir in dirnm )
       dir.create(file.path(pkgp, dir))
     for( fil in c("NAMESPACE", "DESCRIPTION"))
       file.copy(file.path(tpath, fil), file.path(pkgp, fil))
-    
+
     dpr_description_init_set(desc, pkgp)
     dpr_yaml_init_set(yaml, pkgp)
-      
+
   },
   error = \(e){
     if(dir.exists(pkgp))
@@ -157,6 +154,6 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
   },
   finally = {
   })
-  
+
 }
 
