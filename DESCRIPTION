@@ -16,3 +16,4 @@ Imports:
     desc,
     rmarkdown,
     digest
+License: MIT + file LICENSE
