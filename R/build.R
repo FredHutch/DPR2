@@ -96,7 +96,7 @@ dpr_build <- function(path=".", ...){
         pkgp <- pkgbuild::build(path=path, dest_path=file.path(path, yml$build_output))
 
       if(yml$install_on_build)
-        install.packages(pkgp, repo=NULL)
+        utils::install.packages(pkgp, repo=NULL)
 
     },
     error = \(e) stop(sprintf("dpr_build() failed: %s \n", e$message)),
