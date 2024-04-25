@@ -117,7 +117,7 @@ dpr_description_init <- function(...){
 ##'
 ##' @title dpr_init
 ##' @param path A path to the data package.
-##' @param yml A returned list for dpr_yaml_init()
+##' @param yaml A returned list for dpr_yaml_init()
 ##' @param desc A returned list for dpr_description_init()
 ##' @author jmtaylor
 ##' @export

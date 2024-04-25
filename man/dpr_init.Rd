@@ -9,9 +9,9 @@ dpr_init(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init())
 \arguments{
 \item{path}{A path to the data package.}
 
-\item{desc}{A returned list for dpr_description_init()}
+\item{yaml}{A returned list for dpr_yaml_init()}
 
-\item{yml}{A returned list for dpr_yaml_init()}
+\item{desc}{A returned list for dpr_description_init()}
 }
 \description{
 Initialize a data package. Package is initialized with
