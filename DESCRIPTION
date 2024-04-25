@@ -1,8 +1,12 @@
 Package: DPR2
 Title: DPR2 // DataPackageR2
 Version: 0.0.0.1000
-Authors: 
-    Jason Taylor <jmtaylor@fredhutch.org> [aut, cre]
+Authors@R:
+    person(
+        given = "Jason", family = "Taylor",
+        email = "jmtaylor@fredhutch.org",
+        role = c("aut", "cre")
+    )
 Description: Build automation and dataset tracking for R data packages. Based on DataPackageR.
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
