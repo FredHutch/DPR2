@@ -17,3 +17,5 @@ Imports:
     rmarkdown,
     digest
 License: MIT + file LICENSE
+Depends:
+    R (>= 4.1.0)
