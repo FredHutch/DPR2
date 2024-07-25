@@ -1,3 +1,8 @@
 test.dpr.git.collision/
 test_dpr-exported.html
 .Rhistory
+.Rproj.user
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
