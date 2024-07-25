@@ -90,10 +90,12 @@ dpr_yaml_set <- function(path=".", ...){
 dpr_description_set <- function(path=".", ...){
   new <- list(...)
   def <- dpr_description_defaults()
-  Map(desc::desc_set_list, key = names(defa), list_value = defa, file = path) |>
-    invisible()
-  Map(desc::desc_set_list, key = names(desc), list_value = desc, file = path) |>
-    invisible()
+  invisible(
+      Map(desc::desc_set_list, key = names(def), list_value = def, file = path)
+  )
+  invisible(
+      Map(desc::desc_set_list, key = names(new), list_value = new, file = path)
+  )
 }
 
 ##' Retrieve data.frame of data object names and versions rendered to the data directory.
