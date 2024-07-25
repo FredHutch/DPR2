@@ -1,4 +1,4 @@
-##' Private. Load `datapackager.yml` into memory. If missing, throw exception. 
+##' Private. Load `datapackager.yml` into memory. If missing, throw exception.
 ##'
 ##' @title dpr_yaml_load
 ##' @param pkgp the package path
@@ -53,7 +53,7 @@ dpr_set_keys <- function(old, new){
 ##' @export
 dpr_yaml_get <- function(path=".", ...){
   new <- list(...)
-  yml <- dpr_yaml_load(path) |>
+  yml <- dpr_yaml_load(path) %>%
     dpr_set_keys(new)
   return(yml)
 }
@@ -90,9 +90,9 @@ dpr_yaml_set <- function(path=".", ...){
 dpr_description_set <- function(path=".", ...){
   new <- list(...)
   def <- dpr_description_defaults()
-  Map(desc::desc_set_list, key = names(defa), list_value = defa, file = path) |>
+  Map(desc::desc_set_list, key = names(defa), list_value = defa, file = path) %>%
     invisible()
-  Map(desc::desc_set_list, key = names(desc), list_value = desc, file = path) |>
+  Map(desc::desc_set_list, key = names(desc), list_value = desc, file = path) %>%
     invisible()
 }
 
@@ -108,7 +108,7 @@ dpr_data_versions <- function(path="."){
   dat <- list.files(file.path(path, dpr_yaml_get(path)$data_digest_directory), full.names=TRUE)
   data.frame(
     object=basename(dat),
-    digest=vapply(dat, \(d) readLines(d), ""),
+    digest=vapply(dat, function(d) readLines(d), ""),
     row.names=seq(1,length(dat))
   )
 }

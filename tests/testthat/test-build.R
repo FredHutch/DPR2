@@ -38,7 +38,7 @@ testthat::test_that("checking package build", {
   dpr_build(path, process_on_build = "01.R")
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 1)
-  
+
   dpr_build(path, process_on_build = "02.R")
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)
@@ -46,9 +46,9 @@ testthat::test_that("checking package build", {
   dpr_build(path, process_on_build = "A1.R")
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 3)
-  
+
   expect_equal(
-      file.path(path,"..") |> list.files("testPkg.*\\.tar\\.gz") |> length(),
+      file.path(path,"..") %>% list.files("testPkg.*\\.tar\\.gz") %>% length(),
       1
   )
   expect_error(
@@ -60,7 +60,7 @@ testthat::test_that("checking package build", {
       "`datapackager.yml` does not exist"
   )
   expect_false(exists("dpr_build_env", .GlobalEnv))
-  
+
   ## render DPR2 package - renders all processing scripts, but does not build, renders in working env
 #### check that dpr_render does not build package
 #### check that working env contains render generated var names

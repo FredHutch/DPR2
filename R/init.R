@@ -48,9 +48,9 @@ dpr_description_defaults <- function(){
 ##' @author jmtaylor
 dpr_description_init_set <- function(desc, pkgp){
   defa <- dpr_description_defaults()
-  Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp) |>
+  Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp) %>%
     invisible()
-  Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp) |>
+  Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp) %>%
     invisible()
 }
 
@@ -128,8 +128,8 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
 
     ## create package skeleton
     dirnm <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
-    tpath <- path.package("DPR2") |>
-      (\(p)
+    tpath <- path.package("DPR2") %>%
+      (function(p)
         ifelse(
           dir.exists(file.path(p, "inst")),
           file.path(p, "inst/templates"),
@@ -147,7 +147,7 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
     dpr_yaml_init_set(yaml, pkgp)
 
   },
-  error = \(e){
+  error = function(e){
     if(dir.exists(pkgp))
       unlink(pkgp, recursive=TRUE)
     stop(e, traceback())
