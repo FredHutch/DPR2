@@ -57,7 +57,7 @@ dpr_render <- function(path=".", ...){
         knit_root_dir = normalizePath(path),
         output_dir = { if(yml$write_to_vignettes) file.path(path, "vignettes") else tempdir() },
         output_format = "md_document",
-        envir = { if(exists("dpr_build_env", .GlobalEnv)) .GlobalEnv$dpr_build_env else parent.frame() },
+        envir = { if(exists("dpr_build_env", parent.frame())) parent.frame()$dpr_build_env else parent.frame() },
         quiet = TRUE
       )
     },
@@ -82,9 +82,9 @@ dpr_render <- function(path=".", ...){
 dpr_build <- function(path=".", ...){
   tryCatch(
     expr = {
-      assign("dpr_build_env", new.env(), envir = .GlobalEnv)
-      assign("yml", DPR2::dpr_yaml_get(path, ...), envir = .GlobalEnv$dpr_build_env)
-      yml <- .GlobalEnv$dpr_build_env$yml
+      assign("dpr_build_env", new.env())
+      assign("yml", DPR2::dpr_yaml_get(path, ...), dpr_build_env)
+      yml <- dpr_build_env$yml
 
       if(yml$render_on_build)
         dpr_render(path, ...)
@@ -99,7 +99,6 @@ dpr_build <- function(path=".", ...){
         utils::install.packages(pkgp, repo=NULL)
 
     },
-    error = \(e) stop(sprintf("dpr_build() failed: %s \n", e$message)),
-    finally = rm(list="dpr_build_env", envir=.GlobalEnv) 
+    error = \(e) stop(sprintf("dpr_build() failed: %s \n", e$message))
   )
 }
