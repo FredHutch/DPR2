@@ -1,10 +1,13 @@
 tdir <- getPkgDir()
 
 test_that("check default package name warning", {
-  dpr_init(tdir, desc=dpr_description_init(Package = "testPackage")) %>%
-    expect_silent()
-  dpr_init(tdir, desc=dpr_description_init()) %>%
-    expect_warning("Default package name used")
+  expect_silent(
+    dpr_init(tdir, desc=dpr_description_init(Package = "testPackage"))
+  )
+  expect_warning(
+    dpr_init(tdir, desc=dpr_description_init()),
+    "Default package name used"
+  )
 })
 
 test_that("check DESCRIPTION file has populated fields", {
@@ -42,8 +45,11 @@ test_that("check datapackager.yml", {
   expect_true(yml$data_digest_directory == ymlInit$data_digest_directory)
 
   ## all names in init must be in package yaml
-  expect_true(names(ymlInit) %in% names(yml) %>% all())
-
+  expect_true(
+    all(
+      names(ymlInit) %in% names(yml)
+    )
+  )
 })
 
 cleanup(tdir)

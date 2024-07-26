@@ -47,9 +47,12 @@ testthat::test_that("checking package build", {
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 3)
 
-  expect_equal(
-      file.path(path,"..") %>% list.files("testPkg.*\\.tar\\.gz") %>% length(),
-      1
+  expect_length(
+    list.files(
+      file.path(path,".."),
+      "testPkg.*\\.tar\\.gz"
+    ),
+    1L
   )
   expect_error(
       dpr_build(path, data_digest_directory="/notapath"),

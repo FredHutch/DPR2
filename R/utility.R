@@ -53,8 +53,10 @@ dpr_set_keys <- function(old, new){
 ##' @export
 dpr_yaml_get <- function(path=".", ...){
   new <- list(...)
-  yml <- dpr_yaml_load(path) %>%
-    dpr_set_keys(new)
+  yml <- dpr_set_keys(
+    dpr_yaml_load(path),
+    new
+  )
   return(yml)
 }
 
@@ -90,10 +92,12 @@ dpr_yaml_set <- function(path=".", ...){
 dpr_description_set <- function(path=".", ...){
   new <- list(...)
   def <- dpr_description_defaults()
-  Map(desc::desc_set_list, key = names(defa), list_value = defa, file = path) %>%
-    invisible()
-  Map(desc::desc_set_list, key = names(desc), list_value = desc, file = path) %>%
-    invisible()
+  invisible(
+    Map(desc::desc_set_list, key = names(defa), list_value = defa, file = path)
+  )
+  invisible(
+    Map(desc::desc_set_list, key = names(desc), list_value = desc, file = path)
+  )
 }
 
 ##' Retrieve data.frame of data object names and versions rendered to the data directory.

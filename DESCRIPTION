@@ -16,8 +16,7 @@ Imports:
     desc,
     rmarkdown,
     digest,
-    yaml,
-    magrittr
+    yaml
 License: MIT + file LICENSE
 Suggests:
     testthat

@@ -48,10 +48,12 @@ dpr_description_defaults <- function(){
 ##' @author jmtaylor
 dpr_description_init_set <- function(desc, pkgp){
   defa <- dpr_description_defaults()
-  Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp) %>%
-    invisible()
-  Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp) %>%
-    invisible()
+  invisible(
+    Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp)
+  )
+  invisible(
+    Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp)
+  )
 }
 
 ##' Private. A function that generates sets DESCRIPTION file
@@ -128,14 +130,12 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
 
     ## create package skeleton
     dirnm <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
-    tpath <- path.package("DPR2") %>%
-      (function(p)
-        ifelse(
-          dir.exists(file.path(p, "inst")),
-          file.path(p, "inst/templates"),
-          file.path(p, "templates")
-        )
-      )()
+    p <- path.package("DPR2")
+    tpath <- ifelse(
+      dir.exists(file.path(p, "inst")),
+      file.path(p, "inst/templates"),
+      file.path(p, "templates")
+    )
 
     dir.create(pkgp)
     for( dir in dirnm )
