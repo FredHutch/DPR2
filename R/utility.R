@@ -5,13 +5,31 @@
 ##' @return a yaml object
 ##' @author jmtaylor
 dpr_yaml_load <- function(pkgp){
-  ## if being called during dpr_build
-  if( exists("dpr_build_env") && exists("dpr_build_env$yaml") )
-    return( dpr_build_env$yaml )
   ## looking for exising yaml
   if( !file.exists(file.path(pkgp, "datapackager.yml")) )
     stop("`datapackager.yml` does not exist. Either working directory is not at a package root, or 'datapackager.yml' is not found in data package.")
   return( yaml::yaml.load_file(file.path(pkgp, "datapackager.yml")) )
+}
+
+##' Private. Check yaml values that must be specific.
+##'
+##' @title dpr_yaml_validate
+##' @param yml a parsed yaml object
+##' @author jmtaylor
+dpr_yaml_validate <- function(yml){
+  key_value = list(
+    "render_env_mode" = c("isolate", "share", "global")
+  )
+  for(key in names(key_value)){
+    if(!yml[[key]] %in% key_value[[key]]){
+      stop(
+        sprintf(
+          "Invalid `%s` yaml value used. Please one of these: %s",
+          key, paste(key_value[[key]], collapse = ", ")
+        )
+      )
+    }
+  }
 }
 
 ##' Private. Load the package DESCRIPTION file into memory.
@@ -55,6 +73,7 @@ dpr_yaml_get <- function(path=".", ...){
   new <- list(...)
   yml <- dpr_yaml_load(path) |>
     dpr_set_keys(new)
+  dpr_yaml_validate(yml)
   return(yml)
 }
 

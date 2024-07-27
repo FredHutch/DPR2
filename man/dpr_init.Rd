@@ -4,7 +4,11 @@
 \alias{dpr_init}
 \title{dpr_init}
 \usage{
-dpr_init(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init())
+dpr_init(
+  path = ".",
+  yaml = DPR2::dpr_yaml_init(),
+  desc = DPR2::dpr_description_init()
+)
 }
 \arguments{
 \item{path}{A path to the data package.}

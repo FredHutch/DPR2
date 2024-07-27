@@ -2,16 +2,20 @@ tdir <- getPkgDir()
 pkgn <- "testPkg"
 path <- file.path(tdir, pkgn)
 
-dpr_init(
+DPR2::dpr_init(
   tdir,
-  yaml=dpr_yaml_init(process_on_build=c("01.R", "02.R")),
-  desc=dpr_description_init(Package=pkgn)
+  yaml=DPR2::dpr_yaml_init(process_on_build=c("01.R", "02.R")),
+  desc=DPR2::dpr_description_init(Package=pkgn)
 )
 
+## test that libraries can be loaded and accessed
 writeLines(
   c(
-    "dat <- data.frame(x=1:10, y=LETTERS[1:10])",
-    "save(dat, file='data/mydataframe.rda')"
+    "library(data.table)",
+    "dfrm <- data.frame(x=1:10, y=LETTERS[1:10])",
+    "dtab <- data.table(df)",
+    "save(dfrm, file='data/mydataframe.rda')",
+    "save(dtab, file='data/mydataframe.rda')"
   ),
   file.path(path, "processing/01.R")
 )
@@ -28,9 +32,17 @@ writeLines(
 writeLines(
   c(
     "dat <- as.list(LETTERS)",
-    "save(dat, file=file.path(dpr_yaml_get()$data_directory, 'letters.rda'))"
+    "save(dat, file=file.path(DPR2::dpr_yaml_get()$data_directory, 'letters.rda'))"
   ),
   file.path(path, "processing/A1.R")
+)
+
+## check if environment is shared
+writeLines(
+  c(
+    "save(dtab, file=file.path(dpr_yaml_get()$data_directory, 'letters.rda'))"
+  ),
+  file.path(path, "processing/S1.R")
 )
 
 testthat::test_that("checking package build", {
@@ -59,12 +71,33 @@ testthat::test_that("checking package build", {
       dpr_build(tempdir()),
       "`datapackager.yml` does not exist"
   )
-  expect_false(exists("dpr_build_env", .GlobalEnv))
+
+  dpr_build(path)
+  expect_false(exists("dfrm"))
+
+  dpr_build(path, render_env_mode = "isolate", process_on_build = "01.R")
+  expect_false(exists("dfrm"))
+
+  expect_error(
+    dpr_build(path, render_env_mode = "isolate", process_on_build = c("01.R", "S1.R"))
+  )
+
+  dpr_build(path, render_env_mode = "share", process_on_build = c("01.R", "S1.R"))
+
+  dpr_build(path, render_env_mode = "global", process_on_build = "01.R")
+  expect_true(exists("df"))
   
   ## render DPR2 package - renders all processing scripts, but does not build, renders in working env
 #### check that dpr_render does not build package
 #### check that working env contains render generated var names
 
+})
+
+testthat::test_that("checking yaml validation", {
+  expect_error(
+    dpr_build(path, render_env_mode = "not valid"),
+    "Invalid `render_env_mode` yaml value used. Please one of these:"
+  )
 })
 
 cleanup(tdir)

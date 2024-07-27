@@ -17,7 +17,8 @@ dpr_yaml_defaults <- function(){
     "auto_increment_data_versions" = TRUE,
     "purge_data_directory"         = TRUE,
     "build_tarball"                = TRUE,
-    "data_digest_directory"        = "inst/data_digest"
+    "data_digest_directory"        = "inst/data_digest",
+    "render_env_mode"              = "isolate"
   )
 }
 
@@ -121,22 +122,15 @@ dpr_description_init <- function(...){
 ##' @param desc A returned list for dpr_description_init()
 ##' @author jmtaylor
 ##' @export
-dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init()){
+dpr_init <- function(path = ".", yaml = DPR2::dpr_yaml_init(), desc = DPR2::dpr_description_init()){
   pkgp <- file.path(path, desc[["Package"]])
   tryCatch(
   {
 
     ## create package skeleton
     dirnm <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
-    tpath <- path.package("DPR2") |>
-      (\(p)
-        ifelse(
-          dir.exists(file.path(p, "inst")),
-          file.path(p, "inst/templates"),
-          file.path(p, "templates")
-        )
-      )()
-
+    tpath <- system.file("templates", package="DPR2")
+    
     dir.create(pkgp)
     for( dir in dirnm )
       dir.create(file.path(pkgp, dir))
