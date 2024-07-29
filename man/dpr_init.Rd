@@ -4,7 +4,12 @@
 \alias{dpr_init}
 \title{dpr_init}
 \usage{
-dpr_init(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init())
+dpr_init(
+  path = ".",
+  yaml = dpr_yaml_init(),
+  desc = dpr_description_init(),
+  renv_init = TRUE
+)
 }
 \arguments{
 \item{path}{A path to the data package.}
@@ -12,6 +17,8 @@ dpr_init(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init())
 \item{yaml}{A returned list for dpr_yaml_init()}
 
 \item{desc}{A returned list for dpr_description_init()}
+
+\item{renv_init}{Logical; whether to initiate renv (default TRUE)}
 }
 \description{
 Initialize a data package. Package is initialized with
