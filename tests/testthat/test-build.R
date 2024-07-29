@@ -55,7 +55,7 @@ testthat::test_that("checking package build", {
     "Invalid `render_env_mode` yaml value used. Please one of these:"
   )
   
-  unlink(file.path(tdir, pkgn), recursive = TRUE)
+  unlink(path, recursive = TRUE)
 
 })
 
