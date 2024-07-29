@@ -18,7 +18,7 @@ dpr_init(
 
 \item{desc}{A returned list for dpr_description_init()}
 
-\item{renv_init}{Logical; whether to initiate renv}
+\item{renv_init}{Logical; whether to initiate renv (default TRUE)}
 }
 \description{
 Initialize a data package. Package is initialized with
