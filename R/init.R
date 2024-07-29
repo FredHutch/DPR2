@@ -49,10 +49,12 @@ dpr_description_defaults <- function(){
 ##' @author jmtaylor
 dpr_description_init_set <- function(desc, pkgp){
   defa <- dpr_description_defaults()
-  Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp) |>
-    invisible()
-  Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp) |>
-    invisible()
+  invisible(
+    Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp)
+  )
+  invisible(
+    Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp)
+  )
 }
 
 ##' Private. A function that generates sets DESCRIPTION file

@@ -18,7 +18,7 @@ dpr_yaml_load <- function(pkgp){
 ##' @author jmtaylor
 dpr_yaml_validate <- function(yml){
   key_value = list(
-    "render_env_mode" = c("isolate", "share", "global")
+    "render_env_mode" = c("isolate", "share")
   )
   for(key in names(key_value)){
     if(!yml[[key]] %in% key_value[[key]]){

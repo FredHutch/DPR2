@@ -68,7 +68,7 @@ dpr_render <- function(path=".", ...){
         knit_root_dir = normalizePath(path),
         output_dir = { if(yml$write_to_vignettes) file.path(path, "vignettes") else tempdir() },
         output_format = "md_document",
-        envir = { if(mode == "global") .GlobalEnv else env },
+        envir = env,
         quiet = TRUE
       )
     },
