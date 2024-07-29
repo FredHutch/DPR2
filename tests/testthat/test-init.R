@@ -14,7 +14,7 @@ test_that("check default package name warning", {
 })
 
 test_that("check DESCRIPTION file has populated fields", {
-  pgkn <- "DescripPackage"
+  pkgn <- "DescripPackage"
   dpr_init(
     tdir,
     desc = dpr_description_init(
@@ -30,7 +30,7 @@ test_that("check DESCRIPTION file has populated fields", {
   expect_true(desc$get("Package")     == "DescripPackage")
   expect_true(desc$get("Title")       == "A package for testing description writing")
   expect_true(desc$get("Description") == defi$Description)
-  unlink(filpath(tdir, "DescripPackage", recursive = TRUE)
+  unlink(file.path(tdir, pkgn), recursive = TRUE)
 
 })
 
