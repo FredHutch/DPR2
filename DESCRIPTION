@@ -10,7 +10,7 @@ Authors@R:
 Description: Build automation and dataset tracking for R data packages. Based on DataPackageR.
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports:
     pkgbuild,
     desc,
@@ -18,7 +18,5 @@ Imports:
     digest,
     yaml
 License: MIT + file LICENSE
-Depends:
-    R (>= 4.1.0)
 Suggests:
     testthat

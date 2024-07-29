@@ -48,10 +48,12 @@ dpr_description_defaults <- function(){
 ##' @author jmtaylor
 dpr_description_init_set <- function(desc, pkgp){
   defa <- dpr_description_defaults()
-  Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp) |>
-    invisible()
-  Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp) |>
-    invisible()
+  invisible(
+    Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp)
+  )
+  invisible(
+    Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp)
+  )
 }
 
 ##' Private. A function that generates sets DESCRIPTION file
@@ -121,21 +123,17 @@ dpr_description_init <- function(...){
 ##' @param desc A returned list for dpr_description_init()
 ##' @author jmtaylor
 ##' @export
-dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init()){
-  pkgp <- file.path(path, desc[["Package"]])
+dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
+  pkgp <- file.path(path, desc$Package)
+  if(dir.exists(pkgp))
+    stop(sprintf("Package '%s' path already exists.", pkgp))
   tryCatch(
   {
 
     ## create package skeleton
     dirnm <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
-    tpath <- path.package("DPR2") |>
-      (\(p)
-        ifelse(
-          dir.exists(file.path(p, "inst")),
-          file.path(p, "inst/templates"),
-          file.path(p, "templates")
-        )
-      )()
+
+    tpath <- system.file("templates", package="DPR2")
 
     dir.create(pkgp)
     for( dir in dirnm )
@@ -146,8 +144,12 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
     dpr_description_init_set(desc, pkgp)
     dpr_yaml_init_set(yaml, pkgp)
 
+    ## init renv
+    if(renv_init == TRUE)
+      renv::init(pkgp, settings=renv::settings$snapshot.type("implicit"))
+    
   },
-  error = \(e){
+  error = function(e){
     if(dir.exists(pkgp))
       unlink(pkgp, recursive=TRUE)
     stop(e, traceback())
@@ -156,4 +158,3 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
   })
 
 }
-
