@@ -16,9 +16,8 @@ Imports:
     desc,
     rmarkdown,
     digest,
-    yaml
+    yaml,
+    renv
 License: MIT + file LICENSE
-Depends:
-    R (>= 4.1.0)
 Suggests:
     testthat

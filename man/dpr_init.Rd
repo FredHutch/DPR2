@@ -6,8 +6,9 @@
 \usage{
 dpr_init(
   path = ".",
-  yaml = DPR2::dpr_yaml_init(),
-  desc = DPR2::dpr_description_init()
+  yaml = dpr_yaml_init(),
+  desc = dpr_description_init(),
+  renv_init = TRUE
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ dpr_init(
 \item{yaml}{A returned list for dpr_yaml_init()}
 
 \item{desc}{A returned list for dpr_description_init()}
+
+\item{renv_init}{Logical; whether to initiate renv (default TRUE)}
 }
 \description{
 Initialize a data package. Package is initialized with

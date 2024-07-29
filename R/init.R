@@ -122,17 +122,22 @@ dpr_description_init <- function(...){
 ##' @param path A path to the data package.
 ##' @param yaml A returned list for dpr_yaml_init()
 ##' @param desc A returned list for dpr_description_init()
+##' @param renv_init Logical; whether to initiate renv (default TRUE)
 ##' @author jmtaylor
 ##' @export
-dpr_init <- function(path = ".", yaml = DPR2::dpr_yaml_init(), desc = DPR2::dpr_description_init()){
-  pkgp <- file.path(path, desc[["Package"]])
+
+dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
+  pkgp <- file.path(path, desc$Package)
+  if(dir.exists(pkgp))
+    stop(sprintf("Package '%s' path already exists.", pkgp))
   tryCatch(
   {
 
     ## create package skeleton
     dirnm <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
+
     tpath <- system.file("templates", package="DPR2")
-    
+
     dir.create(pkgp)
     for( dir in dirnm )
       dir.create(file.path(pkgp, dir))
@@ -142,8 +147,12 @@ dpr_init <- function(path = ".", yaml = DPR2::dpr_yaml_init(), desc = DPR2::dpr_
     dpr_description_init_set(desc, pkgp)
     dpr_yaml_init_set(yaml, pkgp)
 
+    ## init renv
+    if(renv_init == TRUE)
+      renv::init(pkgp, settings=renv::settings$snapshot.type("implicit"))
+
   },
-  error = \(e){
+  error = function(e){
     if(dir.exists(pkgp))
       unlink(pkgp, recursive=TRUE)
     stop(e, traceback())
@@ -152,4 +161,3 @@ dpr_init <- function(path = ".", yaml = DPR2::dpr_yaml_init(), desc = DPR2::dpr_
   })
 
 }
-
