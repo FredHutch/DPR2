@@ -121,6 +121,7 @@ dpr_description_init <- function(...){
 ##' @param path A path to the data package.
 ##' @param yaml A returned list for dpr_yaml_init()
 ##' @param desc A returned list for dpr_description_init()
+##' @param renv_init Logical; whether to initiate renv (default TRUE)
 ##' @author jmtaylor
 ##' @export
 dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
@@ -147,7 +148,7 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
     ## init renv
     if(renv_init == TRUE)
       renv::init(pkgp, settings=renv::settings$snapshot.type("implicit"))
-    
+
   },
   error = function(e){
     if(dir.exists(pkgp))
