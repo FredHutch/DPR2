@@ -72,6 +72,9 @@ test_that("check renv", {
   expect_true(dir.exists(file.path(path, "renv")))
   unlink(path, recursive = TRUE)
 
+  if(file.exists(path))
+      unlink(path, recursive = TRUE)
+  
   initPkg(tdir, pkgn, list(renv_init=FALSE))
   expect_true(!dir.exists(file.path(path, "renv")))
   unlink(path, recursive = TRUE)
