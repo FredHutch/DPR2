@@ -2,7 +2,7 @@
 ##'
 ##' @title dpr_purge_data_directory
 ##' @param path the package path
-##' @param yml an R yaml list object 
+##' @param yml an R yaml list object
 ##' @return nothing
 ##' @author jmtaylor
 dpr_purge_data_directory <- function(path=".", yml){
@@ -14,8 +14,8 @@ dpr_purge_data_directory <- function(path=".", yml){
 ##' Private. A function for updating the data digest components.
 ##'
 ##' @title dpr_update_data_digest
-##' @param path the package path 
-##' @param yml an R yaml list object 
+##' @param path the package path
+##' @param yml an R yaml list object
 ##' @return nothing
 ##' @author jmtaylor
 dpr_update_data_digest <- function(path=".", yml){
@@ -37,7 +37,7 @@ dpr_update_data_digest <- function(path=".", yml){
 ##' not build. Using the `dpr_render()` calling environment. For
 ##' evaluation.
 ##'
-##' @title dpr_render 
+##' @title dpr_render
 ##' @param path The full path to the data package. The default is the
 ##'   working directory.
 ##' @param ... datapakager.yml value overrides. When arguments are
@@ -47,7 +47,7 @@ dpr_update_data_digest <- function(path=".", yml){
 ##' @author jmtaylor
 ##' @export
 dpr_render <- function(path=".", ...){
-  yml <- DPR2::dpr_yaml_get(path, ...) 
+  yml <- DPR2::dpr_yaml_get(path, ...)
   if(yml$purge_data_directory) dpr_purge_data_directory(path, yml)
   for(src in yml$process_on_build){
     ## knitr::knit or rmarkdown::render?
@@ -61,16 +61,16 @@ dpr_render <- function(path=".", ...){
         quiet = TRUE
       )
     },
-    error = \(e) stop(sprintf("dpr_render() failed: %s \n", e$message))
-    )    
+    error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message))
+    )
   }
 }
 
 ##' Render and build data package. Uses a special environment,
 ##' `dpr_build_env`, for the evaluation environment. `dpr_build_env`
-##' is removed from the .GlobalEnv once complete. 
+##' is removed from the .GlobalEnv once complete.
 ##'
-##' @title dpr_build 
+##' @title dpr_build
 ##' @param path The full path to the data package. The default is the
 ##'   working directory.
 ##' @param ... datapakager.yml value overrides. When arguments are
@@ -99,7 +99,7 @@ dpr_build <- function(path=".", ...){
         utils::install.packages(pkgp, repo=NULL)
 
     },
-    error = \(e) stop(sprintf("dpr_build() failed: %s \n", e$message)),
-    finally = rm(list="dpr_build_env", envir=.GlobalEnv) 
+    error = function(e) stop(sprintf("dpr_build() failed: %s \n", e$message)),
+    finally = rm(list="dpr_build_env", envir=.GlobalEnv)
   )
 }

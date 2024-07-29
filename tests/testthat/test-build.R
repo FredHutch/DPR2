@@ -9,7 +9,7 @@ testthat::test_that("checking package build", {
   dpr_build(path, process_on_build = "01.R")
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 1)
-  
+
   dpr_build(path, process_on_build = "02.R")
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)
@@ -17,10 +17,13 @@ testthat::test_that("checking package build", {
   dpr_build(path, process_on_build = "A1.R")
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 3)
-  
-  expect_equal(
-      file.path(path,"..") |> list.files("testPkg.*\\.tar\\.gz") |> length(),
-      1
+
+  expect_length(
+    list.files(
+      file.path(path,".."),
+      "testPkg.*\\.tar\\.gz"
+    ),
+    1L
   )
   expect_error(
       dpr_build(path, data_digest_directory="/notapath"),
@@ -33,6 +36,7 @@ testthat::test_that("checking package build", {
 
   ## build env should be cleared
   expect_false(exists("dpr_build_env", .GlobalEnv))
+
   
   ## no variables should be in calling environment
   expect_false(exists("chkvar", environment()))
