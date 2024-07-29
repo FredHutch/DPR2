@@ -111,7 +111,7 @@ dpr_build <- function(path=".", ...){
         utils::install.packages(pkgp, repo=NULL)
 
     },
-    error = \(e) stop(sprintf("dpr_build() failed: %s \n", e$message))
+    error = function(e) stop(sprintf("dpr_build() failed: %s \n", e$message))
 
   )
 }
