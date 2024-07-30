@@ -71,15 +71,9 @@ test_that("check renv", {
   pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
 
-  if(file.exists(path))
-      unlink(path, recursive = TRUE)
-
   initPkg(tdir, pkgn, list(renv_init=TRUE))
   expect_true(dir.exists(file.path(path, "renv")))
   unlink(path, recursive = TRUE)
-
-  if(file.exists(path))
-      unlink(path, recursive = TRUE)
 
   initPkg(tdir, pkgn, list(renv_init=FALSE))
   expect_true(!dir.exists(file.path(path, "renv")))

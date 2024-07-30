@@ -1,5 +1,6 @@
 ##' Default key:value pairs for the data package datapackager.yml.
 ##'
+##' Definitions of yaml key:value pairs
 ##' @title dpr_yaml_defaults
 ##' @return a list
 ##' @author jmtaylor
