@@ -148,9 +148,18 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
     dpr_yaml_init_set(yaml, pkgp)
 
     ## init renv
-    if(renv_init == TRUE)
-      renv::init(pkgp, settings=renv::settings$snapshot.type("implicit"))
-
+    if(renv_init == TRUE){
+      local({
+        old.renv.settings <- getOption('renv.settings')
+        on.exit(options(renv.settings = old.renv.settings))
+        options(renv.settings = list(snapshot.type = "implicit"))
+        renv::init(
+          pkgp,
+          load = FALSE,
+          restart = FALSE
+        )
+      })
+    }
   },
   error = function(e){
     if(dir.exists(pkgp))
