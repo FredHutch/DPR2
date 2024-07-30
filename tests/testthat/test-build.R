@@ -1,8 +1,8 @@
 tdir <- getPkgDir()
+pkgn <- "testPkg"
 
 testthat::test_that("checking package build", {
 
-  pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
   initPkg(tdir, pkgn, list(renv_init = FALSE))
 
@@ -34,14 +34,28 @@ testthat::test_that("checking package build", {
       "`datapackager.yml` does not exist"
   )
 
-  ## build env should be cleared
-  expect_false(exists("dpr_build_env", .GlobalEnv))
+  dpr_build(path)
+  expect_false(exists("dfm"))
 
+  dpr_build(path, render_env_mode = "isolate", process_on_build = "01.R")
+  expect_false(exists("dfm"))
+
+  expect_error(
+    dpr_build(path, render_env_mode = "isolate", process_on_build = c("01.R", "S1.R"))
+  )
+
+  dpr_build(path, render_env_mode = "share", process_on_build = c("02.R", "S1.R"))
   
   ## no variables should be in calling environment
   expect_false(exists("chkvar", environment()))
 
-  unlink(file.path(tdir, pkgn), recursive = TRUE)
+  ## check yaml validation
+  expect_error(
+    dpr_build(path, render_env_mode = "not valid"),
+    "Invalid `render_env_mode` yaml value used. Please one of these:"
+  )
+  
+  unlink(path, recursive = TRUE)
 
 })
 

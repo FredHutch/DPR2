@@ -48,16 +48,27 @@ dpr_update_data_digest <- function(path=".", yml){
 ##' @export
 dpr_render <- function(path=".", ...){
   yml <- DPR2::dpr_yaml_get(path, ...)
-  if(yml$purge_data_directory) dpr_purge_data_directory(path, yml)
+  
+  if(yml$purge_data_directory)
+    dpr_purge_data_directory(path, yml)
+
+  mode <- yml$render_env_mode
+
+  if(mode == "share")
+    env <- new.env()
+  
   for(src in yml$process_on_build){
-    ## knitr::knit or rmarkdown::render?
+
+    if(mode == "isolate")
+      env <- new.env()
+
     tryCatch({
       rmarkdown::render(
         input = file.path(path, yml$process_directory, src),
         knit_root_dir = normalizePath(path),
         output_dir = { if(yml$write_to_vignettes) file.path(path, "vignettes") else tempdir() },
         output_format = "md_document",
-        envir = { if(exists("dpr_build_env", .GlobalEnv)) .GlobalEnv$dpr_build_env else parent.frame() },
+        envir = env,
         quiet = TRUE
       )
     },
@@ -82,9 +93,7 @@ dpr_render <- function(path=".", ...){
 dpr_build <- function(path=".", ...){
   tryCatch(
     expr = {
-      assign("dpr_build_env", new.env(), envir = .GlobalEnv)
-      assign("yml", DPR2::dpr_yaml_get(path, ...), envir = .GlobalEnv$dpr_build_env)
-      yml <- .GlobalEnv$dpr_build_env$yml
+      yml <- DPR2::dpr_yaml_get(path, ...)
 
       if(yml$render_on_build)
         dpr_render(path, ...)
@@ -93,13 +102,16 @@ dpr_build <- function(path=".", ...){
         dpr_update_data_digest(path, yml)
 
       if(yml$build_tarball)
-        pkgp <- pkgbuild::build(path=path, dest_path=file.path(path, yml$build_output))
+        pkgp <- pkgbuild::build(
+          path = path,
+          dest_path = file.path(path, yml$build_output)
+        )
 
       if(yml$install_on_build)
         utils::install.packages(pkgp, repo=NULL)
 
     },
-    error = function(e) stop(sprintf("dpr_build() failed: %s \n", e$message)),
-    finally = rm(list="dpr_build_env", envir=.GlobalEnv)
+    error = function(e) stop(sprintf("dpr_build() failed: %s \n", e$message))
+
   )
 }

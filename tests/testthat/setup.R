@@ -24,13 +24,17 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
 
   do.call(dpr_init, args)
 
+  path <- file.path(temp_dir, package_name)
+  
   writeLines(
     c(
-      "chkvar <- 1",
-      "dat <- data.frame(x=1:10, y=LETTERS[1:10], z=chkvar)",
-      "save(dat, file='data/mydataframe.rda')"
+      "library(yaml)",
+      "dfm <- data.frame(x=1:10, y=LETTERS[1:10])",
+      "yml <- as.yaml(df)",
+      "save(dfm, file='data/mydataframe.rda')",
+      "save(yml, file='data/myyaml.rda')"
     ),
-    file.path(args$path, package_name, "processing/01.R")
+    file.path(path, "processing/01.R")
   )
 
   writeLines(
@@ -38,16 +42,24 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
       "dat <- matrix(1:16, nrow=4)",
       "save(dat, file='data/mymatrix.rda')"
     ),
-    file.path(args$path, package_name, "processing/02.R")
+    file.path(path, "processing/02.R")
   )
 
   ## a processing script that accesses the datapackager.yml
   writeLines(
     c(
       "dat <- as.list(LETTERS)",
-      "save(dat, file=file.path(dpr_yaml_get()$data_directory, 'letters.rda'))"
+      "save(dat, file=file.path(DPR2::dpr_yaml_get()$data_directory, 'letters.rda'))"
     ),
-    file.path(args$path, package_name, "processing/A1.R")
+    file.path(path, "processing/A1.R")
+  )
+
+  ## check if environment is shared
+  writeLines(
+    c(
+      "save(dat, file=file.path(DPR2::dpr_yaml_get()$data_directory, 'dat.rda'))"
+    ),
+    file.path(path, "processing/S1.R")
   )
 
 }
