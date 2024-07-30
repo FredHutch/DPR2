@@ -25,7 +25,7 @@ dpr_update_data_digest <- function(path=".", yml){
     stop(sprintf("Data digest directory does not exist: %s", dig))
   for(d in dat)
     write(
-      digest::digest(d, file=T, algo="sha1"),
+      dpr_hash_file(d),
       file.path(
         dig,
         tools::file_path_sans_ext(basename(d))

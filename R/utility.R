@@ -135,3 +135,20 @@ dpr_data_versions <- function(path="."){
     row.names=seq(1,length(dat))
   )
 }
+
+##' Return hash of file at the path provided. Hash is equivalent to the git blob hash of the file.
+##'
+##' @title dpr_hash_file
+##' @param path path of file to hash
+##' @return a charcter string of the sha1 hash of the file using git style hash padding 
+##' @author jmtaylor
+##' @export
+dpr_hash_file <- function(path){
+  digest::digest(
+    c(
+      charToRaw(paste0("blob ", file.info(path)$size)),
+      as.raw(0),
+      readBin(path, "raw", file.info(path)$size)
+    ), algo = "sha1", serialize = F
+  )
+}

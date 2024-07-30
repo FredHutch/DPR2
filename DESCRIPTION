@@ -20,4 +20,5 @@ Imports:
     renv
 License: MIT + file LICENSE
 Suggests:
-    testthat
+    testthat,
+    git2r
