@@ -10,7 +10,13 @@ test_that("check default package name warning", {
     "Default package name used"
   )
   unlink(file.path(tdir, pkgn), recursive = TRUE)
-  unlink(file.path(tdir, DPR2::dpr_description_init()$Package), recursive = TRUE)
+  unlink(
+    file.path(
+      tdir,
+      suppressWarnings({DPR2::dpr_description_init()$Package}),
+      recursive = TRUE
+    )
+  )
 })
 
 test_that("check DESCRIPTION file has populated fields", {
@@ -56,7 +62,7 @@ test_that("check datapackager.yml", {
       names(ymlInit) %in% names(yml)
     )
   )
-  
+
   unlink(file.path(tdir, pkgn), recursive = TRUE)
 })
 
@@ -67,14 +73,14 @@ test_that("check renv", {
 
   if(file.exists(path))
       unlink(path, recursive = TRUE)
-  
+
   initPkg(tdir, pkgn, list(renv_init=TRUE))
   expect_true(dir.exists(file.path(path, "renv")))
   unlink(path, recursive = TRUE)
 
   if(file.exists(path))
       unlink(path, recursive = TRUE)
-  
+
   initPkg(tdir, pkgn, list(renv_init=FALSE))
   expect_true(!dir.exists(file.path(path, "renv")))
   unlink(path, recursive = TRUE)
@@ -91,5 +97,5 @@ test_that("check stop on existing init directory", {
   unlink(path, recursive = TRUE)
 
 })
-            
+
 cleanup(tdir)
