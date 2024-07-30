@@ -12,6 +12,9 @@ a list
 \description{
 Default key:value pairs for the data package datapackager.yml.
 }
+\details{
+Definitions of yaml key:value pairs
+}
 \author{
 jmtaylor
 }
