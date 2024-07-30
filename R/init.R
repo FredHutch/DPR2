@@ -37,7 +37,8 @@ dpr_description_defaults <- function(){
     "Authors"     = "FirstName LastName [aut, cre]",
     "Description" = "What the package does (one paragraph).",
     "License"     = "See `https://www.gnu.org/licenses/license-list.html` or `https://choosealicense.com/` for more information",
-    "Encoding"    = "UTF-8"
+    "Encoding"    = "UTF-8",
+    "Depends"     = "R (>= 3.5)"
   )
 }
 
