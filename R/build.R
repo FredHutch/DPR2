@@ -101,14 +101,14 @@ dpr_build <- function(path=".", ...){
       if("data_digest_directory" %in% names(yml))
         dpr_update_data_digest(path, yml)
 
-      if(yml$build_tarball)
+      if(yml$build_tarball){
         pkgp <- pkgbuild::build(
           path = path,
           dest_path = file.path(path, yml$build_output)
         )
-
-      if(yml$install_on_build)
-        utils::install.packages(pkgp, repo=NULL)
+        if(yml$install_on_build)
+            utils::install.packages(pkgp, repo=NULL)
+      }
 
     },
     error = function(e) stop(sprintf("dpr_build() failed: %s \n", e$message))
