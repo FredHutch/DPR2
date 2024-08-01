@@ -14,10 +14,10 @@ testthat::test_that("checking package build", {
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)
 
-  dpr_build(path, process_on_build = "A1.R")
+  dpr_build(path, process_on_build = "A1.R", build_tarball = TRUE)
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 3)
-
+  
   expect_length(
     list.files(
       file.path(path,".."),
