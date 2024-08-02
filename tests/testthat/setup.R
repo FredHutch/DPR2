@@ -62,4 +62,22 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
     file.path(path, "processing/S1.R")
   )
 
+  writeLines(
+    c(
+      "---",
+      "title: test report",
+      "---"
+      "test text",
+      "```{r}",
+      "library(yaml)",
+      "dfm <- data.frame(x=1:10, y=LETTERS[1:10])",
+      "yml <- as.yaml(df)",
+      "save(dfm, file='data/mydataframe.rda')",
+      "save(yml, file='data/myyaml.rda')",
+      "```"
+    ),
+    file.path(path, "processing/01.Rmd")
+  )
+
+
 }
