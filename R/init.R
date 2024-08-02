@@ -10,14 +10,14 @@ dpr_yaml_defaults <- function(){
     "build_output"                 = "../",
     "data_directory"               = "data",
     "source_data_directory"        = "inst/extdata",
-    "install_on_build"             = TRUE,
+    "install_on_build"             = FALSE,
+    "build_tarball"                = FALSE,
     "process_directory"            = "processing",
     "process_on_build"             = "",
     "render_on_build"              = TRUE,
     "write_to_vignettes"           = TRUE,
     "auto_increment_data_versions" = TRUE,
     "purge_data_directory"         = TRUE,
-    "build_tarball"                = TRUE,
     "data_digest_directory"        = "inst/data_digest",
     "render_env_mode"              = "isolate"
   )
