@@ -9,11 +9,15 @@ testthat::test_that("checking package build", {
   dpr_build(path, process_on_build = "01.R")
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 1)
+  datn <- list.files(file.path(path, "data"))
+  expect_true(all(datn == c("mydataframe.rda", "myyaml.rda")))
 
   dpr_build(path, process_on_build = "02.R")
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)
-
+  datn <- list.files(file.path(path, "data"))
+  expect_true(datn == "mymatrix.rda")
+  
   dpr_build(path, process_on_build = "A1.R", build_tarball = TRUE)
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 3)

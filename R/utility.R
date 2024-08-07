@@ -135,3 +135,16 @@ dpr_data_versions <- function(path="."){
     row.names=seq(1,length(dat))
   )
 }
+
+##' A convenience function for writing data objects to the package data directory.
+##'
+##' @title dpr_save
+##' @param object An object to save to the path set for the yaml data_directory value.
+##' @author jmtaylor
+##' @export
+dpr_save <- function(object){
+  save(
+    object,
+    file = file.path(dpr_yaml_get()$data_directory, paste0(deparse(substitute(object)), ".rda"))
+  )
+}
