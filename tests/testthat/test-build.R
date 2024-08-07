@@ -21,7 +21,23 @@ testthat::test_that("checking package build", {
   dpr_build(path, process_on_build = "A1.R", build_tarball = TRUE)
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 3)
-  
+
+  ## looking for one object 
+  dpr_build(path, process_on_build = "01.R", objects = "objYml1")
+  datn <- list.files(file.path(path, "data"))
+  expect_true(all("objYml1.rda" %in% datn))
+  expect_false(all(c("objYml1.rda", "objYml2.rda") %in% datn))
+
+  ## looking for both objects and manually saved data
+  dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2"))
+  datn <- list.files(file.path(path, "data"))
+  expect_true(all(c("objYml1.rda", "objYml2.rda") %in% datn))
+  expect_true(
+    all(
+      datn %in% c("mydataframe.rda", "myyaml.rda", "objYml1.rda", "objYml2.rda")
+    )
+  )
+
   expect_length(
     list.files(
       file.path(path,".."),

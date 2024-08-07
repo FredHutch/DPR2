@@ -71,6 +71,18 @@ dpr_render <- function(path=".", ...){
         envir = env,
         quiet = TRUE
       )
+      
+      if( !is.null(yml$objects) ){
+        for( obj in yml$objects ){
+          if( exists(obj, envir=env) ){
+            assign(obj, get(obj, envir=env))
+            save(obj, file=file.path(path, yml$data_directory, paste0(substitute(obj), ".rda")))
+          } else {
+            warning("Objects listed in yaml not found to save to data.")
+          }
+        }
+      }
+      
     },
     error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message))
     )

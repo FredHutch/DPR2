@@ -31,6 +31,8 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
       "library(yaml)",
       "mydataframe <- data.frame(x=1:10, y=LETTERS[1:10])",
       "yml <- as.yaml(mydataframe)",
+      "objYml1 <- 'test objects values 1'",
+      "objYml2 <- 'test objects values 2'",
       "dpr_save(mydataframe)",
       "save(yml, file='data/myyaml.rda')"
     ),
