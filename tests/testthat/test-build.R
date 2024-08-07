@@ -38,6 +38,15 @@ testthat::test_that("checking package build", {
     )
   )
 
+  ## warn when typo in object name
+  expect_warning(
+    dpr_build(path, process_on_build = "01.R", objects = "objYmlX.rda")
+  )
+  datn <- list.files(file.path(path, "data"))
+  expect_true(
+    all(datn %in% c("mydataframe.rda", "myyaml.rda"))
+  )
+
   expect_length(
     list.files(
       file.path(path,".."),
