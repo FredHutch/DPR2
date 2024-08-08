@@ -107,9 +107,9 @@ dpr_yaml_init <- function(...){
 ##' @export
 dpr_description_init <- function(...){
   vals <- list(...)
-  if(!"Package" %in% names(vals))
-    warning("Default package name used.")
   desc <- dpr_description_defaults()
+  if(!"Package" %in% names(vals))
+    warning("Default package name used: ", desc$Package)
   ## override defaults and add options with arguments
   for(val in names(vals))
     desc[val] <- vals[[val]]
@@ -129,8 +129,12 @@ dpr_description_init <- function(...){
 ##' @export
 dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
   pkgp <- file.path(path, desc$Package)
+  
   if(dir.exists(pkgp))
     stop(sprintf("Package '%s' path already exists.", pkgp))
+  if(!dir.exists(dirname(pkgp)))
+    stop("Package directory does not exits")
+
   tryCatch(
   {
 
