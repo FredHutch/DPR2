@@ -91,9 +91,8 @@ dpr_yaml_get <- function(path=".", ...){
 ##' @author jmtaylor
 ##' @export
 dpr_yaml_set <- function(path=".", ...){
-  yml <- dpr_yaml_get(...)
-  def <- dpr_yaml_defaults()
-  new <- dpr_set_keys(yml, def)
+  yml <- dpr_yaml_get(path)
+  new <- dpr_set_keys(yml, list(...))
   yaml::write_yaml(new, file.path(path, "datapackager.yml"))
 }
 
