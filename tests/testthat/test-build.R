@@ -38,15 +38,28 @@ testthat::test_that("checking package build", {
     )
   )
 
+  ## looking for both objects when set in the yaml and not passed as build arguments 
+  dpr_yaml_set(path, process_on_build = "01.R", objects = c("objYml1", "objYml2"))
+  dpr_build(path)
+  datn <- list.files(file.path(path, "data"))
+  expect_true(
+    all(
+      datn %in% c("mydataframe.rda", "myyaml.rda", "objYml1.rda", "objYml2.rda")
+    )
+  )
+  dpr_yaml_set(path, process_on_build = "01.R", objects = c())
+
   ## warn when typo in object name
   expect_warning(
-    dpr_build(path, process_on_build = "01.R", objects = "objYmlX.rda")
+    dpr_build(path, objects = "objYmlX.rda")
   )
   datn <- list.files(file.path(path, "data"))
   expect_true(
     all(datn %in% c("mydataframe.rda", "myyaml.rda"))
   )
-
+  
+  ## check that tarball is built
+  dpr_build(path, build_tarball = TRUE)
   expect_length(
     list.files(
       file.path(path,".."),
@@ -54,10 +67,12 @@ testthat::test_that("checking package build", {
     ),
     1L
   )
+  
   expect_error(
       dpr_build(path, data_digest_directory="/notapath"),
       "Data digest directory does not exist"
   )
+  
   expect_error(
       dpr_build(tempdir()),
       "`datapackager.yml` does not exist"
@@ -86,6 +101,13 @@ testthat::test_that("checking package build", {
   
   unlink(path, recursive = TRUE)
 
+  ## check that when nothing is set to process_on_build, error is as expected
+  dpr_init(tdir, desc=dpr_description_init(Package="NoProcess"))
+  expect_error(
+    dpr_build(file.path(tdir, "NoProcess")),
+    "Are any proceses set to build?"
+  )
+  
 })
 
 testthat::test_that("checking package render",{
