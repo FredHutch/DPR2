@@ -57,8 +57,6 @@ testthat::test_that("checking package build", {
   
   unlink(path, recursive = TRUE)
 
-<<<<<<< Updated upstream
-=======
   ## check that when nothing is set to process_on_build, error is as expected
   path <- file.path(tdir, "NoProcess")
   dpr_init(tdir, desc=dpr_description_init(Package=basename(path)))
@@ -78,8 +76,6 @@ testthat::test_that("checking package build", {
     dpr_build(path),
     "The following required yaml values are not found: render_on_build."
   )
-  
->>>>>>> Stashed changes
 })
 
 testthat::test_that("checking package render",{
