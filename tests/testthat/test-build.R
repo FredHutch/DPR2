@@ -62,7 +62,7 @@ testthat::test_that("checking package build", {
   dpr_init(tdir, desc=dpr_description_init(Package=basename(path)))
   expect_error(
     dpr_build(path),
-    "Are any proceses set to build?"
+    "Are any processes set to build?"
   )
 
   unlink(path, recursive = TRUE)
