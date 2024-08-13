@@ -67,7 +67,8 @@ testthat::test_that("checking package build", {
     ),
     1L
   )
-  
+
+  ## check for valid package
   expect_error(
       dpr_build(path, data_digest_directory="/notapath"),
       "Data digest directory does not exist"
@@ -78,6 +79,7 @@ testthat::test_that("checking package build", {
       "`datapackager.yml` does not exist"
   )
 
+  ## check evaluation share/isolate
   dpr_build(path)
   expect_false(exists("dfm"))
 
@@ -120,6 +122,22 @@ testthat::test_that("checking package build", {
     dpr_build(path),
     "The following required yaml values are not found: render_on_build."
   )
+
+  unlink(path, recursive = TRUE)
+  
+  ## check dpr_save 
+  initPkg(tdir, "Saving")
+  path <- file.path(tdir, "Saving")
+  dpr_build(path, process_on_build = "SV1.R")
+  script <- file.path(path, "processing", "SV1.R")
+  newScript <- gsub("'", "", readLines(script))
+  writeLines(newScript, script)
+  expect_error(
+    dpr_build(path, process_on_build = "SV1.R")
+  )
+    
+  unlink(path, recursive = TRUE)
+  
 })
 
 testthat::test_that("checking package render",{

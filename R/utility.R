@@ -152,12 +152,20 @@ dpr_data_versions <- function(path="."){
 ##' A convenience function for writing data objects to the package data directory.
 ##'
 ##' @title dpr_save
-##' @param object An object to save to the path set for the yaml data_directory value.
+##' @param objects a character vector of object names to saved from the calling environment.
 ##' @author jmtaylor
 ##' @export
-dpr_save <- function(object){
-  save(
-    object,
-    file = file.path(dpr_yaml_get()$data_directory, paste0(deparse(substitute(object)), ".rda"))
-  )
+dpr_save <- function(objects){
+  if(!is.character(objects)){
+    stop("Only character vectors allowed.")
+  }
+  for(obj in objects){
+    x <- get(obj, envir=parent.frame())
+    save(
+      x,
+      file = file.path(
+        dpr_yaml_get()$data_directory, paste0(obj, ".rda")
+      )
+    )
+  }
 }
