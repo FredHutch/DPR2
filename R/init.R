@@ -133,7 +133,7 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
   if(dir.exists(pkgp))
     stop(sprintf("Package '%s' path already exists.", pkgp))
   if(!dir.exists(dirname(pkgp)))
-    stop("Package directory does not exits")
+    stop("Package directory does not exist.")
 
   tryCatch(
   {

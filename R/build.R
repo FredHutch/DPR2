@@ -59,7 +59,7 @@ dpr_render <- function(path=".", ...){
 
   for(src in yml$process_on_build){
     if(dir.exists(file.path(path, yml$process_directory, src)))
-      stop("Are any proceses set to build? See datapackager.yml file.")
+      stop("Are any processes set to build? See datapackager.yml file.")
 
     if(mode == "isolate")
       env <- new.env()

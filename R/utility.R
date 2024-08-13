@@ -17,6 +17,8 @@ dpr_yaml_load <- function(pkgp){
 ##' @param yml a parsed yaml object
 ##' @author jmtaylor
 dpr_yaml_validate <- function(yml){
+
+  ## check that all controlled key values are correct
   key_value = list(
     "render_env_mode" = c("isolate", "share")
   )
@@ -30,6 +32,18 @@ dpr_yaml_validate <- function(yml){
       )
     }
   }
+
+  ## check that all default yaml values are present, should catch typos manually entered in yaml
+  def <- dpr_yaml_defaults()
+  nameCheck <- !(names(def) %in% names(yml))
+  if(any(nameCheck)){
+    nm <- paste(names(def)[nameCheck], collapse = ",")
+    stop(
+      "The following required yaml values are not found: ", nm, ". ",
+      "Please add those using `dpr_yaml_set()`, or directly in the `datapackager.yml` file."
+    )
+  }
+
 }
 
 ##' Private. Load the package DESCRIPTION file into memory.
