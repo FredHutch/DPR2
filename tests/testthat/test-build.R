@@ -14,10 +14,10 @@ testthat::test_that("checking package build", {
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)
 
-  dpr_build(path, process_on_build = "A1.R")
+  dpr_build(path, process_on_build = "A1.R", build_tarball = TRUE)
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 3)
-
+  
   expect_length(
     list.files(
       file.path(path,".."),
@@ -57,6 +57,25 @@ testthat::test_that("checking package build", {
   
   unlink(path, recursive = TRUE)
 
+  ## check that when nothing is set to process_on_build, error is as expected
+  path <- file.path(tdir, "NoProcess")
+  dpr_init(tdir, desc=dpr_description_init(Package=basename(path)))
+  expect_error(
+    dpr_build(path),
+    "Are any processes set to build?"
+  )
+
+  unlink(path, recursive = TRUE)
+
+  path <- file.path(tdir, "WrongYaml")
+  dpr_init(tdir, desc=dpr_description_init(Package=basename(path)))
+  ypth <- file.path(path, "datapackager.yml")
+  yfil <- readLines(ypth)
+  writeLines(gsub("render_on_build", "rnder_n_bild", yfil), ypth)
+  expect_error(
+    dpr_build(path),
+    "The following required yaml values are not found: render_on_build."
+  )
 })
 
 testthat::test_that("checking package render",{

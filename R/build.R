@@ -56,8 +56,10 @@ dpr_render <- function(path=".", ...){
 
   if(mode == "share")
     env <- new.env()
-  
+
   for(src in yml$process_on_build){
+    if(dir.exists(file.path(path, yml$process_directory, src)))
+      stop("Are any processes set to build? See datapackager.yml file.")
 
     if(mode == "isolate")
       env <- new.env()
@@ -108,8 +110,16 @@ dpr_build <- function(path=".", ...){
         )
 
       if(yml$install_on_build)
-        utils::install.packages(pkgp, repo=NULL)
-
+        if(yml$build_tarball){
+          utils::install.packages(pkgp, repo=NULL)
+        } else {
+          pkgp <- pkgbuild::build(
+            path = path,
+            dest_path = tempdir()
+          )
+          utils::install.packages(pkgp, repo=NULL)
+        }
+        
     },
     error = function(e) stop(sprintf("dpr_build() failed: %s \n", e$message))
 

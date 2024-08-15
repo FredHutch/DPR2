@@ -20,7 +20,14 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
     desc=dpr_description_init(Package=package_name)
   )
 
-  args[names(more_args)] <- more_args
+  ## additional arguments add to the dpr_init call other than the presets listed above at `args`.
+  ## this is set by the more_args argument in initPkg
+  for(arg in names(args)){
+    new <- more_args[[arg]]
+    args[[arg]][names(new)] <- new
+  }
+  newArgs <- more_args[!names(more_args) %in% names(args)]
+  args[names(newArgs)] <- newArgs
 
   do.call(dpr_init, args)
 

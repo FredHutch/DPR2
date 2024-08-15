@@ -10,14 +10,14 @@ dpr_yaml_defaults <- function(){
     "build_output"                 = "../",
     "data_directory"               = "data",
     "source_data_directory"        = "inst/extdata",
-    "install_on_build"             = TRUE,
+    "install_on_build"             = FALSE,
+    "build_tarball"                = FALSE,
     "process_directory"            = "processing",
     "process_on_build"             = "",
     "render_on_build"              = TRUE,
     "write_to_vignettes"           = TRUE,
     "auto_increment_data_versions" = TRUE,
     "purge_data_directory"         = TRUE,
-    "build_tarball"                = TRUE,
     "data_digest_directory"        = "inst/data_digest",
     "render_env_mode"              = "isolate"
   )
@@ -37,7 +37,8 @@ dpr_description_defaults <- function(){
     "Authors"     = "FirstName LastName [aut, cre]",
     "Description" = "What the package does (one paragraph).",
     "License"     = "See `https://www.gnu.org/licenses/license-list.html` or `https://choosealicense.com/` for more information",
-    "Encoding"    = "UTF-8"
+    "Encoding"    = "UTF-8",
+    "Depends"     = "R (>= 3.5)"
   )
 }
 
@@ -106,9 +107,9 @@ dpr_yaml_init <- function(...){
 ##' @export
 dpr_description_init <- function(...){
   vals <- list(...)
-  if(!"Package" %in% names(vals))
-    warning("Default package name used.")
   desc <- dpr_description_defaults()
+  if(!"Package" %in% names(vals))
+    warning("Default package name used: ", desc$Package)
   ## override defaults and add options with arguments
   for(val in names(vals))
     desc[val] <- vals[[val]]
@@ -128,8 +129,12 @@ dpr_description_init <- function(...){
 ##' @export
 dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
   pkgp <- file.path(path, desc$Package)
+  
   if(dir.exists(pkgp))
     stop(sprintf("Package '%s' path already exists.", pkgp))
+  if(!dir.exists(dirname(pkgp)))
+    stop("Package directory does not exist.")
+
   tryCatch(
   {
 
