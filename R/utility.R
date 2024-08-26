@@ -271,11 +271,12 @@ dpr_data_history <- function(include_checksums=FALSE, path="."){
     stop("`data` directory not found. Is the path pointing to a data package?")
   if( !"git2r" %in% row.names(utils::installed.packages()) )
     stop("Please install `git2r` to use `dpr_data_history`.")
+  rda <- list.files(file.path(path, "data"), "\\.[Rr][Dd][Aa]")
+  if( length(rda) == 0 )
+    stop("No rda files found in `data` directory")
   odb <- git2r::odb_blobs(path)
-  dat <- list.files(file.path(path, "data"))
-  odb <- odb[odb$name %in% dat, !names(odb) %in% c("commit", "len")]
+  odb <- odb[odb$name %in% rda, c("sha", "path", "name", "author", "when")]
   names(odb)[names(odb) == "sha"] <- "blob_file_hash"
-  odb <- odb[,names(odb)[c(1, 2, 3, 4, 5)]]
   row.names(odb) <- 1:nrow(odb)
   if(include_checksums){
     cksum <- list()
