@@ -153,7 +153,7 @@ dpr_data_versions <- function(path="."){
 ##'
 ##' @title dpr_hash_file
 ##' @param path path of file to hash
-##' @return a charcter string of the sha1 hash of the file using git style hash padding 
+##' @return a character string of the SHA1 hash of the file using git style hash padding.
 ##' @author jmtaylor
 ##' @export
 dpr_hash_file <- function(path){

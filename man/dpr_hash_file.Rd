@@ -10,7 +10,7 @@ dpr_hash_file(path)
 \item{path}{path of file to hash}
 }
 \value{
-a charcter string of the sha1 hash of the file using git style hash padding
+a character string of the SHA1 hash of the file using git style hash padding.
 }
 \description{
 Return hash of file at the path provided. Hash is equivalent to the git blob hash of the file.

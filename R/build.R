@@ -86,7 +86,7 @@ dpr_render <- function(path=".", ...){
 ##' @title dpr_build
 ##' @param path The full path to the data package. The default is the
 ##'   working directory.
-##' @param ... datapakager.yml value overrides. When arguments are
+##' @param ... datapackager.yml value overrides. When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs
 ##'   instead of what is specified by the `datapackager.yml`.
 ##' @return nothing
