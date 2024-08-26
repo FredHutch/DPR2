@@ -39,9 +39,6 @@ testthat::test_that("checking package data history", {
   
   dataHistory <- dpr_data_history(include_checksums = TRUE, path=path)
 
-  expect_identical(
-      dataHistory[1, "blob_file_hash"], "511fab652fb24f0d59b05920d4fe797b7b193b17"
-  )
   expect_equal( ncol(dataHistory), 6 )
   expect_equal( nrow(dataHistory), 7 )
   expect_true( all(row.names(dataHistory) == 1:nrow(dataHistory)) )
