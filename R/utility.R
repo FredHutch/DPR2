@@ -165,3 +165,130 @@ dpr_hash_file <- function(path){
     ), algo = "sha1", serialize = F
   )
 }
+
+##' Private. Get md5 checksum of object once loaded from a path.
+##'
+##' @title dpr_checksum_data_objects
+##' @param path a path to an rda file
+##' @return a string of an md5 checksum of an object loaded from a path
+##' @author jmtaylor
+dpr_checksum_data_objects <- function(path){
+  env <- new.env(parent=emptyenv())
+  load(path, env)
+  return(
+    digest::digest(
+      get(ls(envir=env), envir=env),
+      algo="md5"
+    )
+  )
+}
+
+##' A convenience function for writing data objects to the package data directory.
+##'
+##' @title dpr_save
+##' @param object an object to save to the path set for the yaml data_directory value 
+##' @author jmtaylor
+##' @export
+dpr_save <- function(object){
+  save(
+    object,
+    file = file.path(dpr_yaml_get()$data_directory, paste0(deparse(substitute(object)), ".rda"))
+  )
+}
+
+##' Load a data version into memory by its hash. Only rda files in the data directory will be recalled.
+##'
+##' @title dpr_recall_data_version
+##' @param version the hash of the data to recall; partial hashes allowed from 1 to n digits
+##' @param path the path to the data package
+##' @return a list of objects loaded from an rda file pulled from the git history
+##' @author jmtaylor
+##' @export 
+dpr_recall_data_version <- function(version, path = "."){
+  odb <- git2r::odb_blobs(path)
+  rda <- unique(
+    odb[ grepl(paste0("^", version), odb$sha), c("name", "path", "sha") ]
+  ) 
+  rda <- rda[ rda$path == "data", ]
+  rda <- rda[ grepl("\\.[Rr][Dd][Aa]", rda$name) ]
+  if( nrow(rda) == 0 )
+    stop("Data version not found. Either version hash is not found, or the hash does not point to an `rda` file in the `data` directory.")
+  if( length(unique(rda$sha)) != 1 )
+    stop("Multiple hashes found from partial hash. Please use more digits.")
+  tmps <- file.path(tempdir(), rda$name)
+
+  ## there can be multiple rdas with the same hash
+  ## there can be multiple objects in each rda
+  ## this is a feature of rda files, but will it be a feature of rda files created by DPR2?
+
+  recall <- list()
+  tryCatch({
+    for(tmp in tmps){
+      writeBin(
+        git2r::content(git2r::lookup(repo=path, sha=version), raw=T),
+        tmp
+      )
+      env <- new.env(parent = emptyenv())
+      load(tmp, envir = env)
+      objs <- ls(envir = env)
+      out <- list()
+      ## using for loop to assign names
+      for(obj in objs)
+        out[[obj]] <- get(obj, envir = env)
+      recall[[tmp]] <- out
+    }
+  }, error = function(e) { rm(env); stop(e) }
+  )
+  return(recall)
+}
+
+##' Get a checksum of an object from the git history.
+##'
+##' @title dpr_checksum_from_version
+##' @param version a string hash of a data version
+##' @param path a path to a data package
+##' @return a string of a checksum from an object recalled from the git history
+##' @author jmtaylor
+##' @export 
+dpr_checksum_from_version <- function(version, path = "."){
+  recall <- dpr_recall_data_version(version, path)
+  checksums <- list()
+  for(ck in names(recall))
+    checksums[[ck]] <- digest::digest(recall[[ck]], algo="md5")
+  return(checksums)
+}
+
+##' Return the history of all the former and current files in the `data` directory.
+##'
+##' @title dpr_data_history
+##' @param include_checksums a boolean value indicating if checksums should be included in the returned data.frame object; computing checksums is less performant
+##' @param path path to data package
+##' @return a data.frame object
+##' @author jmtaylor
+##' @export
+dpr_data_history <- function(include_checksums=FALSE, path="."){
+  if( !dir.exists(file.path(path, "data")) )
+    stop("`data` directory not found. Is the path pointing to a data package?")
+  if( !"git2r" %in% row.names(utils::installed.packages()) )
+    stop("Please install `git2r` to use `dpr_data_history`.")
+  odb <- git2r::odb_blobs(path)
+  dat <- list.files(file.path(path, "data"))
+  odb <- odb[odb$name %in% dat, !names(odb) %in% c("commit", "len")]
+  names(odb)[names(odb) == "sha"] <- "blob_file_hash"
+  odb <- odb[,names(odb)[c(1, 2, 3, 4, 5)]]
+  row.names(odb) <- 1:nrow(odb)
+  if(include_checksums){
+    cksum <- list()
+    for(hash in odb$blob_file_hash){
+      record <- dpr_checksum_from_version(hash, path)
+      cksum[[hash]] <- data.frame(
+        blob_file_hash = hash,
+        name = basename(names(record)),
+        object_md5 = unlist(record)
+      )
+    }
+    cksum <- do.call(rbind, cksum)
+    odb <- merge(odb, cksum) 
+  }
+  return(odb)
+}
