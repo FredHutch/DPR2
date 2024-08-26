@@ -39,22 +39,23 @@ testthat::test_that("checking package data history", {
   
   dataHistory <- dpr_data_history(include_checksums = TRUE, path=path)
 
-  expect_true(
-      dataHistory[1, "blob_file_hash"] == "511fab652fb24f0d59b05920d4fe797b7b193b17"
+  expect_identical(
+      dataHistory[1, "blob_file_hash"], "511fab652fb24f0d59b05920d4fe797b7b193b17"
   )
-  expect_true( ncol(dataHistory) == 6 )
-  expect_true( nrow(dataHistory) == 7 )
+  expect_equal( ncol(dataHistory), 6 )
+  expect_equal( nrow(dataHistory), 7 )
   expect_true( all(row.names(dataHistory) == 1:nrow(dataHistory)) )
-  expect_true(
+  expect_equal(
       length(
           unique(
             dataHistory[
               dataHistory$object_md5 == names(which(table(dataHistory$object_md5) > 1)),"object_md5"
             ]
           )
-        ) == 1
+        ), 1
       )
 
   unlink(path, recursive = TRUE)
+  cleanup(tdir)
   
 })
