@@ -36,9 +36,11 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
   writeLines(
     c(
       "library(yaml)",
-      "dfm <- data.frame(x=1:10, y=LETTERS[1:10])",
-      "yml <- as.yaml(df)",
-      "save(dfm, file='data/mydataframe.rda')",
+      "mydataframe <- data.frame(x=1:10, y=LETTERS[1:10])",
+      "yml <- as.yaml(mydataframe)",
+      "objYml1 <- 'test objects values 1'",
+      "objYml2 <- 'test objects values 2'",
+      "dpr_save('mydataframe')",
       "save(yml, file='data/myyaml.rda')"
     ),
     file.path(path, "processing/01.R")
@@ -46,8 +48,8 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
 
   writeLines(
     c(
-      "dat <- matrix(1:16, nrow=4)",
-      "save(dat, file='data/mymatrix.rda')"
+      "mymatrix <- matrix(1:16, nrow=4)",
+      "dpr_save('mymatrix')"
     ),
     file.path(path, "processing/02.R")
   )
@@ -56,7 +58,9 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
   writeLines(
     c(
       "dat <- as.list(LETTERS)",
-      "save(dat, file=file.path(DPR2::dpr_yaml_get()$data_directory, 'letters.rda'))"
+      "ourLetters <- c('d', 'p', 'r')",
+      "save(dat, file=file.path(dpr_yaml_get()$data_directory, 'letters.rda'))",
+      "dpr_save('ourLetters')"
     ),
     file.path(path, "processing/A1.R")
   )
@@ -64,9 +68,19 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
   ## check if environment is shared
   writeLines(
     c(
-      "save(dat, file=file.path(DPR2::dpr_yaml_get()$data_directory, 'dat.rda'))"
+      "mymatrix[1] <- 100",
+      "newmatrix <- mymatrix",
+      "dpr_save('newmatrix')"
     ),
     file.path(path, "processing/S1.R")
   )
-
+  
+  writeLines(
+    c(
+      "df <- data.frame(letters, LETTERS)",
+      "dpr_save(c('df', 'letters'))"
+    ),
+    file.path(path, "processing/SV1.R")
+  )
+  
 }
