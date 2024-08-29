@@ -80,7 +80,7 @@ dpr_render <- function(path=".", ...){
             assign(obj, get(obj, envir=env))
             save(obj, file=file.path(path, yml$data_directory, paste0(substitute(obj), ".rda")))
           } else {
-            warning("Objects listed in yaml not found to save to data.")
+            warning("Objects listed in yaml not found in processing scripts to save to data directory.")
           }
         }
       }
