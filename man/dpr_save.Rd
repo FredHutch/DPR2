@@ -4,10 +4,10 @@
 \alias{dpr_save}
 \title{dpr_save}
 \usage{
-dpr_save(object)
+dpr_save(objects)
 }
 \arguments{
-\item{object}{an object to save to the path set for the yaml data_directory value}
+\item{objects}{a character vector of object names to saved from the calling environment.}
 }
 \description{
 A convenience function for writing data objects to the package data directory.

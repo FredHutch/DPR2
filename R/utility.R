@@ -147,28 +147,20 @@ dpr_description_set <- function(path=".", ...){
 ##' A convenience function for writing data objects to the package data directory.
 ##'
 ##' @title dpr_save
-##' @param object an object to save to the path set for the yaml data_directory value 
+##' @param objects a character vector of object names to saved from the calling environment.
 ##' @author jmtaylor
 ##' @export
-dpr_save <- function(object){
-  save(
-    object,
-    file = file.path(dpr_yaml_get()$data_directory, paste0(deparse(substitute(object)), ".rda"))
-  )
-}
-
-##' Get a checksum of an object from the git history.
-##'
-##' @title dpr_checksum_from_version
-##' @param version a string hash of a data version
-##' @param path a path to a data package
-##' @return a string of a checksum from an object recalled from the git history
-##' @author jmtaylor
-##' @export 
-dpr_checksum_from_version <- function(version, path = "."){
-  recall <- dpr_recall_data_version(version, path)
-  checksums <- list()
-  for(ck in names(recall))
-    checksums[[ck]] <- digest::digest(recall[[ck]], algo="md5")
-  return(checksums)
+dpr_save <- function(objects){
+  if(!is.character(objects)){
+    stop("Only character vectors allowed.")
+  }
+  for(obj in objects){
+    x <- get(obj, envir=parent.frame())
+    save(
+      x,
+      file = file.path(
+        dpr_yaml_get()$data_directory, paste0(obj, ".rda")
+      )
+    )
+  }
 }
