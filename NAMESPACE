@@ -2,8 +2,10 @@
 
 export(dpr_build)
 export(dpr_checksum_from_version)
+export(dpr_compare_data_digest)
+export(dpr_data_digest)
+export(dpr_data_hashes)
 export(dpr_data_history)
-export(dpr_data_versions)
 export(dpr_description_defaults)
 export(dpr_description_init)
 export(dpr_description_set)
