@@ -35,9 +35,8 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
   
   writeLines(
     c(
-      "library(yaml)",
       "mydataframe <- data.frame(x=1:10, y=LETTERS[1:10])",
-      "yml <- as.yaml(mydataframe)",
+      "yml <- yaml::as.yaml(mydataframe)",
       "objYml1 <- 'test objects values 1'",
       "objYml2 <- 'test objects values 2'",
       "dpr_save('mydataframe')",
@@ -53,9 +52,8 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
       "---",
       "test text",
       "```{r}",
-      "library(yaml)",
       "df  <- data.frame(x=1:10, y=LETTERS[1:10])",
-      "yml <- as.yaml(df)",
+      "yml <- yaml::as.yaml(df)",
       "save(df,  file='data/mydataframe_rmd.rda')",
       "save(yml, file='data/myyaml_rmd.rda')",
       "```"
