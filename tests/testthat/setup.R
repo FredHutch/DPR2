@@ -36,22 +36,33 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
   writeLines(
     c(
       "library(yaml)",
-<<<<<<< HEAD
-      "dfm <- data.frame(x=1:10, y=LETTERS[1:10])",
-      "yml <- as.yaml(dfm)",
-      "save(dfm, file='data/mydataframe.rda')",
-=======
       "mydataframe <- data.frame(x=1:10, y=LETTERS[1:10])",
       "yml <- as.yaml(mydataframe)",
       "objYml1 <- 'test objects values 1'",
       "objYml2 <- 'test objects values 2'",
       "dpr_save('mydataframe')",
->>>>>>> origin/main
       "save(yml, file='data/myyaml.rda')"
     ),
     file.path(path, "processing/01.R")
   )
 
+  writeLines(
+    c(
+      "---",
+      "title: test report",
+      "---",
+      "test text",
+      "```{r}",
+      "library(yaml)",
+      "df  <- data.frame(x=1:10, y=LETTERS[1:10])",
+      "yml <- as.yaml(df)",
+      "save(df,  file='data/mydataframe_rmd.rda')",
+      "save(yml, file='data/myyaml_rmd.rda')",
+      "```"
+    ),
+    file.path(path, "processing/01.Rmd")
+  )
+  
   writeLines(
     c(
       "mymatrix <- matrix(1:16, nrow=4)",
@@ -79,23 +90,6 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
       "dpr_save('newmatrix')"
     ),
     file.path(path, "processing/S1.R")
-  )
-
-  writeLines(
-    c(
-      "---",
-      "title: test report",
-      "---",
-      "test text",
-      "```{r}",
-      "library(yaml)",
-      "dfm <- data.frame(x=1:10, y=LETTERS[1:10])",
-      "yml <- as.yaml(df)",
-      "save(dfm, file='data/mydataframe_rmd.rda')",
-      "save(yml, file='data/myyaml_rmd.rda')",
-      "```"
-    ),
-    file.path(path, "processing/01.Rmd")
   )
 
 }

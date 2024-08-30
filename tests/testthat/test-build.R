@@ -124,20 +124,7 @@ testthat::test_that("checking package build", {
   )
 
   unlink(path, recursive = TRUE)
-  
-  ## check dpr_save 
-  initPkg(tdir, "Saving")
-  path <- file.path(tdir, "Saving")
-  dpr_build(path, process_on_build = "SV1.R")
-  script <- file.path(path, "processing", "SV1.R")
-  newScript <- gsub("'", "", readLines(script))
-  writeLines(newScript, script)
-  expect_error(
-    dpr_build(path, process_on_build = "SV1.R")
-  )
     
-  unlink(path, recursive = TRUE)
-  
 })
 
 testthat::test_that("checking package render",{

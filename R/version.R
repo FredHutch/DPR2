@@ -134,6 +134,22 @@ dpr_data_hashes <- function(path="."){
   )
 }
 
+##' Get a checksum of an object from the git history.
+##'
+##' @title dpr_checksum_from_version
+##' @param version a string hash of a data version
+##' @param path a path to a data package
+##' @return a string of a checksum from an object recalled from the git history
+##' @author jmtaylor
+##' @export 
+dpr_checksum_from_version <- function(version, path = "."){
+  recall <- dpr_recall_data_version(version, path)
+  checksums <- list()
+  for(ck in names(recall))
+    checksums[[ck]] <- digest::digest(recall[[ck]], algo="md5")
+  return(checksums)
+}
+
 ##' A data digest comparison table, comparing the current data digest with the current data hashes.
 ##' 
 ##' Compare the current hashes for the data listed in the data directory with the hashes listed in
