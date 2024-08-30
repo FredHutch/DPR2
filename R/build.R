@@ -11,28 +11,6 @@ dpr_purge_data_directory <- function(path=".", yml){
   }
 }
 
-##' Private. A function for updating the data digest components.
-##'
-##' @title dpr_update_data_digest
-##' @param path the package path
-##' @param yml an R yaml list object
-##' @return nothing
-##' @author jmtaylor
-dpr_update_data_digest <- function(path=".", yml){
-  dat <- list.files(file.path(path, "data"), full.names = T)
-  dig <- file.path(path, yml$data_digest_directory)
-  if(!dir.exists(dig))
-    stop(sprintf("Data digest directory does not exist: %s", dig))
-  for(d in dat)
-    write(
-      dpr_hash_file(d),
-      file.path(
-        dig,
-        tools::file_path_sans_ext(basename(d))
-      )
-    )
-}
-
 ##' Render all processing scripts in the for the data package. Does
 ##' not build. Using the `dpr_render()` calling environment. For
 ##' evaluation.
@@ -47,7 +25,7 @@ dpr_update_data_digest <- function(path=".", yml){
 ##' @author jmtaylor
 ##' @export
 dpr_render <- function(path=".", ...){
-  yml <- DPR2::dpr_yaml_get(path, ...)
+  yml <- dpr_yaml_get(path, ...)
   
   if(yml$purge_data_directory)
     dpr_purge_data_directory(path, yml)
@@ -95,7 +73,7 @@ dpr_render <- function(path=".", ...){
 dpr_build <- function(path=".", ...){
   tryCatch(
     expr = {
-      yml <- DPR2::dpr_yaml_get(path, ...)
+      yml <- dpr_yaml_get(path, ...)
 
       if(yml$render_on_build)
         dpr_render(path, ...)

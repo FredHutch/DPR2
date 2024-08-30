@@ -1,14 +1,24 @@
-##' Private. Load `datapackager.yml` into memory. If missing, throw exception.
+##' Private. Checks if path is a DPR2 datapackage or not.
+##'
+##' @title dpr_is  
+##' @param path path to datapackage
+##' @return boolean
+##' @author jmtaylor
+dpr_is <- function(path){
+  if( !file.exists(file.path(path, "datapackager.yml")) )
+    stop("`datapackager.yml` does not exist. Either the working directory of the evaluation environment is not at package root, or 'datapackager.yml' is not found in data package.")
+  if( !file.exists(file.path(path, "DESCRIPTION")) )
+    stop("`DESCRIPTION` does not exist. The working directory of the evaluation environment is not at package root.")
+}
+
+##' Private. Load `datapackager.yml` into memory.
 ##'
 ##' @title dpr_yaml_load
-##' @param pkgp the package path
+##' @param path the package path
 ##' @return a yaml object
 ##' @author jmtaylor
-dpr_yaml_load <- function(pkgp){
-  ## looking for exising yaml
-  if( !file.exists(file.path(pkgp, "datapackager.yml")) )
-    stop("`datapackager.yml` does not exist. Either working directory is not at a package root, or 'datapackager.yml' is not found in data package.")
-  return( yaml::yaml.load_file(file.path(pkgp, "datapackager.yml")) )
+dpr_yaml_load <- function(path="."){
+  return( yaml::yaml.load_file(file.path(path, "datapackager.yml")) )    
 }
 
 ##' Private. Check yaml values that must be specific.
@@ -17,7 +27,6 @@ dpr_yaml_load <- function(pkgp){
 ##' @param yml a parsed yaml object
 ##' @author jmtaylor
 dpr_yaml_validate <- function(yml){
-
   ## check that all controlled key values are correct
   key_value = list(
     "render_env_mode" = c("isolate", "share")
@@ -49,11 +58,12 @@ dpr_yaml_validate <- function(yml){
 ##' Private. Load the package DESCRIPTION file into memory.
 ##'
 ##' @title dpr_description_load
-##' @param pkgp the package path
+##' @param path the package path
 ##' @return a desc object
 ##' @author jmtaylor
-dpr_description_load <- function(pkgp){
-  desc::desc(file = pkgp)
+dpr_description_load <- function(path){
+  dpr_is(path)
+  desc::desc(file = path)
 }
 
 ##' Private. Replace and add key:value pairs in old list with new.
@@ -84,6 +94,7 @@ dpr_set_keys <- function(old, new){
 ##' @author jmtaylor
 ##' @export
 dpr_yaml_get <- function(path=".", ...){
+  dpr_is(path)
   new <- list(...)
   yml <- dpr_set_keys(
     dpr_yaml_load(path), 
@@ -122,6 +133,7 @@ dpr_yaml_set <- function(path=".", ...){
 ##' @author jmtaylor
 ##' @export
 dpr_description_set <- function(path=".", ...){
+  dpr_is(path)
   new <- list(...)
   def <- dpr_description_defaults()
   invisible(
@@ -129,57 +141,6 @@ dpr_description_set <- function(path=".", ...){
   )
   invisible(
       Map(desc::desc_set_list, key = names(new), list_value = new, file = path)
-  )
-}
-
-##' Retrieve data.frame of data object names and versions rendered to the data directory.
-##'
-##' @title dpr_data_versions
-##' @param path The full path to the data package. The default is the
-##'   working directory.
-##' @return data.frame
-##' @author jmtaylor
-##' @export
-dpr_data_versions <- function(path="."){
-  dat <- list.files(file.path(path, dpr_yaml_get(path)$data_digest_directory), full.names=TRUE)
-  data.frame(
-    object=basename(dat),
-    digest=vapply(dat, function(d) readLines(d), ""),
-    row.names=seq(1,length(dat))
-  )
-}
-
-##' Return hash of file at the path provided. Hash is equivalent to the git blob hash of the file.
-##'
-##' @title dpr_hash_file
-##' @param path path of file to hash
-##' @return a character string of the SHA1 hash of the file using git style hash padding.
-##' @author jmtaylor
-##' @export
-dpr_hash_file <- function(path){
-  digest::digest(
-    c(
-      charToRaw(paste0("blob ", file.info(path)$size)),
-      as.raw(0),
-      readBin(path, "raw", file.info(path)$size)
-    ), algo = "sha1", serialize = F
-  )
-}
-
-##' Private. Get md5 checksum of object once loaded from a path.
-##'
-##' @title dpr_checksum_data_objects
-##' @param path a path to an rda file
-##' @return a string of an md5 checksum of an object loaded from a path
-##' @author jmtaylor
-dpr_checksum_data_objects <- function(path){
-  env <- new.env(parent=emptyenv())
-  load(path, env)
-  return(
-    digest::digest(
-      get(ls(envir=env), envir=env),
-      algo="md5"
-    )
   )
 }
 
@@ -196,52 +157,6 @@ dpr_save <- function(object){
   )
 }
 
-##' Load a data version into memory by its hash. Only rda files in the data directory will be recalled.
-##'
-##' @title dpr_recall_data_version
-##' @param version the hash of the data to recall; partial hashes allowed from 1 to n digits
-##' @param path the path to the data package
-##' @return a list of objects loaded from an rda file pulled from the git history
-##' @author jmtaylor
-##' @export 
-dpr_recall_data_version <- function(version, path = "."){
-  odb <- git2r::odb_blobs(path)
-  rda <- unique(
-    odb[ grepl(paste0("^", version), odb$sha), c("name", "path", "sha") ]
-  ) 
-  rda <- rda[ rda$path == "data", ]
-  rda <- rda[ grepl("\\.[Rr][Dd][Aa]", rda$name) ]
-  if( nrow(rda) == 0 )
-    stop("Data version not found. Either version hash is not found, or the hash does not point to an `rda` file in the `data` directory.")
-  if( length(unique(rda$sha)) != 1 )
-    stop("Multiple hashes found from partial hash. Please use more digits.")
-  tmps <- file.path(tempdir(), rda$name)
-
-  ## there can be multiple rdas with the same hash
-  ## there can be multiple objects in each rda
-  ## this is a feature of rda files, but will it be a feature of rda files created by DPR2?
-
-  recall <- list()
-  tryCatch({
-    for(tmp in tmps){
-      writeBin(
-        git2r::content(git2r::lookup(repo=path, sha=version), raw=T),
-        tmp
-      )
-      env <- new.env(parent = emptyenv())
-      load(tmp, envir = env)
-      objs <- ls(envir = env)
-      out <- list()
-      ## using for loop to assign names
-      for(obj in objs)
-        out[[obj]] <- get(obj, envir = env)
-      recall[[tmp]] <- out
-    }
-  }, error = function(e) { rm(env); stop(e) }
-  )
-  return(recall)
-}
-
 ##' Get a checksum of an object from the git history.
 ##'
 ##' @title dpr_checksum_from_version
@@ -256,40 +171,4 @@ dpr_checksum_from_version <- function(version, path = "."){
   for(ck in names(recall))
     checksums[[ck]] <- digest::digest(recall[[ck]], algo="md5")
   return(checksums)
-}
-
-##' Return the history of all the former and current files in the `data` directory.
-##'
-##' @title dpr_data_history
-##' @param include_checksums a boolean value indicating if checksums should be included in the returned data.frame object; computing checksums is less performant
-##' @param path path to data package
-##' @return a data.frame object
-##' @author jmtaylor
-##' @export
-dpr_data_history <- function(include_checksums=FALSE, path="."){
-  if( !dir.exists(file.path(path, "data")) )
-    stop("`data` directory not found. Is the path pointing to a data package?")
-  if( !"git2r" %in% row.names(utils::installed.packages()) )
-    stop("Please install `git2r` to use `dpr_data_history`.")
-  rda <- list.files(file.path(path, "data"), "\\.[Rr][Dd][Aa]")
-  if( length(rda) == 0 )
-    stop("No rda files found in `data` directory")
-  odb <- git2r::odb_blobs(path)
-  odb <- odb[odb$name %in% rda, c("sha", "path", "name", "author", "when")]
-  names(odb)[names(odb) == "sha"] <- "blob_file_hash"
-  row.names(odb) <- 1:nrow(odb)
-  if(include_checksums){
-    cksum <- list()
-    for(hash in odb$blob_file_hash){
-      record <- dpr_checksum_from_version(hash, path)
-      cksum[[hash]] <- data.frame(
-        blob_file_hash = hash,
-        name = basename(names(record)),
-        object_md5 = unlist(record)
-      )
-    }
-    cksum <- do.call(rbind, cksum)
-    odb <- merge(odb, cksum) 
-  }
-  return(odb)
 }
