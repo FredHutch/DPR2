@@ -156,11 +156,6 @@ dpr_save <- function(objects){
   }
   for(obj in objects){
     x <- get(obj, envir=parent.frame())
-    save(
-      x,
-      file = file.path(
-        dpr_yaml_get()$data_directory, paste0(obj, ".rda")
-      )
-    )
+    save(x, file = file.path("data", paste0(obj, ".rda")))
   }
 }

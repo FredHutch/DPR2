@@ -76,7 +76,7 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
     c(
       "dat <- as.list(LETTERS)",
       "ourLetters <- c('d', 'p', 'r')",
-      "save(dat, file=file.path(dpr_yaml_get()$data_directory, 'letters.rda'))",
+      "save(dat, file='data/letters.rda')",
       "dpr_save('ourLetters')"
     ),
     file.path(path, "processing/A1.R")
