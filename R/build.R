@@ -6,8 +6,9 @@
 ##' @return nothing
 ##' @author jmtaylor
 dpr_purge_data_directory <- function(path=".", yml){
-  for(d in list.files(file.path(path, yml$data_directory))){
-    unlink(file.path(path, yml$data_directory, d), recursive=TRUE)
+  datadir <- file.path(path, "data")
+  for(d in list.files(datadir)){
+    unlink(file.path(datadir, d), recursive=TRUE)
   }
 }
 
@@ -78,7 +79,7 @@ dpr_render <- function(path=".", ...){
         for( obj in yml$objects ){
           if( exists(obj, envir=env) ){
             assign(obj, get(obj, envir=env))
-            save(obj, file=file.path(path, yml$data_directory, paste0(substitute(obj), ".rda")))
+            save(obj, file=file.path(path, "data", paste0(substitute(obj), ".rda")))
           } else {
             warning("Objects listed in yaml not found in processing scripts to save to data directory.")
           }
