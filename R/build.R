@@ -48,7 +48,7 @@ dpr_update_data_digest <- function(path=".", yml){
 ##' @export
 dpr_render <- function(path=".", ...){
   yml <- DPR2::dpr_yaml_get(path, ...)
-  
+
   if(yml$purge_data_directory)
     dpr_purge_data_directory(path, yml)
 
@@ -73,7 +73,7 @@ dpr_render <- function(path=".", ...){
         envir = env,
         quiet = TRUE
       )
-      
+
       if( !is.null(yml$objects) ){
         for( obj in yml$objects ){
           if( exists(obj, envir=env) ){
@@ -84,7 +84,7 @@ dpr_render <- function(path=".", ...){
           }
         }
       }
-      
+
     },
     error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message))
     )
@@ -105,6 +105,7 @@ dpr_render <- function(path=".", ...){
 ##' @author jmtaylor
 ##' @export
 dpr_build <- function(path=".", ...){
+  quiet <- identical(Sys.getenv("TESTTHAT"), "true")
   tryCatch(
     expr = {
       yml <- DPR2::dpr_yaml_get(path, ...)
@@ -118,20 +119,22 @@ dpr_build <- function(path=".", ...){
       if(yml$build_tarball)
         pkgp <- pkgbuild::build(
           path = path,
-          dest_path = file.path(path, yml$build_output)
+          dest_path = file.path(path, yml$build_output),
+          quiet = quiet
         )
 
       if(yml$install_on_build)
         if(yml$build_tarball){
-          utils::install.packages(pkgp, repo=NULL)
+          utils::install.packages(pkgp, repo=NULL, quiet = quiet)
         } else {
           pkgp <- pkgbuild::build(
             path = path,
-            dest_path = tempdir()
+            dest_path = tempdir(),
+            quiet = quiet
           )
-          utils::install.packages(pkgp, repo=NULL)
+          utils::install.packages(pkgp, repo=NULL, quiet = quiet)
         }
-        
+
     },
     error = function(e) stop(sprintf("dpr_build() failed: %s \n", e$message))
 
