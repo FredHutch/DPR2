@@ -8,7 +8,6 @@
 dpr_yaml_defaults <- function(){
   list(
     "build_output"                 = "../",
-    "data_directory"               = "data",
     "source_data_directory"        = "inst/extdata",
     "install_on_build"             = FALSE,
     "build_tarball"                = FALSE,
