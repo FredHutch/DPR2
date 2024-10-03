@@ -36,6 +36,8 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
   writeLines(
     c(
       "library(yaml)",
+      "library(lubridate)",
+      "date('2024-01-01')", # test function masking of `date()`
       "mydataframe <- data.frame(x=1:10, y=LETTERS[1:10])",
       "yml <- as.yaml(mydataframe)",
       "objYml1 <- 'test objects values 1'",

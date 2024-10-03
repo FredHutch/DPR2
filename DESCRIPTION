@@ -22,4 +22,5 @@ Imports:
     renv
 License: MIT + file LICENSE
 Suggests:
-    testthat
+    testthat,
+    lubridate
