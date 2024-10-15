@@ -105,7 +105,6 @@ dpr_render <- function(path=".", ...){
 ##' @author jmtaylor
 ##' @export
 dpr_build <- function(path=".", ...){
-  quiet <- identical(Sys.getenv("TESTTHAT"), "true")
   tryCatch(
     expr = {
       yml <- DPR2::dpr_yaml_get(path, ...)
@@ -119,20 +118,18 @@ dpr_build <- function(path=".", ...){
       if(yml$build_tarball)
         pkgp <- pkgbuild::build(
           path = path,
-          dest_path = file.path(path, yml$build_output),
-          quiet = quiet
+          dest_path = file.path(path, yml$build_output)
         )
 
       if(yml$install_on_build)
         if(yml$build_tarball){
-          utils::install.packages(pkgp, repo=NULL, quiet = quiet)
+          utils::install.packages(pkgp, repo=NULL)
         } else {
           pkgp <- pkgbuild::build(
             path = path,
-            dest_path = tempdir(),
-            quiet = quiet
+            dest_path = tempdir()
           )
-          utils::install.packages(pkgp, repo=NULL, quiet = quiet)
+          utils::install.packages(pkgp, repo=NULL)
         }
 
     },
