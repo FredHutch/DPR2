@@ -15,11 +15,13 @@ dpr_compare_data_digest(path = ".", display_digits = 7)
 a data.frame
 }
 \description{
-A data digest comparison table, comparing the current data digest with the current data hashes.
+A data digest comparison table, comparing the current data digest
+hashes with the current file hashes in the data directory.
 }
 \details{
-Compare the current hashes for the data listed in the data directory with the hashes listed in
-the data digest. The data digest is only updated when the package is built, not when it is
+Compare the current hashes for the data listed in the data
+directory with the hashes listed in the data digest. The data
+digest is only updated when the package is built, not when it is
 simply rendered using \code{dpr_render()}.
 }
 \author{

@@ -13,7 +13,8 @@ dpr_data_digest(path = ".")
 a data.frame showing the hashes found in the data digest
 }
 \description{
-Return the current hashes recorded to the data digest directory during the last build.
+Return the current hashes recorded to the data digest directory generated during the last
+build.
 }
 \author{
 jmtaylor

@@ -9,7 +9,9 @@ dpr_data_history(path = ".", include_checksums = FALSE)
 \arguments{
 \item{path}{path to data package}
 
-\item{include_checksums}{a boolean value indicating if checksums should be included in the returned data.frame object; computing checksums is less performant}
+\item{include_checksums}{a boolean value indicating if checksums
+should be included in the returned data.frame object; computing
+checksums is less performant}
 }
 \value{
 a data.frame object
