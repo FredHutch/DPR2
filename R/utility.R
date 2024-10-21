@@ -154,8 +154,6 @@ dpr_save <- function(objects){
   if(!is.character(objects)){
     stop("Only character vectors allowed.")
   }
-  for(obj in objects){
-    x <- get(obj, envir=parent.frame())
-    save(x, file = file.path("data", paste0(obj, ".rda")))
-  }
+  for(obj in objects)
+      save(list=obj, file = file.path("data", paste0(obj, ".rda")), envir=parent.frame(1))
 }
