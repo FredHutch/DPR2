@@ -15,8 +15,8 @@ dpr_hashes_to_envs(hashes, path = ".")
 list of envs containing objects loaded from git history
 }
 \description{
-Private. Pulls blobs from the git objects database and returns
-them as an environments.
+Private. Pulls rda blobs from the git objects database and returns
+them loaded in environments with empty env as parent.
 }
 \author{
 jmtaylor

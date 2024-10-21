@@ -93,7 +93,6 @@ testthat::test_that("checking package data history with git", {
   Sys.sleep(1)
   git2r::commit(repo = path, message="commit 2")
   
-  script <- file.path(path, "processing/01.R")
   writeLines(gsub("z=", "y=", readLines(script)), script)
   dpr_build(path)
 
@@ -109,10 +108,17 @@ testthat::test_that("checking package data history with git", {
   Sys.sleep(1)
   git2r::commit(repo = path, message="commit 4")
   
-  dataHistory <- dpr_data_history(path=path, include_checksums=TRUE)
+  writeLines(gsub("save\\(yml", "save(yml, objYml1", readLines(script)), script)
+  dpr_build(path)
+
+  git2r::add(repo = path, path = ".")
+  Sys.sleep(1)
+  git2r::commit(repo = path, message="commit 5")
+
+  dataHistory <- dpr_data_history(path=path, include_checksums=TRUE)  
 
   expect_equal( ncol(dataHistory), 5 )
-  expect_equal( nrow(dataHistory), 9 )
+  expect_equal( nrow(dataHistory), 10 )
   expect_true( all(row.names(dataHistory) == 1:nrow(dataHistory)) )
 
   expect_equal(
@@ -138,12 +144,12 @@ testthat::test_that("checking package data history with git", {
     )
   )
   
-  expect_true(
-    length(dpr_recall_data_versions(fullHash, path)) ==  2
+  expect_equal(
+    length(dpr_recall_data_versions(fullHash, path)), 2
   )
   
-  expect_true(
-    length(dpr_recall_data_versions(subHash, path)) ==  2
+  expect_equal(
+    length(dpr_recall_data_versions(subHash, path)), 2
   )
 
   expect_error(
@@ -154,6 +160,18 @@ testthat::test_that("checking package data history with git", {
   expect_error(
     dpr_recall_data_versions(notHash, path),
     "Data version not found. Either "
+  )
+
+  ## check that behavior multiple objects are saved
+  expect_true(
+    sapply(dpr_recall_data_versions("346e", path), length) == 2
+  )
+
+  expect_true(
+    grepl(
+      "No checksum",
+      dataHistory[grepl("346e", dataHistory$blob_file_hash), "object_md5"]
+    )
   )
 
   unlink(path, recursive = TRUE)

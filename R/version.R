@@ -171,8 +171,8 @@ dpr_compare_data_digest <- function(path=".", display_digits = 7){
   return(comp)
 }
 
-##' Private. Pulls blobs from the git objects database and returns
-##' them as an environments.
+##' Private. Pulls rda blobs from the git objects database and returns
+##' them loaded in environments with empty env as parent.
 ##'
 ##' @title dpr_git_hashes_to_envs
 ##' @param hashes a character vector of full sha1 hashes
@@ -292,8 +292,8 @@ dpr_recall_data_versions <- function(hashes, path = "."){
   ## there can be multiple objects in each rda
 
   objs <- lapply(
-      dpr_hashes_to_envs(rda$sha, path),
-      function(env) mget(ls(env), envir = env)
+    dpr_hashes_to_envs(rda$sha, path),
+    function(env) mget(ls(env), envir = env)
   )
 
   names(objs) <- rda$name
