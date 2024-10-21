@@ -202,14 +202,15 @@ dpr_hashes_to_envs <- function(hashes, path = ".") {
 ##' @return singleton character vector 
 ##' @author jmtaylor
 dpr_envs_to_checksums <- function(envs){
-  unlist(
-    lapply(envs, function(env){
+  vapply(
+    envs,
+    function(env){
       nms <- ls(envir=env)
       if(length(nms) > 1)
         return("No checksum computed for rda files containing more than 1 object.")
-      return(digest::digest(get(nms, envir=env), algo="md5"))
-    })
-  )
+      else 
+        return(digest::digest(get(nms, envir=env), algo="md5"))
+    }, "")
 }
 
 ##' Private. From a vector of hashes load the data and generate the
