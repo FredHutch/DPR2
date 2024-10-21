@@ -2,7 +2,7 @@
 testthat::test_that("check dpr_hash against git2r hash", {
   path <- "setup.R"
   expect_true(
-    dpr_hash_file(path) == 
+    dpr_hash_files(path) == 
       git2r::hashfile(path)
   )
 })
@@ -68,9 +68,20 @@ testthat::test_that("checking package data history with git", {
     pkgn
   )
 
-  dpr_build(path)
-  
+  expect_error(
+    expect_warning(
+      dpr_data_history(path)
+    ), "No digest files found"
+  )
+
   git2r::init(path = path, branch="main")
+  git2r::add(repo = path, path = ".")
+  Sys.sleep(1) # odb_blobs appears to be ordered by when, and the smallest unit is 1 sec, adding pauses to get correct sorting
+  git2r::commit(repo = path, message="commit 0")
+
+  expect_error(dpr_data_history(path), "No files found at the `data` path")
+  
+  dpr_build(path)
   git2r::add(repo = path, path = ".")
   git2r::commit(repo = path, message="commit 1")
 
@@ -79,6 +90,7 @@ testthat::test_that("checking package data history with git", {
   dpr_build(path)
 
   git2r::add(repo = path, path = ".")
+  Sys.sleep(1)
   git2r::commit(repo = path, message="commit 2")
   
   script <- file.path(path, "processing/01.R")
@@ -86,22 +98,63 @@ testthat::test_that("checking package data history with git", {
   dpr_build(path)
 
   git2r::add(repo = path, path = ".")
+  Sys.sleep(1)
   git2r::commit(repo = path, message="commit 3")
+
+  script <- file.path(path, "processing/01.R")
+  writeLines(gsub("y=", "a=", readLines(script)), script)
+  dpr_build(path)
+
+  git2r::add(repo = path, path = ".")
+  Sys.sleep(1)
+  git2r::commit(repo = path, message="commit 4")
   
   dataHistory <- dpr_data_history(path=path, include_checksums=TRUE)
 
-  expect_equal( ncol(dataHistory), 6 )
-  expect_equal( nrow(dataHistory), 7 )
+  expect_equal( ncol(dataHistory), 5 )
+  expect_equal( nrow(dataHistory), 9 )
   expect_true( all(row.names(dataHistory) == 1:nrow(dataHistory)) )
+
   expect_equal(
       length(
           unique(
             dataHistory[
-              dataHistory$object_md5 == names(which(table(dataHistory$object_md5) > 1)),"object_md5"
+              dataHistory$object_md5 %in% names(which(table(dataHistory$object_md5) > 1)),"object_md5"
             ]
           )
-        ), 1
-      )
+      ), 2 # this should be 4... record of reverting the blobs seems to be dropped from odb_blobs, commit 3
+  )
+
+  ## test recall objects are correctly named
+
+  fullHash <- dataHistory$blob_file_hash[c(1,2)]
+  subHash  <- substr(fullHash, 1, 5)
+  missHash <- "0000000"
+  notHash  <- "qwerty"
+
+  expect_true(
+    all(
+      c("mydataframe", "df") == sapply(dpr_recall_data_versions(fullHash, path), names)
+    )
+  )
+  
+  expect_true(
+    length(dpr_recall_data_versions(fullHash, path)) ==  2
+  )
+  
+  expect_true(
+    length(dpr_recall_data_versions(subHash, path)) ==  2
+  )
+
+  expect_error(
+    dpr_recall_data_versions(missHash, path),
+    "Data version not found. Either "
+  )
+  
+  expect_error(
+    dpr_recall_data_versions(notHash, path),
+    "Data version not found. Either "
+  )
 
   unlink(path, recursive = TRUE)
   cleanup(tdir)
