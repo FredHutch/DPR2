@@ -66,20 +66,6 @@ dpr_description_load <- function(path){
   desc::desc(file = path)
 }
 
-##' Private. Replace and add key:value pairs in old list with new.
-##'
-##' @title dpr_set_keys
-##' @param old key:values list object
-##' @param new key:values list object to add/modify
-##' @return list
-##' @author jmtaylor
-dpr_set_keys <- function(old, new){
-  ## replace any new keys with new
-  for(nm in names(new))
-    old[[nm]] <- new[[nm]]
-  return(old)
-}
-
 ##' Get the current datapackager.yml key:value pairs and add to or
 ##' modify those with with new values. All additions and modifications
 ##' happen only in memory, not on disc.
@@ -96,8 +82,8 @@ dpr_set_keys <- function(old, new){
 dpr_yaml_get <- function(path=".", ...){
   dpr_is(path)
   new <- list(...)
-  yml <- dpr_set_keys(
-    dpr_yaml_load(path), 
+  yml <- utils::modifyList(
+    dpr_yaml_load(path),
     new
   )
   dpr_yaml_validate(yml)
@@ -117,7 +103,7 @@ dpr_yaml_get <- function(path=".", ...){
 ##' @export
 dpr_yaml_set <- function(path=".", ...){
   yml <- dpr_yaml_get(path)
-  new <- dpr_set_keys(yml, list(...))
+  new <- utils::modifyList(yml, list(...))
   yaml::write_yaml(new, file.path(path, "datapackager.yml"))
 }
 

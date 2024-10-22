@@ -67,7 +67,7 @@ dpr_description_init_set <- function(desc, pkgp){
 ##' @author jmtaylor
 dpr_yaml_init_set <- function(yml, pkgp){
   def <- dpr_yaml_defaults()
-  new <- dpr_set_keys(def, yml)
+  new <- utils::modifyList(def, yml)
   yaml::write_yaml(new, file.path(pkgp, "datapackager.yml"))
 }
 
