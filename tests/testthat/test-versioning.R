@@ -47,7 +47,7 @@ testthat::test_that("checking package data hashes report", {
 
   expect_true(
     all(
-        names(comp) == c("name", "data_hash", "data_digest_hash", "same")
+      names(comp) == c("name", "data_hash", "data_digest_hash", "same")
     )
   )
   
@@ -163,14 +163,15 @@ testthat::test_that("checking package data history with git", {
   )
 
   ## check that behavior multiple objects are saved
+  lastHash <- tail(dataHistory,1)$blob_file_hash
   expect_true(
-    sapply(dpr_recall_data_versions("346e", path), length) == 2
+    sapply(dpr_recall_data_versions(lastHash, path), length) == 2
   )
 
   expect_true(
     grepl(
       "No checksum",
-      dataHistory[grepl("346e", dataHistory$blob_file_hash), "object_md5"]
+      tail(dataHistory, 1)$object_md5
     )
   )
 
