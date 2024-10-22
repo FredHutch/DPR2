@@ -16,7 +16,7 @@ cleanup <- function(temp_dir){
 initPkg <- function(temp_dir, package_name, more_args=NULL){
   args <- list(
     path=temp_dir,
-    yaml=dpr_yaml_init(process_on_build=c("01.R", "02.R")),
+    yaml=dpr_yaml_init(process_on_build=c("01.R", "02.R", "01.Rmd")),
     desc=dpr_description_init(Package=package_name)
   )
 
@@ -50,6 +50,23 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
 
   writeLines(
     c(
+      "---",
+      "title: test report",
+      "---",
+      "test text",
+      "```{r}",
+      "library(yaml)",
+      "df  <- data.frame(x=1:10, y=LETTERS[1:10])",
+      "yml <- as.yaml(df)",
+      "save(df,  file='data/mydataframe_rmd.rda')",
+      "save(yml, file='data/myyaml_rmd.rda')",
+      "```"
+    ),
+    file.path(path, "processing/01.Rmd")
+  )
+  
+  writeLines(
+    c(
       "mymatrix <- matrix(1:16, nrow=4)",
       "dpr_save('mymatrix')"
     ),
@@ -76,13 +93,5 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
     ),
     file.path(path, "processing/S1.R")
   )
-  
-  writeLines(
-    c(
-      "df <- data.frame(letters, LETTERS)",
-      "dpr_save(c('df', 'letters'))"
-    ),
-    file.path(path, "processing/SV1.R")
-  )
-  
+
 }

@@ -1,14 +1,24 @@
-##' Private. Load `datapackager.yml` into memory. If missing, throw exception.
+##' Private. Checks if path is a DPR2 datapackage or not.
+##'
+##' @title dpr_is  
+##' @param path path to datapackage
+##' @return boolean
+##' @author jmtaylor
+dpr_is <- function(path){
+  if( !file.exists(file.path(path, "datapackager.yml")) )
+    stop("`datapackager.yml` does not exist. Either the working directory of the evaluation environment is not at package root, or 'datapackager.yml' is not found in data package.")
+  if( !file.exists(file.path(path, "DESCRIPTION")) )
+    stop("`DESCRIPTION` does not exist. The working directory of the evaluation environment is not at package root.")
+}
+
+##' Private. Load `datapackager.yml` into memory.
 ##'
 ##' @title dpr_yaml_load
-##' @param pkgp the package path
+##' @param path the package path
 ##' @return a yaml object
 ##' @author jmtaylor
-dpr_yaml_load <- function(pkgp){
-  ## looking for exising yaml
-  if( !file.exists(file.path(pkgp, "datapackager.yml")) )
-    stop("`datapackager.yml` does not exist. Either working directory is not at a package root, or 'datapackager.yml' is not found in data package.")
-  return( yaml::yaml.load_file(file.path(pkgp, "datapackager.yml")) )
+dpr_yaml_load <- function(path="."){
+  return( yaml::yaml.load_file(file.path(path, "datapackager.yml")) )    
 }
 
 ##' Private. Check yaml values that must be specific.
@@ -17,7 +27,6 @@ dpr_yaml_load <- function(pkgp){
 ##' @param yml a parsed yaml object
 ##' @author jmtaylor
 dpr_yaml_validate <- function(yml){
-
   ## check that all controlled key values are correct
   key_value = list(
     "render_env_mode" = c("isolate", "share")
@@ -49,11 +58,12 @@ dpr_yaml_validate <- function(yml){
 ##' Private. Load the package DESCRIPTION file into memory.
 ##'
 ##' @title dpr_description_load
-##' @param pkgp the package path
+##' @param path the package path
 ##' @return a desc object
 ##' @author jmtaylor
-dpr_description_load <- function(pkgp){
-  desc::desc(file = pkgp)
+dpr_description_load <- function(path){
+  dpr_is(path)
+  desc::desc(file = path)
 }
 
 ##' Private. Replace and add key:value pairs in old list with new.
@@ -84,6 +94,7 @@ dpr_set_keys <- function(old, new){
 ##' @author jmtaylor
 ##' @export
 dpr_yaml_get <- function(path=".", ...){
+  dpr_is(path)
   new <- list(...)
   yml <- dpr_set_keys(
     dpr_yaml_load(path), 
@@ -122,6 +133,7 @@ dpr_yaml_set <- function(path=".", ...){
 ##' @author jmtaylor
 ##' @export
 dpr_description_set <- function(path=".", ...){
+  dpr_is(path)
   new <- list(...)
   def <- dpr_description_defaults()
   invisible(
@@ -129,23 +141,6 @@ dpr_description_set <- function(path=".", ...){
   )
   invisible(
       Map(desc::desc_set_list, key = names(new), list_value = new, file = path)
-  )
-}
-
-##' Retrieve data.frame of data object names and versions rendered to the data directory.
-##'
-##' @title dpr_data_versions
-##' @param path The full path to the data package. The default is the
-##'   working directory.
-##' @return data.frame
-##' @author jmtaylor
-##' @export
-dpr_data_versions <- function(path="."){
-  dat <- list.files(file.path(path, dpr_yaml_get(path)$data_digest_directory), full.names=TRUE)
-  data.frame(
-    object=basename(dat),
-    digest=vapply(dat, function(d) readLines(d), ""),
-    row.names=seq(1,length(dat))
   )
 }
 
@@ -159,8 +154,6 @@ dpr_save <- function(objects){
   if(!is.character(objects)){
     stop("Only character vectors allowed.")
   }
-  for(obj in objects){
-    x <- get(obj, envir=parent.frame())
-    save(x, file = file.path("data", paste0(obj, ".rda")))
-  }
+  for(obj in objects)
+      save(list=obj, file = file.path("data", paste0(obj, ".rda")), envir=parent.frame(1))
 }

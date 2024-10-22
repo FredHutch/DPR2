@@ -4,16 +4,16 @@
 \alias{dpr_yaml_load}
 \title{dpr_yaml_load}
 \usage{
-dpr_yaml_load(pkgp)
+dpr_yaml_load(path = ".")
 }
 \arguments{
-\item{pkgp}{the package path}
+\item{path}{the package path}
 }
 \value{
 a yaml object
 }
 \description{
-Private. Load \code{datapackager.yml} into memory. If missing, throw exception.
+Private. Load \code{datapackager.yml} into memory.
 }
 \author{
 jmtaylor

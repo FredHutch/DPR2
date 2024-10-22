@@ -4,10 +4,10 @@
 \alias{dpr_description_load}
 \title{dpr_description_load}
 \usage{
-dpr_description_load(pkgp)
+dpr_description_load(path)
 }
 \arguments{
-\item{pkgp}{the package path}
+\item{path}{the package path}
 }
 \value{
 a desc object

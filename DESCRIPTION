@@ -14,13 +14,15 @@ RoxygenNote: 7.3.2
 Depends:
     R (>= 3.5)
 Imports:
-    pkgbuild,
     desc,
-    rmarkdown,
     digest,
-    yaml,
-    renv
+    pkgbuild,
+    renv,
+    rmarkdown,
+    utils,
+    yaml
 License: MIT + file LICENSE
 Suggests:
+    git2r (>= 0.33.0),
     testthat,
     lubridate
