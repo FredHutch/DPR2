@@ -14,7 +14,7 @@ testthat::test_that("checking package data hashes report", {
   pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
 
-  initPkg(
+  createPkg(
     tdir,
     pkgn
   )
@@ -63,7 +63,7 @@ testthat::test_that("checking package data history with git", {
   pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
 
-  initPkg(
+  createPkg(
     tdir,
     pkgn
   )

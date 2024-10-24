@@ -4,7 +4,7 @@ pkgn <- "testPkg"
 testthat::test_that("checking package build", {
 
   path <- file.path(tdir, pkgn)
-  initPkg(tdir, pkgn, list(renv_init = FALSE))
+  createPkg(tdir, pkgn, list(renv_init = FALSE))
 
   dpr_build(path, process_on_build = "01.R")
   vign <- list.files(file.path(path, "vignettes"))
@@ -105,7 +105,7 @@ testthat::test_that("checking package build", {
 
   ## check that when nothing is set to process_on_build, error is as expected
   path <- file.path(tdir, "NoProcess")
-  dpr_init(tdir, desc=dpr_description_init(Package=basename(path)))
+  dpr_create(tdir, desc=dpr_description_init(Package=basename(path)))
   expect_error(
     dpr_build(path),
     "Are any processes set to build?"
@@ -114,7 +114,7 @@ testthat::test_that("checking package build", {
   unlink(path, recursive = TRUE)
 
   path <- file.path(tdir, "WrongYaml")
-  dpr_init(tdir, desc=dpr_description_init(Package=basename(path)))
+  dpr_create(tdir, desc=dpr_description_init(Package=basename(path)))
   ypth <- file.path(path, "datapackager.yml")
   yfil <- readLines(ypth)
   writeLines(gsub("render_on_build", "rnder_n_bild", yfil), ypth)
