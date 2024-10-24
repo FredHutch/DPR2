@@ -4,26 +4,11 @@
 \alias{dpr_init}
 \title{dpr_init}
 \usage{
-dpr_init(
-  path = ".",
-  yaml = dpr_yaml_init(),
-  desc = dpr_description_init(),
-  renv_init = TRUE
-)
-}
-\arguments{
-\item{path}{A path to the data package.}
-
-\item{yaml}{A returned list for dpr_yaml_init()}
-
-\item{desc}{A returned list for dpr_description_init()}
-
-\item{renv_init}{Logical; whether to initiate renv (default TRUE)}
+dpr_init(path = ".")
 }
 \description{
-Initialize a data package. Package is initialized with
-datapackager.yml and DESCRIPTION files as described by
-dpr_yaml_init() and dpr_description_init() function calls.
+A wrapper for dpr_create that uses the parent directory as the
+location to create the data package, setting the package name as th
 }
 \author{
 jmtaylor

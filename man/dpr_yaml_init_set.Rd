@@ -12,7 +12,7 @@ dpr_yaml_init_set(yml, pkgp)
 \item{pkgp}{the package path}
 }
 \description{
-Private. A function that generates sets DESCRIPTION file
+Private. A function that sets datapackager.yml file
 key:values pairs in a new data package.
 }
 \author{
