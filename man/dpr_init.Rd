@@ -6,9 +6,14 @@
 \usage{
 dpr_init(path = ".")
 }
+\arguments{
+\item{path}{a path value to init at a specific path, when using
+the default the current workig directory is used.}
+}
 \description{
 A wrapper for dpr_create that uses the parent directory as the
-location to create the data package, setting the package name as th
+location to create the data package, setting the package name as
+the current directory.
 }
 \author{
 jmtaylor
