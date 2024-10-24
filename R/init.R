@@ -1,3 +1,14 @@
+##' Private. Return a full path of file from installed templates directory.
+##'
+##' @title dpr_get_template
+##' @return a character vector
+##' @author jmtaylor
+##' @param regex a regular expression
+dpr_get_template <- function(regex){
+  tmpl <- list.files(file.path(system.file("templates", package="DPR2")), full.names = T)
+  return(tmpl[grepl(regex, tmpl)])
+}
+
 ##' Default key:value pairs for the data package datapackager.yml.
 ##'
 ##' Definitions of yaml key:value pairs
@@ -6,20 +17,7 @@
 ##' @author jmtaylor
 ##' @export
 dpr_yaml_defaults <- function(){
-  list(
-    "build_output"                 = "../",
-    "source_data_directory"        = "inst/extdata",
-    "install_on_build"             = FALSE,
-    "build_tarball"                = FALSE,
-    "process_directory"            = "processing",
-    "process_on_build"             = "",
-    "render_on_build"              = TRUE,
-    "write_to_vignettes"           = TRUE,
-    "auto_increment_data_versions" = TRUE,
-    "purge_data_directory"         = TRUE,
-    "data_digest_directory"        = "inst/data_digest",
-    "render_env_mode"              = "isolate"
-  )
+  return(yaml::read_yaml(dpr_get_template("datapackager.yml$")))
 }
 
 ##' Default key:value pairs for the data package DESCRIPTION file.
@@ -29,15 +27,11 @@ dpr_yaml_defaults <- function(){
 ##' @author jmtaylor
 ##' @export
 dpr_description_defaults <- function(){
-  list(
-    "Package"     = "MyDataPackage",
-    "Title"       = "MyDataPackageTitle",
-    "Version"     = "1.0",
-    "Authors"     = "FirstName LastName [aut, cre]",
-    "Description" = "What the package does (one paragraph).",
-    "License"     = "See `https://www.gnu.org/licenses/license-list.html` or `https://choosealicense.com/` for more information",
-    "Encoding"    = "UTF-8",
-    "Depends"     = "R (>= 3.5)"
+  defd <- dpr_get_template("DESCRIPTION")
+  return(
+    as.list(
+      desc::desc_get(desc::desc_fields(defd), defd)
+    )
   )
 }
 
@@ -49,16 +43,12 @@ dpr_description_defaults <- function(){
 ##' @param pkgp the package path
 ##' @author jmtaylor
 dpr_description_init_set <- function(desc, pkgp){
-  defa <- dpr_description_defaults()
-  invisible(
-    Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp)
-  )
   invisible(
     Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp)
   )
 }
 
-##' Private. A function that generates sets DESCRIPTION file
+##' Private. A function that sets datapackager.yml file
 ##' key:values pairs in a new data package.
 ##'
 ##' @title dpr_yaml_init_set
