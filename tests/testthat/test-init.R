@@ -101,6 +101,8 @@ test_that("init populates exisiting directory", {
     )
   }, finally = function() setwd(wd))
 
+  unlink(path, recursive = TRUE)
+
 })
 
 cleanup(tdir)

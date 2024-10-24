@@ -169,6 +169,7 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
 ##' @author jmtaylor
 ##' @param path a path value to init at a specific path, when using
 ##'   the default the current workig directory is used.
+##' @export
 dpr_init <- function(path="."){
   if(path == ".")
     path <- getwd()
