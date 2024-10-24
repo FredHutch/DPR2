@@ -162,10 +162,14 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
 }
 
 ##' A wrapper for dpr_create that uses the parent directory as the
-##' location to create the data package, setting the package name as th
+##' location to create the data package, setting the package name as
+##' the current directory.
 ##'
 ##' @title dpr_init
 ##' @author jmtaylor
+##' @param path a path value to init at a specific path, when using
+##'   the default the current workig directory is used.
+##' @export
 dpr_init <- function(path="."){
   if(path == ".")
     path <- getwd()

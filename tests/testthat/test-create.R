@@ -90,6 +90,8 @@ test_that("check stop on existing init directory", {
   expect_error(initPkg(tdir, pkgn), "path already exists")
   unlink(path, recursive = TRUE)
 
+  unlink(path, recursive = TRUE)
+
 })
 
 cleanup(tdir)
