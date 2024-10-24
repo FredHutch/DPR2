@@ -105,58 +105,70 @@ dpr_description_init <- function(...){
   return(desc)
 }
 
-##' Initialize a data package. Package is initialized with
+##' Create an empty data package. Package is created with
 ##' datapackager.yml and DESCRIPTION files as described by
 ##' dpr_yaml_init() and dpr_description_init() function calls.
 ##'
-##' @title dpr_init
+##' @title dpr_create
 ##' @param path A path to the data package.
 ##' @param yaml A returned list for dpr_yaml_init()
 ##' @param desc A returned list for dpr_description_init()
 ##' @param renv_init Logical; whether to initiate renv (default TRUE)
 ##' @author jmtaylor
 ##' @export
-dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
+dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
   pkgp <- file.path(path, desc$Package)
-  
-  if(dir.exists(pkgp))
-    stop(sprintf("Package '%s' path already exists.", pkgp))
-  if(!dir.exists(dirname(pkgp)))
-    stop("Package directory does not exist.")
+
+  if(!dir.exists(path))
+    stop("`path` argument does not point to an existing directory.")
 
   tryCatch(
   {
 
     ## create package skeleton
-    dirnm <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
+    dirs <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
+    suppressWarnings(dir.create(pkgp))
 
-    tpath <- system.file("templates", package="DPR2")
+    for( dir in dirs )
+      if(!suppressWarnings(dir.create(file.path(pkgp, dir))))
+        warning(sprintf("`%s` was found, skipping creating that directory.", dir))
 
-    dir.create(pkgp)
-    for( dir in dirnm )
-      dir.create(file.path(pkgp, dir))
-    for( fil in c("NAMESPACE", "DESCRIPTION"))
-      file.copy(file.path(tpath, fil), file.path(pkgp, fil))
-
-    dpr_description_init_set(desc, pkgp)
-    dpr_yaml_init_set(yaml, pkgp)
+    for( fil in c("NAMESPACE", "DESCRIPTION", "datapackager.yml") )
+      if(!file.copy(file.path(system.file("templates", package="DPR2"), fil), file.path(pkgp, fil)))
+        warning(sprintf("`%s` was found, skipping creating that file.", fil))
+      else {
+        if( fil == "DESCRIPTION" )
+          dpr_description_init_set(desc, pkgp)
+        if( fil == "datapackager.yml" )
+          dpr_yaml_init_set(yaml, pkgp)
+      }
 
     ## init renv
-    if(renv_init == TRUE)
+    if(renv_init == TRUE & !file.exists(file.path(pkgp, "renv.lock")))
       renv::init(
         pkgp,
         settings = list(snapshot.type = "implicit"),
         load = FALSE,
         restart = FALSE
       )
-    
+
   },
   error = function(e){
     if(dir.exists(pkgp))
       unlink(pkgp, recursive=TRUE)
     stop(e, traceback())
-  },
-  finally = {
   })
 
+}
+
+##' A wrapper for dpr_create that uses the parent directory as the
+##' location to create the data package, setting the package name as th
+##'
+##' @title dpr_init
+##' @author jmtaylor
+dpr_init <- function(path="."){
+  if(path == ".")
+    path <- getwd()
+  pkgn <- basename(path)
+  dpr_create(file.path(path, ".."), desc=dpr_description_init(PackageName=pkgn))
 }
