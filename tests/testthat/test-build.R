@@ -1,8 +1,9 @@
-tdir <- getPkgDir()
-pkgn <- "testPkg"
 
 testthat::test_that("checking package build", {
 
+  tdir <- getPkgDir()
+  pkgn <- "testPkg"
+  
   path <- file.path(tdir, pkgn)
   initPkg(tdir, pkgn, list(renv_init = FALSE))
 
@@ -134,5 +135,3 @@ testthat::test_that("checking package render",{
   ## check that working env contains render generated var names
 
 })
-
-cleanup(tdir)

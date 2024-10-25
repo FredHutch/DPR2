@@ -91,5 +91,3 @@ test_that("check stop on existing init directory", {
   unlink(path, recursive = TRUE)
 
 })
-
-cleanup(tdir)

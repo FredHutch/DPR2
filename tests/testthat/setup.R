@@ -1,16 +1,7 @@
 getPkgDir <- function(){
-  temp_dir <- file.path(tempdir(), "packages")
+  temp_dir <- tempfile()
   dir.create(temp_dir)
   return(temp_dir)
-}
-
-cleanup <- function(temp_dir){
-  if(dir.exists(temp_dir)){
-    unlink(
-      file.path(temp_dir),
-      recursive=T
-    )
-  }
 }
 
 initPkg <- function(temp_dir, package_name, more_args=NULL){

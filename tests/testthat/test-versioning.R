@@ -52,7 +52,6 @@ testthat::test_that("checking package data hashes report", {
   )
   
   unlink(path, recursive = TRUE)
-  cleanup(tdir)
   
 })
 
@@ -176,6 +175,5 @@ testthat::test_that("checking package data history with git", {
   )
 
   unlink(path, recursive = TRUE)
-  cleanup(tdir)
   
 })
