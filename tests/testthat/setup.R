@@ -11,7 +11,7 @@ cleanup <- function(temp_dir){
       recursive=T
     )
     # Did cleanup work?
-    if(! dir.exists(temp_dir)) warning('temp_dir not deleted during cleanup()')
+    if(dir.exists(temp_dir)) warning('temp_dir not deleted during cleanup()')
   }
 }
 
