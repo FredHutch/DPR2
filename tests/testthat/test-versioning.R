@@ -2,7 +2,7 @@
 testthat::test_that("check dpr_hash against git2r hash", {
   path <- "setup.R"
   expect_true(
-    dpr_hash_files(path) == 
+    dpr_hash_files(path) ==
       git2r::hashfile(path)
   )
 })
@@ -23,22 +23,22 @@ testthat::test_that("checking package data hashes report", {
 
   script <- file.path(path, "processing/01.R")
   writeLines(gsub("y=", "z=", readLines(script)), script)
-  
+
   dpr_render(path)
-  
+
   expect_true(
     nrow(dpr_data_hashes(path)) == 5
   )
-  
+
   expect_true(
     nrow(dpr_data_digest(path)) == 5
   )
-  
+
   comp <- dpr_compare_data_digest(path)
   expect_true(!comp[comp$name == "mydataframe.rda", "same"])
   expect_true(comp[comp$name == "mydataframe_rmd.rda", "same"])
 
-  expect_warning({    
+  expect_warning({
     dhst <- dpr_data_history(path)
     expect_true(
       identical(dhst, comp)
@@ -50,10 +50,10 @@ testthat::test_that("checking package data hashes report", {
       names(comp) == c("name", "data_hash", "data_digest_hash", "same")
     )
   )
-  
+
   unlink(path, recursive = TRUE)
   cleanup(tdir)
-  
+
 })
 
 ## dpr_data_digest
@@ -80,7 +80,7 @@ testthat::test_that("checking package data history with git", {
   git2r::commit(repo = path, message="commit 0")
 
   expect_error(dpr_data_history(path), "No files found at the `data` path")
-  
+
   dpr_build(path)
   git2r::add(repo = path, path = ".")
   git2r::commit(repo = path, message="commit 1")
@@ -92,7 +92,7 @@ testthat::test_that("checking package data history with git", {
   git2r::add(repo = path, path = ".")
   Sys.sleep(1)
   git2r::commit(repo = path, message="commit 2")
-  
+
   writeLines(gsub("z=", "y=", readLines(script)), script)
   dpr_build(path)
 
@@ -107,7 +107,7 @@ testthat::test_that("checking package data history with git", {
   git2r::add(repo = path, path = ".")
   Sys.sleep(1)
   git2r::commit(repo = path, message="commit 4")
-  
+
   writeLines(gsub("save\\(yml", "save(yml, objYml1", readLines(script)), script)
   dpr_build(path)
 
@@ -115,7 +115,7 @@ testthat::test_that("checking package data history with git", {
   Sys.sleep(1)
   git2r::commit(repo = path, message="commit 5")
 
-  dataHistory <- dpr_data_history(path=path, include_checksums=TRUE)  
+  dataHistory <- dpr_data_history(path=path, include_checksums=TRUE)
 
   expect_equal( ncol(dataHistory), 5 )
   expect_equal( nrow(dataHistory), 10 )
@@ -143,11 +143,11 @@ testthat::test_that("checking package data history with git", {
       c("mydataframe", "df") == sapply(dpr_recall_data_versions(fullHash, path), names)
     )
   )
-  
+
   expect_equal(
     length(dpr_recall_data_versions(fullHash, path)), 2
   )
-  
+
   expect_equal(
     length(dpr_recall_data_versions(subHash, path)), 2
   )
@@ -156,7 +156,7 @@ testthat::test_that("checking package data history with git", {
     dpr_recall_data_versions(missHash, path),
     "Data version not found. Either "
   )
-  
+
   expect_error(
     dpr_recall_data_versions(notHash, path),
     "Data version not found. Either "
@@ -177,5 +177,7 @@ testthat::test_that("checking package data history with git", {
 
   unlink(path, recursive = TRUE)
   cleanup(tdir)
-  
+  # did this last cleanup work?
+  expect_false(dir.exists(tdir))
+
 })

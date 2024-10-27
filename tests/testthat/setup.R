@@ -10,6 +10,8 @@ cleanup <- function(temp_dir){
       file.path(temp_dir),
       recursive=T
     )
+    # Did cleanup work?
+    if(! dir.exists(temp_dir)) warning('temp_dir not deleted during cleanup()')
   }
 }
 
@@ -32,7 +34,7 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
   do.call(dpr_init, args)
 
   path <- file.path(temp_dir, package_name)
-  
+
   writeLines(
     c(
       "library(yaml)",
@@ -64,7 +66,7 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
     ),
     file.path(path, "processing/01.Rmd")
   )
-  
+
   writeLines(
     c(
       "mymatrix <- matrix(1:16, nrow=4)",
