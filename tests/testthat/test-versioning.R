@@ -59,6 +59,23 @@ testthat::test_that("checking package data hashes report", {
 ## dpr_data_digest
 testthat::test_that("checking package data history with git", {
 
+  test_rm <- function(dir){
+    backup <- paste0(dir, '2')
+    if (dir.exists(backup)) unlink(backup, recursive = TRUE)
+    dir.create(backup)
+    file.copy(list.files(dir, full.names = TRUE),
+              backup,
+              recursive = TRUE)
+    unlink(dir, recursive = TRUE)
+    if (dir.exists(dir)) stop('dir did not get deleted')
+    dir.create(dir)
+    file.copy(list.files(backup, full.names = TRUE),
+              dir,
+              recursive = TRUE)
+    unlink(backup, recursive = TRUE)
+    if (dir.exists(backup)) stop('backup dir did not get deleted')
+  }
+
   tdir <- getPkgDir()
   pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
@@ -75,7 +92,9 @@ testthat::test_that("checking package data history with git", {
   )
 
   git2r::init(path = path, branch="main")
+  test_rm(tdir) # does not fail
   git2r::add(repo = path, path = ".")
+  test_rm(tdir) # fails, implicating the above git2r::add call
   Sys.sleep(1) # odb_blobs appears to be ordered by when, and the smallest unit is 1 sec, adding pauses to get correct sorting
   git2r::commit(repo = path, message="commit 0")
 
