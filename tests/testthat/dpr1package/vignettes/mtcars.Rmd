@@ -1,0 +1,17 @@
+---
+title: mtcars.Rmd
+author: jmtaylor
+date: '2024-10-31'
+vignette: >
+  %\VignetteIndexEntry{mtcars.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r}
+data(mtcars, envir=environment())
+mtcars$test <- 'test'
+mtcars_mod <- mtcars
+```
+
+

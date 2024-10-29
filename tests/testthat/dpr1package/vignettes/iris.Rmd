@@ -1,0 +1,19 @@
+---
+title: iris.Rmd
+author: jmtaylor
+date: '2024-10-31'
+vignette: >
+  %\VignetteIndexEntry{iris.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r}
+mtcars_mod <- datapackager_object_read("mtcars_mod")
+if(!unique(mtcars_mod$test) == "test")
+  stop("wrong mtcars")
+
+data(iris, envir=environment())
+```
+
+
