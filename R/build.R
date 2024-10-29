@@ -17,7 +17,7 @@ dpr_purge_data_directory <- function(path=".", yml){
 ##' evaluation.
 ##'
 ##' @title dpr_render
-##' @param path The full path to the data package. The default is the
+##' @param path The relative path to the data package. The default is the
 ##'   working directory.
 ##' @param ... datapakager.yml value overrides. When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs
@@ -83,7 +83,7 @@ dpr_render <- function(path=".", ...){
 ##' is removed from the .GlobalEnv once complete.
 ##'
 ##' @title dpr_build
-##' @param path The full path to the data package. The default is the
+##' @param path The relative path to the data package. The default is the
 ##'   working directory.
 ##' @param ... datapackager.yml value overrides. When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs
