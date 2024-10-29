@@ -26,6 +26,9 @@ dpr_purge_data_directory <- function(path=".", yml){
 ##' @author jmtaylor
 ##' @export
 dpr_render <- function(path=".", ...){
+  if( dpr_is_dpr1(path) )
+    warning("Rendering a data package using DPR2 when the yaml is from DataPackageR. See docs for list of side effects.")
+
   yml <- dpr_yaml_get(path, ...)
   
   if(yml$purge_data_directory)
@@ -35,6 +38,8 @@ dpr_render <- function(path=".", ...){
 
   if(mode == "share")
     env <- new.env(parent = .GlobalEnv)
+
+  save_objects <- c()
 
   for(src in yml$process_on_build){
     if(dir.exists(file.path(path, yml$process_directory, src)))
@@ -52,22 +57,25 @@ dpr_render <- function(path=".", ...){
         envir = env,
         quiet = TRUE
       )
-      
-      if( !is.null(yml$objects) ){
-        for( obj in yml$objects ){
-          if( exists(obj, envir=env) ){
-            assign(obj, get(obj, envir=env))
-            save(obj, file=file.path(path, "data", paste0(substitute(obj), ".rda")))
-          } else {
-            warning("Objects listed in yaml not found in processing scripts to save to data directory.")
-          }
-        }
+
+      for( obj in ls(env)[ls(env) %in% yml$objects] ){
+        assign(obj, get(obj, envir=env))
+        dpr_save(obj, path)
+        save_objects <- c(save_objects, obj)
       }
       
     },
-    error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message))
-    )
+    error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message)))
   }
+
+  missed_objects <- !(yml$objects %in% save_objects)
+  if(any(missed_objects))
+    warning(
+      sprintf(
+        "Objects listed in yaml not found in processing scripts to save to data directory: %s",
+        paste(yml$objects[missed_objects], collapse = ", ")
+      )
+    )
 }
 
 ##' Render and build data package. Uses a special environment,
