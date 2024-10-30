@@ -75,8 +75,8 @@ testthat::test_that("checking package build", {
   )
   
   expect_error(
-      dpr_build(tempdir()),
-      "`datapackager.yml` does not exist"
+    dpr_build(tempdir()),
+    "`path` argument is not a DataPackageR or DPR2 package"
   )
 
   ## check evaluation share/isolate
@@ -98,7 +98,7 @@ testthat::test_that("checking package build", {
   ## check yaml validation
   expect_error(
     dpr_build(path, render_env_mode = "not valid"),
-    "Invalid `render_env_mode` yaml value used. Please one of these:"
+    "Invalid yaml values.+render_env_mode: isolate"
   )
   
   unlink(path, recursive = TRUE)
@@ -120,7 +120,7 @@ testthat::test_that("checking package build", {
   writeLines(gsub("render_on_build", "rnder_n_bild", yfil), ypth)
   expect_error(
     dpr_build(path),
-    "The following required yaml values are not found: render_on_build."
+    "The following required yaml keys are not found.+render_on_build"
   )
 
   unlink(path, recursive = TRUE)
