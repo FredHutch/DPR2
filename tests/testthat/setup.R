@@ -8,7 +8,8 @@ cleanup <- function(temp_dir){
   if(dir.exists(temp_dir)){
     unlink(
       file.path(temp_dir),
-      recursive=T
+      recursive=TRUE,
+      force=TRUE
     )
   }
 }
