@@ -17,9 +17,9 @@ dpr_is <- function(path){
 dpr_yaml_load <- function(path="."){
   if( dpr_is_dpr1(path) )
     return( dpr_dpr1_yaml_load(path) )
-  if( dpr_is(path) )
+  if( dpr_is_dpr2(path) )
     return( yaml::read_yaml(file.path(path, "datapackager.yml")) )
-  stop("`datapackager.yml` is invalid of missing.")
+  stop("`datapackager.yml` is invalid or missing.")
 }
 
 ##' Private. Check that some yaml keys have specific values.
