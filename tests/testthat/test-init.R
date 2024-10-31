@@ -89,16 +89,17 @@ test_that("init populates exisiting directory", {
   dir.create(path)
   wd <- getwd()
 
-  setwd(path)
-  dir.create("processing")
-  writeLines("read.csv('extdata/src.csv')", "processing/01.R")
-  dir.create("extdata")
-  write.csv(data.frame(1:10), "extdata/src.csv")
-  expect_warning(
-    dpr_init(),
-    "[`processing`|`extdata`] was found"
-  )
-  setwd(wd)
+  tryCatch({
+    setwd(path)
+    dir.create("processing")
+    writeLines("read.csv('extdata/src.csv')", "processing/01.R")
+    dir.create("extdata")
+    write.csv(data.frame(1:10), "extdata/src.csv")
+    expect_warning(
+        dpr_init(),
+        "[`processing`|`extdata`] was found"
+    )
+  }, finally = { setwd(wd) })
 
   unlink(path, recursive = TRUE)
 
