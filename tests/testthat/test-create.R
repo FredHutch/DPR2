@@ -13,9 +13,9 @@ test_that("check default package name warning", {
   unlink(
     file.path(
       tdir,
-      suppressWarnings({DPR2::dpr_description_init()$Package}),
-      recursive = TRUE
-    )
+      suppressWarnings({dpr_description_init()$Package})
+    ),
+    recursive = TRUE
   )
 })
 
