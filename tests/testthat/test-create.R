@@ -105,6 +105,7 @@ test_that("init populates exisiting directory", {
       dpr_init(),
       "[`processing`|`extdata`] was found"
     )
+    expect_true('DESCRIPTION' %in% list.files())
 
   })
 
