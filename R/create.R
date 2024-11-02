@@ -168,11 +168,23 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
 ##' @title dpr_init
 ##' @author jmtaylor
 ##' @param path a path value to init at a specific path, when using
-##'   the default the current workig directory is used.
+##'   the default the current working directory is used.
+##' @param yaml A returned list for dpr_yaml_init()
+##' @param desc A returned list for dpr_description_init()
+##' @param renv_init Logical; whether to initiate renv (default TRUE)
+
 ##' @export
-dpr_init <- function(path="."){
-  if(path == ".")
-    path <- getwd()
-  pkgn <- basename(path)
-  dpr_create(file.path(path, ".."), desc=dpr_description_init(PackageName=pkgn))
+dpr_init <- function(
+    path = ".",
+    yaml = dpr_yaml_init(),
+    desc = dpr_description_init(),
+    renv_init = TRUE)
+{
+  path <- normalizePath(path)
+  dpr_create(
+    file.path(path, ".."),
+    yaml = yaml,
+    desc=dpr_description_init(Package = basename(path)),
+    renv_init = renv_init
+  )
 }

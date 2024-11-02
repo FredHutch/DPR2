@@ -4,11 +4,22 @@
 \alias{dpr_init}
 \title{dpr_init}
 \usage{
-dpr_init(path = ".")
+dpr_init(
+  path = ".",
+  yaml = dpr_yaml_init(),
+  desc = dpr_description_init(),
+  renv_init = TRUE
+)
 }
 \arguments{
 \item{path}{a path value to init at a specific path, when using
-the default the current workig directory is used.}
+the default the current working directory is used.}
+
+\item{yaml}{A returned list for dpr_yaml_init()}
+
+\item{desc}{A returned list for dpr_description_init()}
+
+\item{renv_init}{Logical; whether to initiate renv (default TRUE)}
 }
 \description{
 A wrapper for dpr_create that uses the parent directory as the
