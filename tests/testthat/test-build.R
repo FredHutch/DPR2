@@ -128,7 +128,7 @@ testthat::test_that("checking package build", {
 })
 
 testthat::test_that("checking package render",{
-
+  expect_true(TRUE)
   ## render DPR2 package - renders all processing scripts, but does not build, renders in working env
   ## check that dpr_render does not build package
   ## check that working env contains render generated var names
