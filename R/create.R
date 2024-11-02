@@ -5,8 +5,7 @@
 ##' @author jmtaylor
 ##' @param regex a regular expression
 dpr_get_template <- function(regex){
-  tmpl <- list.files(file.path(system.file("templates", package="DPR2")), full.names = T)
-  return(tmpl[grepl(regex, tmpl)])
+  list.files(system.file("templates", package="DPR2"), regex, full.names = TRUE)
 }
 
 ##' Default key:value pairs for the data package datapackager.yml.
