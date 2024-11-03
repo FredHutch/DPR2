@@ -73,12 +73,7 @@ dpr_yaml_init_set <- function(yml, pkgp){
 ##' @author jmtaylor
 ##' @export
 dpr_yaml_init <- function(...){
-  vals <- list(...)
-  yaml <- dpr_yaml_defaults()
-  ## override defaults and add options with arguments
-  for(val in names(vals))
-    yaml[[val]] <- vals[[val]]
-  return(yaml)
+  utils::modifyList(dpr_yaml_defaults(), list(...), keep.null = TRUE)
 }
 
 ##' A function that where each argument converts or adds to the
