@@ -143,7 +143,7 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
       }
 
     ## init renv
-    if(renv_init == TRUE && !file.exists(file.path(pkgp, "renv.lock")))
+    if(renv_init && !file.exists(file.path(pkgp, "renv.lock")))
       renv::init(
         pkgp,
         settings = list(snapshot.type = "implicit"),
