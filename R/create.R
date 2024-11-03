@@ -181,7 +181,7 @@ dpr_init <- function(
 {
   path <- normalizePath(path)
   dpr_create(
-    file.path(path, ".."),
+    dirname(path),
     yaml = yaml,
     desc=dpr_description_init(Package = basename(path)),
     renv_init = renv_init
