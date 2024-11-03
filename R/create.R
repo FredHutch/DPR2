@@ -126,10 +126,10 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
 
     ## create package skeleton
     dirs <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
-    suppressWarnings(dir.create(pkgp))
+    dir.create(pkgp, showWarnings = FALSE)
 
     for( dir in dirs )
-      if(!suppressWarnings(dir.create(file.path(pkgp, dir))))
+      if(!dir.create(file.path(pkgp, dir), showWarnings = FALSE))
         warning(sprintf("`%s` was found, skipping creating that directory.", dir))
 
     for( fil in c("NAMESPACE", "DESCRIPTION", "datapackager.yml") )
