@@ -108,7 +108,7 @@ testthat::test_that("checking package build", {
   dpr_create(tdir, desc=dpr_description_init(Package=basename(path)))
   expect_error(
     dpr_build(path),
-    "Are any processes set to build?"
+    "No files specified to process"
   )
 
   unlink(path, recursive = TRUE)
@@ -120,7 +120,7 @@ testthat::test_that("checking package build", {
   writeLines(gsub("render_on_build", "rnder_n_bild", yfil), ypth)
   expect_error(
     dpr_build(path),
-    "The following required yaml values are not found: render_on_build."
+    "yaml value.*not found.*render_on_build"
   )
 
   unlink(path, recursive = TRUE)

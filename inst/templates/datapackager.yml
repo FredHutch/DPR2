@@ -3,7 +3,7 @@ source_data_directory: inst/extdata
 install_on_build: no
 build_tarball: no
 process_directory: processing
-process_on_build: ''
+process_on_build:
 render_on_build: yes
 write_to_vignettes: yes
 auto_increment_data_versions: yes

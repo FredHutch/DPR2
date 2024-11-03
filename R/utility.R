@@ -46,7 +46,7 @@ dpr_yaml_validate <- function(yml){
   def <- dpr_yaml_defaults()
   nameCheck <- !(names(def) %in% names(yml))
   if(any(nameCheck)){
-    nm <- paste(names(def)[nameCheck], collapse = ",")
+    nm <- paste(names(def)[nameCheck], collapse = ", ")
     stop(
       "The following required yaml values are not found: ", nm, ". ",
       "Please add those using `dpr_yaml_set()`, or directly in the `datapackager.yml` file. ",
@@ -85,7 +85,8 @@ dpr_yaml_get <- function(path=".", ...){
   new <- list(...)
   yml <- utils::modifyList(
     dpr_yaml_load(path),
-    new
+    new,
+    keep.null = TRUE
   )
   dpr_yaml_validate(yml)
   return(yml)
@@ -104,7 +105,7 @@ dpr_yaml_get <- function(path=".", ...){
 ##' @export
 dpr_yaml_set <- function(path=".", ...){
   yml <- dpr_yaml_get(path)
-  new <- utils::modifyList(yml, list(...))
+  new <- utils::modifyList(yml, list(...), keep.null = TRUE)
   yaml::write_yaml(new, file.path(path, "datapackager.yml"))
 }
 
