@@ -99,9 +99,7 @@ dpr_description_init <- function(...){
   if(!"Package" %in% names(vals))
     warning("Default package name used: ", desc$Package)
   ## override defaults and add options with arguments
-  for(val in names(vals))
-    desc[val] <- vals[[val]]
-  return(desc)
+  utils::modifyList(desc, vals, keep.null = TRUE)
 }
 
 ##' Create an empty data package. Package is created with
