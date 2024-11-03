@@ -42,9 +42,7 @@ dpr_description_defaults <- function(){
 ##' @param pkgp the package path
 ##' @author jmtaylor
 dpr_description_init_set <- function(desc, pkgp){
-  invisible(
-    Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp)
-  )
+  do.call(desc::desc_set, c(desc, file = pkgp))
 }
 
 ##' Private. A function that sets datapackager.yml file
