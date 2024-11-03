@@ -133,7 +133,7 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
         warning(sprintf("`%s` was found, skipping creating that directory.", dir))
 
     for( fil in c("NAMESPACE", "DESCRIPTION", "datapackager.yml") )
-      if(!file.copy(file.path(system.file("templates", package="DPR2"), fil), file.path(pkgp, fil)))
+      if(!file.copy(system.file("templates", fil, package="DPR2"), file.path(pkgp, fil)))
         warning(sprintf("`%s` was found, skipping creating that file.", fil))
       else {
         if( fil == "DESCRIPTION" )
