@@ -14,14 +14,14 @@ cleanup <- function(temp_dir){
   }
 }
 
-initPkg <- function(temp_dir, package_name, more_args=NULL){
+createPkg <- function(temp_dir, package_name, more_args=NULL){
   args <- list(
     path=temp_dir,
     yaml=dpr_yaml_init(process_on_build=c("01.R", "02.R", "01.Rmd")),
     desc=dpr_description_init(Package=package_name)
   )
 
-  ## additional arguments add to the dpr_init call other than the presets listed above at `args`.
+  ## additional arguments add to the dpr_create call other than the presets listed above at `args`.
   ## this is set by the more_args argument in initPkg
   for(arg in names(args)){
     new <- more_args[[arg]]
@@ -30,7 +30,7 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
   newArgs <- more_args[!names(more_args) %in% names(args)]
   args[names(newArgs)] <- newArgs
 
-  do.call(dpr_init, args)
+  do.call(dpr_create, args)
 
   path <- file.path(temp_dir, package_name)
   
