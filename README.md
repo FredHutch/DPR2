@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/FredHutch/DPR2/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/FredHutch/DPR2/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/FredHutch/DPR2/graph/badge.svg)](https://app.codecov.io/gh/FredHutch/DPR2)
 <!-- badges: end -->
 
 The goal of DPR2 is to …
