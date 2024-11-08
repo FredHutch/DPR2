@@ -1,7 +1,9 @@
-Package: {{ Package }}
-Title: {{ Title }}
-Version: {{ Version }}
-Authors: {{ Authors }} 
-Description: {{ Description }}
-License: {{ License }}
+Package: MyDataPackage
+Title: My DataPackage Title
+Version: 0.0.1
+Authors: FirstName LastName [aut, cre]
+Description: What the package does (one paragraph).
+License: See `https://www.gnu.org/licenses/license-list.html` or `https://choosealicense.com/` for more information
 Encoding: UTF-8
+Depends: R (>= 3.5)
+LazyData: true

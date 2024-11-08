@@ -1,6 +1,6 @@
 ##' Private. Checks if path is a DataPackageR or DPR2 package.
 ##'
-##' @title dpr_is  
+##' @title dpr_is
 ##' @param path path to datapackage
 ##' @return boolean
 ##' @author jmtaylor
@@ -71,8 +71,9 @@ dpr_yaml_check <- function(yml){
   nm <- dpr_yaml_required_check(yml)
   if(length(nm) != 0)
     stop(
-      "The following required yaml keys are not found:\n", paste(names(nm), sep="\n"), "\n",
-      "Please add those using `dpr_yaml_set()`, or directly in the `datapackager.yml` file."
+      "The following required yaml values are not found: ", paste(nm, collapse = ", "), ". ",
+      "Please add those using `dpr_yaml_set()`, or directly in the `datapackager.yml` file. ",
+      "Use `dpr_yaml_defaults()` to see a list of default values."
     )
 
 }
@@ -88,16 +89,16 @@ dpr_description_load <- function(path){
   desc::desc(file = path)
 }
 
-##' Get the current datapackager.yml key:value pairs and add to or
-##' modify those with with new values. All additions and modifications
-##' happen only in memory, not on disc.
+##' Get the current datapackager.yml key:value pairs and temporarily
+##' add to or modify those with with new values. All additions and
+##' modifications happen only in memory, not on disc.
 ##'
 ##' @title dpr_yaml_get
 ##' @param path The full path to the data package. The default is the
 ##'   working directory.
 ##' @param ... datapakager.yml value overrides. When arguments are
-##'   specified, those arguments are used as the YAML key:value pairs
-##'   instead of what is specified by the `datapackager.yml`.
+##'   specified, those arguments are used as the YAML key:value
+##'   pairs instead of what is specified by the `datapackager.yml`.
 ##' @return list
 ##' @author jmtaylor
 ##' @export

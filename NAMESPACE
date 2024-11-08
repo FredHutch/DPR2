@@ -2,6 +2,7 @@
 
 export(dpr_build)
 export(dpr_compare_data_digest)
+export(dpr_create)
 export(dpr_data_digest)
 export(dpr_data_hashes)
 export(dpr_data_history)
