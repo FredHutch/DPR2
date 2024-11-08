@@ -8,11 +8,14 @@ test_that("project_path functions work", {
   setwd(pkg_dir)
   # error when no DESCRIPTION file yet in file tree
   # and also expect deprecation warning
+  expect_error(dpr_path())
   expect_error(expect_warning(project_path(), 'legacy'))
   expect_error(expect_warning(project_data_path(), 'legacy'))
   expect_error(expect_warning(project_extdata_path(), 'legacy'))
   writeLines('Package: ', 'DESCRIPTION')
-  # suppress deprecation warnings for rest of tests
+  expect_equal(basename(dpr_path()), pkg_name)
+  expect_equal(basename(dpr_path('data')), 'data')
+  # suppress deprecation warnings
   suppressWarnings({
     # correct directory with no arguments, called from wd
     expect_equal(basename(project_path()), pkg_name)
@@ -21,13 +24,25 @@ test_that("project_path functions work", {
     expect_equal(basename(project_extdata_path()), 'extdata')
     expect_equal(basename(dirname(project_extdata_path())), 'inst')
     expect_equal(basename(dirname(dirname(project_extdata_path()))), pkg_name)
-    # test that we still find package root when getwd() is within a subfolder
-    dir.create('subfolder777')
-    setwd('subfolder777')
-    # correct directory with no arguments
+  })
+  # test that we still find package root when getwd() is within a subfolder
+  dir.create('subfolder777')
+  setwd('subfolder777')
+  # correct directory with no arguments
+  expect_equal(basename(dpr_path()), pkg_name)
+  expect_false(grepl('subfolder777', dpr_path()))
+  suppressWarnings({
+    # suppress deprecation warnings
     expect_equal(basename(project_path()), pkg_name)
     expect_false(grepl('subfolder777', project_path()))
-    # path with subfolder and file arguments
+  })
+  # path with subfolder and file arguments
+  pp <- dpr_path('hello', 'world.txt')
+  expect_false(grepl('subfolder777', pp))
+  expect_equal(basename(pp), 'world.txt')
+  expect_equal(basename(dirname(pp)), 'hello')
+  expect_equal(basename(dirname(dirname(pp))), pkg_name)
+  suppressWarnings({
     pp <- project_path('hello', 'world.txt')
     expect_false(grepl('subfolder777', pp))
     expect_equal(basename(pp), 'world.txt')
