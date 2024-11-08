@@ -4,10 +4,12 @@
 \alias{dpr_save}
 \title{dpr_save}
 \usage{
-dpr_save(objects)
+dpr_save(objects, path = ".")
 }
 \arguments{
-\item{objects}{a character vector of object names to saved from the calling environment.}
+\item{objects}{a character vector of object names to saved from the calling environment}
+
+\item{path}{The relative path to the data package. The default is the working directory.}
 }
 \description{
 A convenience function for writing data objects to the package data directory.
