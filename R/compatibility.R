@@ -67,3 +67,61 @@ dpr_is_dpr2 <- function(path="."){
     return(TRUE)
   return(FALSE)
 }
+
+#' Private. Throw warning when using deprecated [project_path()] wrappers for DPR1
+#' compatibility
+#' @noRd
+legacy_path_helper_warning <- function(fn_nm){
+  warning(
+    paste0(
+      fn_nm,
+      '() is a compatibility wrapper for legacy code and ',
+      'may be removed in the future. Please use dpr_path() instead.'
+    )
+  )
+}
+
+#' Construct path from data package directory (deprecated)
+#'
+#' This function is a compatibility wrapper for legacy code and may be removed
+#' in the future. Please use [dpr_path()] instead.
+#'
+#' @param ... Trailing path components passed to [file.path()]. All arguments must
+#'   be the same length or length one.
+#' @return The normalized path with the additional path components appended.
+#'   Throws an error if no root is found.
+#' @export
+project_path <- function(...){
+  legacy_path_helper_warning('project_path')
+  dpr_path(...)
+}
+
+#' Construct path from data package data directory (deprecated)
+#'
+#' This function is a compatibility wrapper for legacy code and may be removed
+#' in the future. Please use [dpr_path()] instead.
+#'
+#' @param ... Trailing path components passed to [file.path()]. All arguments must
+#'   be the same length or length one.
+#' @return The normalized path with the additional path components appended.
+#'   Throws an error if no root is found.
+#' @export
+project_data_path <- function(...){
+  legacy_path_helper_warning('project_data_path')
+  dpr_path('data', ...)
+}
+
+#' Construct path from data package inst/extdata directory (deprecated)
+#'
+#' This function is a compatibility wrapper for legacy code and may be removed
+#' in the future. Please use [dpr_path()] instead.
+#'
+#' @param ... Trailing path components passed to [file.path()]. All arguments must
+#'   be the same length or length one.
+#' @return The normalized path with the additional path components appended.
+#'   Throws an error if no root is found.
+#' @export
+project_extdata_path <- function(...){
+  legacy_path_helper_warning('project_extdata_path')
+  dpr_path('inst', 'extdata', ...)
+}
