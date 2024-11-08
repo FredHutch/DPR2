@@ -24,11 +24,11 @@ dpr_yaml_load <- function(path="."){
 
 ##' Private. Check that some yaml keys have specific values.
 ##'
-##' @title dpr_yaml_key_check
+##' @title dpr_yaml_value_check
 ##' @param yml a yaml object or list
 ##' @return elements of the list of key value pairs to check that did not pass
 ##' @author jmtaylor
-dpr_yaml_key_check <- function(yml){
+dpr_yaml_value_check <- function(yml){
   key_value = list(
     "render_env_mode" = c("isolate", "share")
   )
@@ -55,7 +55,7 @@ dpr_yaml_required_check <- function(yml){
 ##' @author jmtaylor
 dpr_yaml_check <- function(yml){
   ## check that all controlled key values are correct
-  kv <- dpr_yaml_key_check(yml)
+  kv <- dpr_yaml_value_check(yml)
   if(length(kv) != 0)
     stop(
       sprintf(
@@ -71,7 +71,7 @@ dpr_yaml_check <- function(yml){
   nm <- dpr_yaml_required_check(yml)
   if(length(nm) != 0)
     stop(
-      "The following required yaml values are not found: ", paste(nm, collapse = ", "), ". ",
+      "The following required yaml keys are not found: ", paste(names(nm), collapse = ", "), ". ",
       "Please add those using `dpr_yaml_set()`, or directly in the `datapackager.yml` file. ",
       "Use `dpr_yaml_defaults()` to see a list of default values."
     )
