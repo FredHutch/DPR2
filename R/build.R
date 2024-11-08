@@ -17,7 +17,7 @@ dpr_purge_data_directory <- function(path=".", yml){
 ##' evaluation.
 ##'
 ##' @title dpr_render
-##' @param path The full path to the data package. The default is the
+##' @param path The relative path to the data package. The default is the
 ##'   working directory.
 ##' @param ... datapakager.yml value overrides. When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs
@@ -26,6 +26,9 @@ dpr_purge_data_directory <- function(path=".", yml){
 ##' @author jmtaylor
 ##' @export
 dpr_render <- function(path=".", ...){
+  if( dpr_is_dpr1(path) )
+    warning("Rendering a data package using DPR2 when the yaml is from DataPackageR. See docs for list of side effects.")
+
   yml <- dpr_yaml_get(path, ...)
   
   if(yml$purge_data_directory)
@@ -35,6 +38,8 @@ dpr_render <- function(path=".", ...){
 
   if(mode == "share")
     env <- new.env(parent = .GlobalEnv)
+
+  save_objects <- c()
 
   for(src in yml$process_on_build){
     if(dir.exists(file.path(path, yml$process_directory, src)))
@@ -52,22 +57,25 @@ dpr_render <- function(path=".", ...){
         envir = env,
         quiet = TRUE
       )
-      
-      if( !is.null(yml$objects) ){
-        for( obj in yml$objects ){
-          if( exists(obj, envir=env) ){
-            assign(obj, get(obj, envir=env))
-            save(obj, file=file.path(path, "data", paste0(substitute(obj), ".rda")))
-          } else {
-            warning("Objects listed in yaml not found in processing scripts to save to data directory.")
-          }
-        }
+
+      for( obj in intersect(ls(env), yml$objects) ){
+        assign(obj, get(obj, envir=env))
+        dpr_save(obj, path)
+        save_objects <- c(save_objects, obj)
       }
       
     },
-    error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message))
-    )
+    error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message)))
   }
+
+  missed_objects <- setdiff(yml$objects, save_objects)
+  if(length(missed_objects) != 0)
+    warning(
+      sprintf(
+        "Objects listed in yaml not found in processing scripts to save to data directory: %s",
+        paste(missed_objects, collapse = ", ")
+      )
+    )
 }
 
 ##' Render and build data package. Uses a special environment,
@@ -75,7 +83,7 @@ dpr_render <- function(path=".", ...){
 ##' is removed from the .GlobalEnv once complete.
 ##'
 ##' @title dpr_build
-##' @param path The full path to the data package. The default is the
+##' @param path The relative path to the data package. The default is the
 ##'   working directory.
 ##' @param ... datapackager.yml value overrides. When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs

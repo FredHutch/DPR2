@@ -13,7 +13,7 @@ dpr_is(path)
 boolean
 }
 \description{
-Private. Checks if path is a DPR2 datapackage or not.
+Private. Checks if path is a DataPackageR or DPR2 package.
 }
 \author{
 jmtaylor
