@@ -5,9 +5,7 @@
 #' @return The normalized path with the additional path components appended.
 #'   Throws an error if no root is found.
 #' @export
-project_path <- function(...){
-  normalizePath(rprojroot::find_package_root_file(...), '/', FALSE)
-}
+project_path <- function(...) rprojroot::find_package_root_file(...)
 
 #' Construct path from data package data directory
 #'
