@@ -58,7 +58,7 @@ dpr_render <- function(path=".", ...){
         quiet = TRUE
       )
 
-      for( obj in ls(env)[ls(env) %in% yml$objects] ){
+      for( obj in intersect(ls(env), yml$objects) ){
         assign(obj, get(obj, envir=env))
         dpr_save(obj, path)
         save_objects <- c(save_objects, obj)
@@ -68,12 +68,12 @@ dpr_render <- function(path=".", ...){
     error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message)))
   }
 
-  missed_objects <- !(yml$objects %in% save_objects)
-  if(any(missed_objects))
+  missed_objects <- setdiff(yml$objects, save_objects)
+  if(length(missed_objects) != 0)
     warning(
       sprintf(
         "Objects listed in yaml not found in processing scripts to save to data directory: %s",
-        paste(yml$objects[missed_objects], collapse = ", ")
+        paste(missed_objects, collapse = ", ")
       )
     )
 }

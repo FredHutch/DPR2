@@ -1,7 +1,7 @@
 ---
 title: mtcars.Rmd
 author: jmtaylor
-date: '2024-10-31'
+date: '2024-11-07'
 vignette: >
   %\VignetteIndexEntry{mtcars.Rmd}
   %\VignetteEngine{knitr::rmarkdown}

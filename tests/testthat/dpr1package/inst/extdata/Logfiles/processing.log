@@ -71,3 +71,53 @@ TRACE [2024-10-31 12:16:05] Done
 TRACE [2024-10-31 12:16:05] DataPackageR succeeded
 TRACE [2024-10-31 12:16:05] Building documentation
 TRACE [2024-10-31 12:16:06] Building package
+
+TRACE [2024-11-07 15:45:55] Logging to /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/inst/extdata/Logfiles/processing.log
+TRACE [2024-11-07 15:45:55] Processing data
+TRACE [2024-11-07 15:45:55] Reading yaml configuration
+TRACE [2024-11-07 15:45:55] Found mtcars.R
+TRACE [2024-11-07 15:45:55] Found iris.R
+TRACE [2024-11-07 15:45:55] Found trees.Rmd
+TRACE [2024-11-07 15:45:55] Processing 1 of 3: /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/data-raw/mtcars.R
+TRACE [2024-11-07 15:45:56] 1 data set(s) created by mtcars.Rmd
+TRACE [2024-11-07 15:45:56] Processing 2 of 3: /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/data-raw/iris.R
+
+TRACE [2024-11-07 15:46:44] Logging to /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/inst/extdata/Logfiles/processing.log
+TRACE [2024-11-07 15:46:44] Processing data
+TRACE [2024-11-07 15:46:44] Reading yaml configuration
+TRACE [2024-11-07 15:46:44] Found mtcars.R
+TRACE [2024-11-07 15:46:44] Found iris.R
+TRACE [2024-11-07 15:46:44] Found trees.Rmd
+TRACE [2024-11-07 15:46:44] Processing 1 of 3: /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/data-raw/mtcars.R
+TRACE [2024-11-07 15:46:44] 1 data set(s) created by mtcars.Rmd
+TRACE [2024-11-07 15:46:44] Processing 2 of 3: /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/data-raw/iris.R
+TRACE [2024-11-07 15:46:45] 1 data set(s) created by iris.Rmd
+TRACE [2024-11-07 15:46:45] Processing 3 of 3: /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/data-raw/trees.Rmd
+TRACE [2024-11-07 15:46:45] 1 data set(s) created by trees.Rmd
+TRACE [2024-11-07 15:46:45] Processed data sets match existing data sets at version 0.1.1
+TRACE [2024-11-07 15:46:45] Saving to data
+TRACE [2024-11-07 15:46:45] Copied documentation to /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/R/dpr1package.R
+TRACE [2024-11-07 15:46:45] Done
+TRACE [2024-11-07 15:46:45] DataPackageR succeeded
+TRACE [2024-11-07 15:46:45] Building documentation
+TRACE [2024-11-07 15:46:46] Building package
+
+TRACE [2024-11-07 15:47:56] Logging to /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/inst/extdata/Logfiles/processing.log
+TRACE [2024-11-07 15:47:56] Processing data
+TRACE [2024-11-07 15:47:56] Reading yaml configuration
+TRACE [2024-11-07 15:47:56] Found mtcars.R
+TRACE [2024-11-07 15:47:56] Found iris.R
+TRACE [2024-11-07 15:47:56] Found trees.Rmd
+TRACE [2024-11-07 15:47:56] Processing 1 of 3: /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/data-raw/mtcars.R
+TRACE [2024-11-07 15:47:57] 1 data set(s) created by mtcars.Rmd
+TRACE [2024-11-07 15:47:57] Processing 2 of 3: /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/data-raw/iris.R
+TRACE [2024-11-07 15:47:57] 1 data set(s) created by iris.Rmd
+TRACE [2024-11-07 15:47:57] Processing 3 of 3: /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/data-raw/trees.Rmd
+TRACE [2024-11-07 15:47:57] 1 data set(s) created by trees.Rmd
+TRACE [2024-11-07 15:47:57] Processed data sets match existing data sets at version 0.1.1
+TRACE [2024-11-07 15:47:57] Saving to data
+TRACE [2024-11-07 15:47:57] Copied documentation to /home/jmtaylor/Projects/DPR2/tests/testthat/dpr1package/R/dpr1package.R
+TRACE [2024-11-07 15:47:57] Done
+TRACE [2024-11-07 15:47:57] DataPackageR succeeded
+TRACE [2024-11-07 15:47:57] Building documentation
+TRACE [2024-11-07 15:47:58] Building package

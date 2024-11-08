@@ -1,5 +1,5 @@
-#' dpr1_package
-#' A data package for dpr1_package.
+#' dpr1package
+#' A data package for dpr1package.
 #' @aliases dpr1_package-package
 #' @title Package Title
 #' @name dpr1_package

@@ -46,8 +46,7 @@ dpr_is_dpr1 <- function(path="."){
     # this check is based on the DataPackageR check in processData.R
     if(
       "configuration" %in% names(yml) &&
-        all(c("files", "objects") %in% names(yml[["configuration"]])) &&
-        length(dpr_yaml_required_check(yml)) != 0
+        all(c("files", "objects") %in% names(yml[["configuration"]]))
     )
       return(TRUE)
   }
@@ -67,40 +66,4 @@ dpr_is_dpr2 <- function(path="."){
   )
     return(TRUE)
   return(FALSE)
-}
-
-##' A reimplementation of DataPackageR::datapackager_object_read for
-##' processing scripts from DataPackageR packages. This originaly
-##' required a previous process to export the object before this could
-##' be used. The DPR2 equivalent of that is to simply read the rda
-##' file saved by a previous process.
-##'
-##' @title datapackager_object_read
-##' @param object a singleton character vector of an object name saved by `dpr_save` in a previously rendered script. 
-##' @param path The relative path to the data package. The default is the
-##'   working directory.
-##' @return an environment containing the object
-##' @author jmtaylor
-##' @export
-datapackager_object_read <- function(object, path = "."){
-  warning( "`datapackager_object_read` has been depreciated in DPR2.\nConsider using the datapackager.yml argument `render_env: shared` instead.\n" )
-
-  if( !(is.character(object) && length(object) == 1) )
-    stop("`datapackager_object_read` object argument must be a singleton character vector.")
-
-  obj_path <- paste0(path, "/data/", object, ".rda")
-
-  if( !file.exists(obj_path) )
-    stop("Object does not exist in the data directory.")
-
-  env <- new.env(parent = emptyenv())
-  load(paste0(path, "/data/", object, ".rda"), envir=env)
-
-  if( length(names(env)) > 1 )
-    stop("`datapackager_object_read` cannot read multi-object rda files.")
-  if( !exists(object, envir = env) )
-    stop("`datapackager_object_read` object argument not found at rda file with the object name.")
-
-  else
-    return(env[[object]])
 }
