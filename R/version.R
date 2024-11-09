@@ -238,7 +238,8 @@ dpr_hashes_to_checksums <- function(hashes, path){
 ##' @author jmtaylor
 ##' @export
 dpr_data_history <- function(path=".", include_checksums=FALSE){
-  dpr_is(path)
+  if( !dpr_is(path) )
+    stop("`path` argument is not a DataPackageR or DPR2 package.")
 
   if( !dpr_check_git(path) ){
     warning("Returning data digest comparision table instead of data history.")

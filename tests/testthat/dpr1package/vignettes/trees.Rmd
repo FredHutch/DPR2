@@ -1,0 +1,21 @@
+---
+title: trees.Rmd
+vignette: >
+  %\VignetteIndexEntry{trees.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r}
+data(trees, envir=environment())
+x <- read.csv(DataPackageR::project_extdata_path("x.csv"))
+trees <-
+  merge(
+    cbind(trees, data.frame(y = letters[seq_len(nrow(trees))])),
+    x,
+    all.x = T
+  ) 
+
+```
+
+

@@ -1,0 +1,11 @@
+---
+title: iris.Rmd
+author: jmtaylor
+date: 2024-11-07
+---
+
+
+```{r}
+data(iris, envir=environment())
+```
+

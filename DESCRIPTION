@@ -19,10 +19,12 @@ Imports:
     pkgbuild,
     renv,
     rmarkdown,
+    rprojroot,
     utils,
     yaml
 License: MIT + file LICENSE
 Suggests:
+    DataPackageR,
     git2r (>= 0.33.0),
     testthat,
     lubridate

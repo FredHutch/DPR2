@@ -1,0 +1,14 @@
+configuration:
+  files:
+    mtcars.R:
+      enabled: yes
+    iris.R:
+      enabled: yes
+    trees.Rmd:
+      enabled: yes
+  objects:
+  - mtcars_mod
+  - iris
+  - trees  
+  render_root:
+    tmp: '48066'
