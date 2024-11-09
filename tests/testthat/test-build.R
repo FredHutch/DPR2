@@ -120,7 +120,7 @@ testthat::test_that("checking package build", {
   writeLines(gsub("render_on_build", "rnder_n_bild", yfil), ypth)
   expect_error(
     dpr_build(path),
-    "yaml value.*not found.*render_on_build"
+    "yaml.*not found.*render_on_build"
   )
 
   unlink(path, recursive = TRUE)
