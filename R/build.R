@@ -30,44 +30,54 @@ dpr_render <- function(path=".", ...){
     warning("Rendering a data package using DPR2 when the yaml is from DataPackageR. See docs for list of side effects.")
 
   yml <- dpr_yaml_get(path, ...)
-  
+
   if(yml$purge_data_directory)
     dpr_purge_data_directory(path, yml)
 
   mode <- yml$render_env_mode
 
-  if(mode == "share")
-    env <- new.env(parent = .GlobalEnv)
-
   save_objects <- c()
 
-  for(src in yml$process_on_build){
-    if(dir.exists(file.path(path, yml$process_directory, src)))
-      stop("Are any processes set to build? See datapackager.yml file.")
+  if(yml$process_directory == ""){
+    stop("Are any processes set to build? See datapackager.yml file.")
+  }
 
-    # if(mode == "isolate") env <- new.env(parent = .GlobalEnv)
+  render_args <- list(
+    knit_root_dir = normalizePath(path),
+    output_dir = file.path(path, "vignettes"),
+    output_format = "md_document",
+    quiet = TRUE
+  )
+  src_vec = file.path(path, yml$process_directory, yml$process_on_build)
 
-    env <- callr::r(
-      function(MODE, SRC, ...){
-        rmarkdown::render(..., envir = globalenv())
-        as.list(globalenv())
-      },
-      list(
-        MODE = mode,
-        SRC = yml$process_on_build,
-        input = file.path(path, yml$process_directory, src),
-        knit_root_dir = normalizePath(path),
-        output_dir = file.path(path, "vignettes"),
-        output_format = "md_document",
-        quiet = TRUE
-      )
-    )
-
-    for( obj in intersect(ls(env), yml$objects) ){
-      assign(obj, env[[obj]])
-      dpr_save(obj, path)
-      save_objects <- c(save_objects, obj)
+  if (mode == 'share'){
+    callr_args <- c(render_args, list(src_vec = src_vec))
+    callr_fn <- function(src_vec, ...){
+      for (src in src_vec){
+        rmarkdown::render(input = src, envir = globalenv(), ...)
+      }
+      as.list(globalenv())
     }
+    env <- callr::r(callr_fn, callr_args)
+  }
+
+  if (mode == 'isolate'){
+    env <- list()
+    for (src in src_vec){
+      callr_args <- c(render_args, input = src)
+      callr_fn <- function(...){
+        rmarkdown::render(envir = globalenv(), ...)
+        as.list(globalenv())
+      }
+      res <- callr::r(callr_fn, callr_args)
+      env <- utils::modifyList(env, res, keep.null = TRUE)
+    }
+  }
+
+  for( obj in intersect(ls(env), yml$objects) ){
+    assign(obj, env[[obj]])
+    dpr_save(obj, path)
+    save_objects <- c(save_objects, obj)
   }
 
   missed_objects <- setdiff(yml$objects, save_objects)
