@@ -36,8 +36,6 @@ dpr_render <- function(path=".", ...){
 
   mode <- yml$render_env_mode
 
-  save_objects <- c()
-
   if(identical(yml$process_on_build, '')){
     stop("Are any processes set to build? See datapackager.yml file.")
   }
@@ -74,13 +72,14 @@ dpr_render <- function(path=".", ...){
     }
   }
 
+  env <- as.environment(env)
+  saved_objects <- character()
   for( obj in intersect(ls(env), yml$objects) ){
-    assign(obj, env[[obj]])
-    dpr_save(obj, path)
-    save_objects <- c(save_objects, obj)
+    dpr_save(obj, path, envir = env)
+    saved_objects <- c(saved_objects, obj)
   }
 
-  missed_objects <- setdiff(yml$objects, save_objects)
+  missed_objects <- setdiff(yml$objects, saved_objects)
   if(length(missed_objects) != 0)
     warning(
       sprintf(
