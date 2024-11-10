@@ -38,7 +38,7 @@ dpr_render <- function(path=".", ...){
 
   save_objects <- c()
 
-  if(yml$process_directory == ""){
+  if(identical(yml$process_on_build, '')){
     stop("Are any processes set to build? See datapackager.yml file.")
   }
 
