@@ -34,19 +34,18 @@ dpr_render <- function(path=".", ...){
   if(yml$purge_data_directory)
     dpr_purge_data_directory(path, yml)
 
-  mode <- yml$render_env_mode
-
   if(identical(yml$process_on_build, '')){
     stop("Are any processes set to build? See datapackager.yml file.")
   }
 
+  mode <- yml$render_env_mode
+  src_vec = file.path(path, yml$process_directory, yml$process_on_build)
   render_args <- list(
     knit_root_dir = normalizePath(path),
     output_dir = file.path(path, "vignettes"),
     output_format = "md_document",
     quiet = TRUE
   )
-  src_vec = file.path(path, yml$process_directory, yml$process_on_build)
 
   if (mode == 'share'){
     callr_args <- c(render_args, list(src_vec = src_vec))
