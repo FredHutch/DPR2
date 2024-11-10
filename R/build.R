@@ -51,12 +51,14 @@ dpr_render <- function(path=".", ...){
   # Shared rendering environment in a clean R process
   if (mode == 'share'){
     callr_args <- c(render_args, list(src_vec = src_vec))
+
     callr_fn <- function(src_vec, ...){
       for (src in src_vec){
         rmarkdown::render(input = src, envir = globalenv(), ...)
       }
       as.list(globalenv())
     }
+
     env_lst <- callr::r(callr_fn, callr_args)
   }
 
@@ -64,11 +66,14 @@ dpr_render <- function(path=".", ...){
   if (mode == 'isolate'){
     env_lst <- list()
     for (src in src_vec){
+
       callr_args <- c(render_args, input = src)
+
       callr_fn <- function(...){
         rmarkdown::render(envir = globalenv(), ...)
         as.list(globalenv())
       }
+
       res <- callr::r(callr_fn, callr_args)
       # Repeat objects with same name will be sequentially overwritten
       env_lst <- utils::modifyList(env_lst, res, keep.null = TRUE)
