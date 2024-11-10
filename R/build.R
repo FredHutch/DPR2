@@ -93,37 +93,31 @@ dpr_render <- function(path=".", ...){
 ##' @export
 dpr_build <- function(path=".", ...){
   quiet <- identical(Sys.getenv("TESTTHAT"), "true")
-  tryCatch(
-    expr = {
-      yml <- dpr_yaml_get(path, ...)
+  yml <- dpr_yaml_get(path, ...)
 
-      if(yml$render_on_build)
-        dpr_render(path, ...)
+  if(yml$render_on_build)
+    dpr_render(path, ...)
 
-      if("data_digest_directory" %in% names(yml))
-        dpr_update_data_digest(path, yml)
+  if("data_digest_directory" %in% names(yml))
+    dpr_update_data_digest(path, yml)
 
-      if(yml$build_tarball)
-        pkgp <- pkgbuild::build(
-          path = path,
-          dest_path = file.path(path, yml$build_output),
-          quiet = quiet
-        )
+  if(yml$build_tarball)
+    pkgp <- pkgbuild::build(
+      path = path,
+      dest_path = file.path(path, yml$build_output),
+      quiet = quiet
+    )
 
-      if(yml$install_on_build)
-        if(yml$build_tarball){
-          utils::install.packages(pkgp, repo=NULL, quiet = quiet)
-        } else {
-          pkgp <- pkgbuild::build(
-            path = path,
-            dest_path = tempdir(),
-            quiet = quiet
-          )
-          utils::install.packages(pkgp, repo=NULL, quiet = quiet)
-        }
-
-    },
-    error = function(e) stop(sprintf("dpr_build() failed: %s \n", e$message))
-
-  )
+  if(yml$install_on_build){
+    if(yml$build_tarball){
+      utils::install.packages(pkgp, repo=NULL, quiet = quiet)
+    } else {
+      pkgp <- pkgbuild::build(
+        path = path,
+        dest_path = tempdir(),
+        quiet = quiet
+      )
+      utils::install.packages(pkgp, repo=NULL, quiet = quiet)
+    }
+  }
 }
