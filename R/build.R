@@ -70,7 +70,6 @@ dpr_render <- function(path=".", ...){
         as.list(globalenv())
       }
       res <- callr::r(callr_fn, callr_args)
-      # Combine objects from isolated rendering
       # Repeat objects with same name will be sequentially overwritten
       env_lst <- utils::modifyList(env_lst, res, keep.null = TRUE)
     }
