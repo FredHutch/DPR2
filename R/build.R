@@ -58,12 +58,12 @@ dpr_render <- function(path=".", ...){
       as.list(globalenv())
     }
 
-    env_lst <- callr::r(callr_fn, callr_args)
+    lst_all_process <- callr::r(callr_fn, callr_args)
   }
 
   # Isolated rendering in separate clean R processes
   if (mode == 'isolate'){
-    res_env_lst <- lapply(src_vec, function(src){
+    lst_each_process <- lapply(src_vec, function(src){
       callr_args <- c(render_args, input = src)
       callr_fn <- function(...){
         rmarkdown::render(envir = globalenv(), ...)
@@ -74,13 +74,13 @@ dpr_render <- function(path=".", ...){
       callr::r(callr_fn, callr_args, stderr = stderr_file)
     })
     # Recombine. Earlier object(s) with same name will be overwritten
-    env_lst <- Reduce(
+    lst_all_process <- Reduce(
       function(...) utils::modifyList(..., keep.null = TRUE),
-      res_env_lst, simplify = FALSE
+      lst_each_process, simplify = FALSE
     )
   }
 
-  env <- as.environment(env_lst)
+  env <- as.environment(lst_all_process)
   saved_objects <- character()
   for( obj in intersect(ls(env), yml$objects) ){
     dpr_save(obj, path, envir = env)
