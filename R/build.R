@@ -70,16 +70,7 @@ dpr_render <- function(path=".", ...){
         as.list(globalenv())
       }
       stderr_file <- tempfile()
-      on.exit({
-        # Fight rmarkdown::render() to get its error message...
-        erln <- readLines(stderr_file)
-        qln  <- grepl('^Quitting', erln)
-        file.remove(stderr_file)
-        if (any(qln)){
-          err <- paste('in dpr_render() from rmarkdown::render():', erln[qln])
-          stop(err, call. = FALSE)
-        }
-      })
+      on.exit(extract_rmarkdown_render_stderr(stderr_file))
       callr::r(callr_fn, callr_args, stderr = stderr_file)
     })
     # Recombine. Earlier object(s) with same name will be overwritten
@@ -104,6 +95,23 @@ dpr_render <- function(path=".", ...){
         paste(missed_objects, collapse = ", ")
       )
     )
+}
+
+#' Private. Extract rmarkdown::render() error message from stderr file, then
+#' delete the file.
+#'
+#' @param stderr_file File to which rmarkdown::render() stderr has been written
+#'   by callr. File will be deleted after scraping for error message.
+#' @noRd
+extract_rmarkdown_render_stderr <- function(stderr_file){
+  # Fight rmarkdown::render() to get its error message...
+  on.exit(if (file.exists(stderr_file)) file.remove(stderr_file))
+  erln <- readLines(stderr_file)
+  qln  <- grepl('^Quitting', erln)
+  if (any(qln)){
+    err <- paste('in dpr_render() from rmarkdown::render():', erln[qln])
+    stop(err, call. = FALSE)
+  }
 }
 
 ##' Render and build data package. Uses a special environment,
