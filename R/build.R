@@ -55,11 +55,11 @@ dpr_render <- function(path=".", ...){
       }
       as.list(globalenv())
     }
-    env <- callr::r(callr_fn, callr_args)
+    env_lst <- callr::r(callr_fn, callr_args)
   }
 
   if (mode == 'isolate'){
-    env <- list()
+    env_lst <- list()
     for (src in src_vec){
       callr_args <- c(render_args, input = src)
       callr_fn <- function(...){
@@ -67,11 +67,11 @@ dpr_render <- function(path=".", ...){
         as.list(globalenv())
       }
       res <- callr::r(callr_fn, callr_args)
-      env <- utils::modifyList(env, res, keep.null = TRUE)
+      env_lst <- utils::modifyList(env_lst, res, keep.null = TRUE)
     }
   }
 
-  env <- as.environment(env)
+  env <- as.environment(env_lst)
   saved_objects <- character()
   for( obj in intersect(ls(env), yml$objects) ){
     dpr_save(obj, path, envir = env)
