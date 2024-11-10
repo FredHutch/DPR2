@@ -45,27 +45,29 @@ dpr_render <- function(path=".", ...){
     if(dir.exists(file.path(path, yml$process_directory, src)))
       stop("Are any processes set to build? See datapackager.yml file.")
 
-    if(mode == "isolate")
-      env <- new.env(parent = .GlobalEnv)
+    # if(mode == "isolate") env <- new.env(parent = .GlobalEnv)
 
-    tryCatch({
-      rmarkdown::render(
+    env <- callr::r(
+      function(MODE, SRC, ...){
+        rmarkdown::render(..., envir = globalenv())
+        as.list(globalenv())
+      },
+      list(
+        MODE = mode,
+        SRC = yml$process_on_build,
         input = file.path(path, yml$process_directory, src),
         knit_root_dir = normalizePath(path),
-        output_dir = { if(yml$write_to_vignettes) file.path(path, "vignettes") else tempdir() },
+        output_dir = file.path(path, "vignettes"),
         output_format = "md_document",
-        envir = env,
         quiet = TRUE
       )
+    )
 
-      for( obj in intersect(ls(env), yml$objects) ){
-        assign(obj, get(obj, envir=env))
-        dpr_save(obj, path)
-        save_objects <- c(save_objects, obj)
-      }
-      
-    },
-    error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message)))
+    for( obj in intersect(ls(env), yml$objects) ){
+      assign(obj, env[[obj]])
+      dpr_save(obj, path)
+      save_objects <- c(save_objects, obj)
+    }
   }
 
   missed_objects <- setdiff(yml$objects, save_objects)
