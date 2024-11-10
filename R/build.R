@@ -38,6 +38,7 @@ dpr_render <- function(path=".", ...){
     stop("Are any processes set to build? See datapackager.yml file.")
   }
 
+  # Prepare to render
   mode <- yml$render_env_mode
   src_vec = file.path(path, yml$process_directory, yml$process_on_build)
   render_args <- list(
@@ -47,6 +48,7 @@ dpr_render <- function(path=".", ...){
     quiet = TRUE
   )
 
+  # Shared rendering environment in a clean R process
   if (mode == 'share'){
     callr_args <- c(render_args, list(src_vec = src_vec))
     callr_fn <- function(src_vec, ...){
@@ -58,6 +60,7 @@ dpr_render <- function(path=".", ...){
     env_lst <- callr::r(callr_fn, callr_args)
   }
 
+  # Isolated rendering in separate clean R processes
   if (mode == 'isolate'){
     env_lst <- list()
     for (src in src_vec){
@@ -67,6 +70,8 @@ dpr_render <- function(path=".", ...){
         as.list(globalenv())
       }
       res <- callr::r(callr_fn, callr_args)
+      # Combine objects from isolated rendering
+      # Repeat objects with same name will be sequentially overwritten
       env_lst <- utils::modifyList(env_lst, res, keep.null = TRUE)
     }
   }
