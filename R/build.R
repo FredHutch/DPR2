@@ -44,8 +44,7 @@ dpr_render <- function(path=".", ...){
   render_args <- list(
     knit_root_dir = normalizePath(path),
     output_dir = { if(yml$write_to_vignettes) file.path(path, "vignettes") else tempdir() },
-    output_format = "md_document",
-    quiet = TRUE
+    output_format = "md_document"
   )
 
   # Shared rendering environment in a clean R process
@@ -64,19 +63,29 @@ dpr_render <- function(path=".", ...){
 
   # Isolated rendering in separate clean R processes
   if (mode == 'isolate'){
-    env_lst <- list()
-    for (src in src_vec){
-
+    res_env_lst <- lapply(src_vec, function(src){
       callr_args <- c(render_args, input = src)
-
       callr_fn <- function(...){
         rmarkdown::render(envir = globalenv(), ...)
         as.list(globalenv())
       }
-
-      res <- callr::r(callr_fn, callr_args)
+      on.exit({
+        erfi <- file.path(tempdir(), "err")
+        erln <- readLines(erfi)
+        qln  <- grepl('^Quitting', erln)
+        file.remove(erfi)
+        if (any(qln)){
+          err <- paste('in dpr_render() from rmarkdown::render():', erln[qln])
+          stop(err, call. = FALSE)
+        }
+      })
+      #if (basename(src) == 'S1.R') browser()
+      callr::r(callr_fn, callr_args, stderr = file.path(tempdir(), "err"))
+    })
+    env_lst <- list()
+    for (res_env in res_env_lst){
       # Repeat objects with same name will be sequentially overwritten
-      env_lst <- utils::modifyList(env_lst, res, keep.null = TRUE)
+      env_lst <- utils::modifyList(env_lst, res_env, keep.null = TRUE)
     }
   }
 
