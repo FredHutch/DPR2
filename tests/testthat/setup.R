@@ -33,17 +33,18 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
   do.call(dpr_create, args)
 
   path <- file.path(temp_dir, package_name)
-  
+
   writeLines(
     c(
       "library(yaml)",
       "library(lubridate)",
+      "library(DPR2)",
       "date('2024-01-01')", # test function masking of `date()`
       "mydataframe <- data.frame(x=1:10, y=LETTERS[1:10])",
       "yml <- as.yaml(mydataframe)",
       "objYml1 <- 'test objects values 1'",
       "objYml2 <- 'test objects values 2'",
-      "DPR2::dpr_save('mydataframe')",
+      "dpr_save('mydataframe')",
       "save(yml, file='data/myyaml.rda')"
     ),
     file.path(path, "processing/01.R")
@@ -65,11 +66,12 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
     ),
     file.path(path, "processing/01.Rmd")
   )
-  
+
   writeLines(
     c(
+      "library(DPR2)",
       "mymatrix <- matrix(1:16, nrow=4)",
-      "DPR2::dpr_save('mymatrix')"
+      "dpr_save('mymatrix')"
     ),
     file.path(path, "processing/02.R")
   )
@@ -77,10 +79,11 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
   ## a processing script that accesses the datapackager.yml
   writeLines(
     c(
+      "library(DPR2)",
       "dat <- as.list(LETTERS)",
       "ourLetters <- c('d', 'p', 'r')",
       "save(dat, file='data/letters.rda')",
-      "DPR2::dpr_save('ourLetters')"
+      "dpr_save('ourLetters')"
     ),
     file.path(path, "processing/A1.R")
   )
@@ -88,9 +91,10 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
   ## check if environment is shared
   writeLines(
     c(
+      "library(DPR2)",
       "mymatrix[1] <- 100",
       "newmatrix <- mymatrix",
-      "DPR2::dpr_save('newmatrix')"
+      "dpr_save('newmatrix')"
     ),
     file.path(path, "processing/S1.R")
   )
