@@ -43,7 +43,7 @@ dpr_render <- function(path=".", ...){
   src_vec = file.path(path, yml$process_directory, yml$process_on_build)
   render_args <- list(
     knit_root_dir = normalizePath(path),
-    output_dir = file.path(path, "vignettes"),
+    output_dir = { if(yml$write_to_vignettes) file.path(path, "vignettes") else tempdir() },
     output_format = "md_document",
     quiet = TRUE
   )
