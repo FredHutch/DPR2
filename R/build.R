@@ -69,18 +69,18 @@ dpr_render <- function(path=".", ...){
         rmarkdown::render(envir = globalenv(), ...)
         as.list(globalenv())
       }
+      stderr_file <- tempfile()
+      # Fight rmarkdown::render() to get its error message...
       on.exit({
-        erfi <- file.path(tempdir(), "err")
-        erln <- readLines(erfi)
+        erln <- readLines(stderr_file)
         qln  <- grepl('^Quitting', erln)
-        file.remove(erfi)
+        file.remove(stderr_file)
         if (any(qln)){
           err <- paste('in dpr_render() from rmarkdown::render():', erln[qln])
           stop(err, call. = FALSE)
         }
       })
-      #if (basename(src) == 'S1.R') browser()
-      callr::r(callr_fn, callr_args, stderr = file.path(tempdir(), "err"))
+      callr::r(callr_fn, callr_args, stderr = stderr_file)
     })
     env_lst <- list()
     for (res_env in res_env_lst){
