@@ -43,7 +43,7 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
       "yml <- as.yaml(mydataframe)",
       "objYml1 <- 'test objects values 1'",
       "objYml2 <- 'test objects values 2'",
-      "dpr_save('mydataframe')",
+      "DPR2::dpr_save('mydataframe')",
       "save(yml, file='data/myyaml.rda')"
     ),
     file.path(path, "processing/01.R")
@@ -69,7 +69,7 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
   writeLines(
     c(
       "mymatrix <- matrix(1:16, nrow=4)",
-      "dpr_save('mymatrix')"
+      "DPR2::dpr_save('mymatrix')"
     ),
     file.path(path, "processing/02.R")
   )
@@ -80,7 +80,7 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
       "dat <- as.list(LETTERS)",
       "ourLetters <- c('d', 'p', 'r')",
       "save(dat, file='data/letters.rda')",
-      "dpr_save('ourLetters')"
+      "DPR2::dpr_save('ourLetters')"
     ),
     file.path(path, "processing/A1.R")
   )
@@ -90,7 +90,7 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
     c(
       "mymatrix[1] <- 100",
       "newmatrix <- mymatrix",
-      "dpr_save('newmatrix')"
+      "DPR2::dpr_save('newmatrix')"
     ),
     file.path(path, "processing/S1.R")
   )
