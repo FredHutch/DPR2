@@ -70,8 +70,8 @@ dpr_render <- function(path=".", ...){
         as.list(globalenv())
       }
       stderr_file <- tempfile()
-      # Fight rmarkdown::render() to get its error message...
       on.exit({
+        # Fight rmarkdown::render() to get its error message...
         erln <- readLines(stderr_file)
         qln  <- grepl('^Quitting', erln)
         file.remove(stderr_file)
@@ -82,11 +82,11 @@ dpr_render <- function(path=".", ...){
       })
       callr::r(callr_fn, callr_args, stderr = stderr_file)
     })
-    env_lst <- list()
-    for (res_env in res_env_lst){
-      # Repeat objects with same name will be sequentially overwritten
-      env_lst <- utils::modifyList(env_lst, res_env, keep.null = TRUE)
-    }
+    # Recombine. Earlier object(s) with same name will be overwritten
+    env_lst <- Reduce(
+      function(...) utils::modifyList(..., keep.null = TRUE),
+      res_env_lst, simplify = FALSE
+    )
   }
 
   env <- as.environment(env_lst)
