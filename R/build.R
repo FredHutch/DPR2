@@ -39,39 +39,19 @@ dpr_render <- function(path=".", ...){
   }
 
   # Prepare to render
-  mode <- yml$render_env_mode
   src_vec = file.path(path, yml$process_directory, yml$process_on_build)
   render_args <- list(
     knit_root_dir = normalizePath(path),
-    output_dir = { if(yml$write_to_vignettes) file.path(path, "vignettes") else tempdir() },
+    output_dir = ifelse(yml$write_to_vignettes, file.path(path, "vignettes"), tempdir()),
     output_format = "md_document"
   )
+  render_fn <- switch(yml$render_env_mode,
+                      share = render_shared,
+                      isolate = render_isolate)
 
-  # Shared rendering environment in a clean R process
-  if (mode == 'share'){
-    lst_all_process <- render_shared(src_vec, render_args)
-  }
+  # render and convert to environment
+  env <- as.environment(render_fn(src_vec, render_args))
 
-  # Isolated rendering in separate clean R processes
-  if (mode == 'isolate'){
-    lst_each_process <- lapply(src_vec, function(src){
-      callr_args <- c(render_args, input = src)
-      callr_fn <- function(...){
-        rmarkdown::render(envir = globalenv(), ...)
-        as.list(globalenv())
-      }
-      stderr_file <- tempfile()
-      on.exit(extract_rmarkdown_render_stderr(stderr_file))
-      callr::r(callr_fn, callr_args, stderr = stderr_file)
-    })
-    # Recombine. Earlier object(s) with same name will be overwritten
-    lst_all_process <- Reduce(
-      function(...) utils::modifyList(..., keep.null = TRUE),
-      lst_each_process, simplify = FALSE
-    )
-  }
-
-  env <- as.environment(lst_all_process)
   saved_objects <- character()
   for( obj in intersect(ls(env), yml$objects) ){
     dpr_save(obj, path, envir = env)
@@ -86,6 +66,36 @@ dpr_render <- function(path=".", ...){
         paste(missed_objects, collapse = ", ")
       )
     )
+}
+
+#' Private. Isolated rendering in separate R processes with error handling
+#'
+#' @param src_vec Character vector of file paths to be rendered
+#' @param render_args Named list of arguments to be passed to [rmarkdown::render()]
+#'
+#' @return list of objects created by render of all processing files
+#' @noRd
+render_isolate <- function(src_vec, render_args){
+  lst_each_process <- lapply(src_vec, function(src){
+    callr_args <- c(render_args, input = src)
+    callr_fn <- function(...){
+      rmarkdown::render(envir = globalenv(), ...)
+      as.list(globalenv())
+    }
+    rs <- callr::r_session$new()
+    on.exit(rs$close())
+    res <- rs$run_with_output(callr_fn, callr_args)
+    if (! is.null(res$error)){
+      on.exit(print(res$error), add = TRUE)
+      stop(res$error)
+    }
+    res$result
+  })
+  # Recombine. Earlier object(s) with same name will be overwritten
+  lst_all_process <- Reduce(
+    function(...) utils::modifyList(..., keep.null = TRUE),
+    lst_each_process, simplify = FALSE
+  )
 }
 
 #' Private. Shared rendering mode in a separate R process with error handling
@@ -107,23 +117,6 @@ render_shared <- function(src_vec, render_args){
     }
   })
   rs$run(function() as.list(globalenv()))
-}
-
-#' Private. Extract rmarkdown::render() error message from stderr file, then
-#' delete the file.
-#'
-#' @param stderr_file File to which rmarkdown::render() stderr has been written
-#'   by callr. File will be deleted after scraping for error message.
-#' @noRd
-extract_rmarkdown_render_stderr <- function(stderr_file){
-  # Fight rmarkdown::render() to get its error message...
-  on.exit(if (file.exists(stderr_file)) file.remove(stderr_file))
-  erln <- readLines(stderr_file)
-  qln  <- grepl('^Quitting', erln)
-  if (any(qln)){
-    err <- paste('in dpr_render() from rmarkdown::render():', erln[qln])
-    stop(err, call. = FALSE)
-  }
 }
 
 ##' Render and build data package. Uses a special environment,
