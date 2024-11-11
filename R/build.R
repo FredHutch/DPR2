@@ -49,16 +49,7 @@ dpr_render <- function(path=".", ...){
 
   # Shared rendering environment in a clean R process
   if (mode == 'share'){
-    callr_args <- c(render_args, list(src_vec = src_vec))
-
-    callr_fn <- function(src_vec, ...){
-      for (src in src_vec){
-        rmarkdown::render(input = src, envir = globalenv(), ...)
-      }
-      as.list(globalenv())
-    }
-
-    lst_all_process <- callr::r(callr_fn, callr_args)
+    lst_all_process <- render_shared(src_vec, render_args)
   }
 
   # Isolated rendering in separate clean R processes
@@ -95,6 +86,27 @@ dpr_render <- function(path=".", ...){
         paste(missed_objects, collapse = ", ")
       )
     )
+}
+
+#' Private. Shared rendering mode in a separate R process with error handling
+#'
+#' @param src_vec Character vector of file paths to be rendered
+#' @param render_args Named list of arguments to be passed to [rmarkdown::render()]
+#' @returns list of objects created by render of all processing files
+#' @noRd
+render_shared <- function(src_vec, render_args){
+  rs <- callr::r_session$new()
+  on.exit(rs$close())
+  lapply(src_vec, function(src){
+    callr_args <- c(render_args, input = src)
+    callr_fn <- function(...) rmarkdown::render(envir = globalenv(), ...)
+    res <- rs$run_with_output(callr_fn, callr_args)
+    if (! is.null(res$error)){
+      on.exit(print(res$error))
+      stop(res$error)
+    }
+  })
+  rs$run(function() as.list(globalenv()))
 }
 
 #' Private. Extract rmarkdown::render() error message from stderr file, then
