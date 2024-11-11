@@ -1,3 +1,6 @@
+# keep this line first in test-build.R file
+attached_before_test_builds <- names(sessionInfo()$otherPkgs)
+
 tdir <- getPkgDir()
 pkgn <- "testPkg"
 
@@ -136,3 +139,12 @@ testthat::test_that("checking package render",{
 })
 
 cleanup(tdir)
+
+# Keep this test last in test-build.R file
+testthat::test_that("R/Rmd library() calls not attached to main R process",{
+  pkgs_to_check <- setdiff(c('yaml', 'lubridate'), attached_before_test_builds)
+  skip_if(length(pkgs_to_check) == 0L, 'pkgs already attached before testing')
+  expect_false(
+    any(pkgs_to_check %in% names(sessionInfo()$otherPkgs))
+  )
+})
