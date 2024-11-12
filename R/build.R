@@ -46,7 +46,7 @@ dpr_render <- function(path=".", ...){
   )
   render_fn <- switch(yml$render_env_mode,
                       share = render_shared,
-                      isolate = render_isolate)
+                      isolate = render_isolated)
 
   # render and convert to environment
   env <- as.environment(render_fn(files_to_process, render_args))
@@ -74,7 +74,7 @@ dpr_render <- function(path=".", ...){
 #'
 #' @return list of objects created by render of all processing files
 #' @noRd
-render_isolate <- function(files_to_process, render_args){
+render_isolated <- function(files_to_process, render_args){
   lst_each_process <- lapply(files_to_process, function(src){
     callr_args <- c(render_args, input = src)
     callr_fn <- function(...){
@@ -107,6 +107,7 @@ render_shared <- function(files_to_process, render_args){
   rs <- callr::r_session$new()
   on.exit(rs$close())
   lapply(files_to_process, function(src){
+    # Earlier object(s) with same name will be overwritten
     callr_args <- c(render_args, input = src)
     callr_fn <- function(...) rmarkdown::render(envir = globalenv(), ...)
     res <- rs$run_with_output(callr_fn, callr_args)
