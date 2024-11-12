@@ -107,7 +107,8 @@ dpr_yaml_get <- function(path=".", ...){
     new <- list(...)
     yml <- utils::modifyList(
       dpr_yaml_load(path),
-      new
+      new,
+      keep.null = TRUE
     )
     dpr_yaml_check(yml)
     return(yml)
@@ -128,7 +129,7 @@ dpr_yaml_get <- function(path=".", ...){
 ##' @export
 dpr_yaml_set <- function(path=".", ...){
   yml <- dpr_yaml_get(path)
-  new <- utils::modifyList(yml, list(...))
+  new <- utils::modifyList(yml, list(...), keep.null = TRUE)
   yaml::write_yaml(new, file.path(path, "datapackager.yml"))
 }
 

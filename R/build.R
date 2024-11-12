@@ -34,8 +34,8 @@ dpr_render <- function(path=".", ...){
   if(yml$purge_data_directory)
     dpr_purge_data_directory(path, yml)
 
-  if(identical(yml$process_on_build, '')){
-    stop("Are any processes set to build? See datapackager.yml file.")
+  if(is.null(yml$process_on_build)){
+    stop("No files specified to process_on_build. See datapackager.yml file.")
   }
 
   # Prepare to render
