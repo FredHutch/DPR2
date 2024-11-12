@@ -34,12 +34,11 @@ dpr_render <- function(path=".", ...){
   if(yml$purge_data_directory)
     dpr_purge_data_directory(path, yml)
 
+  # Prepare to render
   if(is.null(yml$process_on_build)){
     stop("No files specified to process_on_build. See datapackager.yml file.")
   }
-
-  # Prepare to render
-  src_vec = file.path(path, yml$process_directory, yml$process_on_build)
+  files_to_process = file.path(path, yml$process_directory, yml$process_on_build)
   render_args <- list(
     knit_root_dir = normalizePath(path),
     output_dir = ifelse(yml$write_to_vignettes, file.path(path, "vignettes"), tempdir()),
@@ -50,7 +49,7 @@ dpr_render <- function(path=".", ...){
                       isolate = render_isolate)
 
   # render and convert to environment
-  env <- as.environment(render_fn(src_vec, render_args))
+  env <- as.environment(render_fn(files_to_process, render_args))
 
   saved_objects <- character()
   for( obj in intersect(ls(env), yml$objects) ){
@@ -70,13 +69,13 @@ dpr_render <- function(path=".", ...){
 
 #' Private. Isolated rendering in separate R processes with error handling
 #'
-#' @param src_vec Character vector of file paths to be rendered
+#' @param files_to_process Character vector of file paths to be rendered
 #' @param render_args Named list of arguments to be passed to [rmarkdown::render()]
 #'
 #' @return list of objects created by render of all processing files
 #' @noRd
-render_isolate <- function(src_vec, render_args){
-  lst_each_process <- lapply(src_vec, function(src){
+render_isolate <- function(files_to_process, render_args){
+  lst_each_process <- lapply(files_to_process, function(src){
     callr_args <- c(render_args, input = src)
     callr_fn <- function(...){
       rmarkdown::render(envir = globalenv(), ...)
@@ -100,14 +99,14 @@ render_isolate <- function(src_vec, render_args){
 
 #' Private. Shared rendering mode in a separate R process with error handling
 #'
-#' @param src_vec Character vector of file paths to be rendered
+#' @param files_to_process Character vector of file paths to be rendered
 #' @param render_args Named list of arguments to be passed to [rmarkdown::render()]
 #' @returns list of objects created by render of all processing files
 #' @noRd
-render_shared <- function(src_vec, render_args){
+render_shared <- function(files_to_process, render_args){
   rs <- callr::r_session$new()
   on.exit(rs$close())
-  lapply(src_vec, function(src){
+  lapply(files_to_process, function(src){
     callr_args <- c(render_args, input = src)
     callr_fn <- function(...) rmarkdown::render(envir = globalenv(), ...)
     res <- rs$run_with_output(callr_fn, callr_args)
