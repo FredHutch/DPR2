@@ -30,7 +30,7 @@ dpr_render <- function(path=".", ...){
     warning("Rendering a data package using DPR2 when the yaml is from DataPackageR. See docs for list of side effects.")
 
   yml <- dpr_yaml_get(path, ...)
-  
+
   if(yml$purge_data_directory)
     dpr_purge_data_directory(path, yml)
 
@@ -39,11 +39,13 @@ dpr_render <- function(path=".", ...){
   if(mode == "share")
     env <- new.env(parent = .GlobalEnv)
 
+  if (is.null(yml$process_on_build)){
+    stop("No files specified to process_on_build. See datapackager.yml file.")
+  }
+
   save_objects <- c()
 
   for(src in yml$process_on_build){
-    if(dir.exists(file.path(path, yml$process_directory, src)))
-      stop("Are any processes set to build? See datapackager.yml file.")
 
     if(mode == "isolate")
       env <- new.env(parent = .GlobalEnv)
@@ -63,7 +65,7 @@ dpr_render <- function(path=".", ...){
         dpr_save(obj, path)
         save_objects <- c(save_objects, obj)
       }
-      
+
     },
     error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message)))
   }

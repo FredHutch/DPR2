@@ -174,7 +174,7 @@ dpr_init <- function(
   dpr_create(
     dirname(path),
     yaml = yaml,
-    desc = utils::modifyList(desc, list(Package = basename(path))),
+    desc = utils::modifyList(desc, list(Package = basename(path)), keep.null = TRUE),
     renv_init = renv_init
   )
 }

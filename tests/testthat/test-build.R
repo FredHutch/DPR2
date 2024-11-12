@@ -17,12 +17,12 @@ testthat::test_that("checking package build", {
   expect_true(length(vign) == 2)
   datn <- list.files(file.path(path, "data"))
   expect_true(datn == "mymatrix.rda")
-  
+
   dpr_build(path, process_on_build = "A1.R", build_tarball = TRUE)
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 3)
 
-  ## looking for one object 
+  ## looking for one object
   dpr_build(path, process_on_build = "01.R", objects = "objYml1")
   datn <- list.files(file.path(path, "data"))
   expect_true(all("objYml1.rda" %in% datn))
@@ -38,7 +38,7 @@ testthat::test_that("checking package build", {
     )
   )
 
-  ## looking for both objects when set in the yaml and not passed as build arguments 
+  ## looking for both objects when set in the yaml and not passed as build arguments
   dpr_yaml_set(path, process_on_build = "01.R", objects = c("objYml1", "objYml2"))
   dpr_build(path)
   datn <- list.files(file.path(path, "data"))
@@ -57,7 +57,7 @@ testthat::test_that("checking package build", {
   expect_true(
     all(datn %in% c("mydataframe.rda", "myyaml.rda"))
   )
-  
+
   ## check that tarball is built
   dpr_build(path, build_tarball = TRUE)
   expect_length(
@@ -73,7 +73,7 @@ testthat::test_that("checking package build", {
       dpr_build(path, data_digest_directory="/notapath"),
       "Data digest directory does not exist"
   )
-  
+
   expect_error(
     dpr_build(tempdir()),
     "`path` argument is not a DataPackageR or DPR2 package"
@@ -91,7 +91,13 @@ testthat::test_that("checking package build", {
   )
 
   dpr_build(path, render_env_mode = "share", process_on_build = c("02.R", "S1.R"))
-  
+
+  ## check NULL process_on_build on existing packages
+  expect_error(
+    dpr_build(path, process_on_build = NULL),
+    "No files specified to process"
+  )
+
   ## no variables should be in calling environment
   expect_false(exists("chkvar", environment()))
 
@@ -100,7 +106,7 @@ testthat::test_that("checking package build", {
     dpr_build(path, render_env_mode = "not valid"),
     "Invalid yaml values.+render_env_mode: isolate"
   )
-  
+
   unlink(path, recursive = TRUE)
 
   ## check that when nothing is set to process_on_build, error is as expected
@@ -108,7 +114,7 @@ testthat::test_that("checking package build", {
   dpr_create(tdir, desc=dpr_description_init(Package=basename(path)))
   expect_error(
     dpr_build(path),
-    "Are any processes set to build?"
+    "No files specified to process"
   )
 
   unlink(path, recursive = TRUE)
@@ -120,11 +126,11 @@ testthat::test_that("checking package build", {
   writeLines(gsub("render_on_build", "rnder_n_bild", yfil), ypth)
   expect_error(
     dpr_build(path),
-    "The following required yaml keys are not found: render_on_build"
+    "yaml.*not found.*render_on_build"
   )
 
   unlink(path, recursive = TRUE)
-    
+
 })
 
 testthat::test_that("checking package render",{
