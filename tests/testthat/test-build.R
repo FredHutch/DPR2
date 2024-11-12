@@ -92,6 +92,12 @@ testthat::test_that("checking package build", {
 
   dpr_build(path, render_env_mode = "share", process_on_build = c("02.R", "S1.R"))
 
+  ## check NULL process_on_build on existing packages
+  expect_error(
+    dpr_build(path, process_on_build = NULL),
+    "No files specified to process"
+  )
+
   ## no variables should be in calling environment
   expect_false(exists("chkvar", environment()))
 
