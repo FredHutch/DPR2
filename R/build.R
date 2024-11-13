@@ -85,7 +85,7 @@ render_isolated <- function(files_to_process, render_args){
     on.exit(rs$close())
     res <- rs$run_with_output(callr_fn, callr_args)
     if (! is.null(res$error)){
-      on.exit(print(res$error), add = TRUE)
+      res$error$message <- paste0(res$error$message, res$error$stderr)
       stop(res$error)
     }
     res$result
@@ -112,7 +112,7 @@ render_shared <- function(files_to_process, render_args){
     callr_fn <- function(...) rmarkdown::render(envir = globalenv(), ...)
     res <- rs$run_with_output(callr_fn, callr_args)
     if (! is.null(res$error)){
-      on.exit(print(res$error))
+      res$error$message <- paste0(res$error$message, res$error$stderr)
       stop(res$error)
     }
   })

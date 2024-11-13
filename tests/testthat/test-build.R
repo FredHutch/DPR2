@@ -90,9 +90,7 @@ testthat::test_that("checking package build", {
   expect_false(exists("dfm"))
 
   expect_error(
-    capture.output(
-      dpr_build(path, render_env_mode = "isolate", process_on_build = c("01.R", "S1.R"))
-    )
+    dpr_build(path, render_env_mode = "isolate", process_on_build = c("01.R", "S1.R"))
   )
 
   dpr_build(path, render_env_mode = "share", process_on_build = c("02.R", "S1.R"))
