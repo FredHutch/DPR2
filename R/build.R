@@ -93,7 +93,7 @@ render_isolated <- function(files_to_process, render_args){
   # Recombine. Earlier object(s) with same name will be overwritten
   lst_all_process <- Reduce(
     function(...) utils::modifyList(..., keep.null = TRUE),
-    lst_each_process, simplify = FALSE
+    lst_each_process
   )
 }
 
