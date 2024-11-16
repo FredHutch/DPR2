@@ -156,12 +156,16 @@ dpr_description_set <- function(path=".", ...){
   )
 }
 
-##' A convenience function for writing data objects to the package data directory.
+##' A convenience function for writing data objects to the package data
+##' directory.
 ##'
 ##' @title dpr_save
-##' @param objects a character vector of object names to saved from the calling environment
-##' @param path The relative path to the data package. The default is the working directory.
-##' @param envir The environment to search for objects to save. Defaults to calling environment.
+##' @param objects Character vector of object names to be saved from the
+##'   environment specified in \code{envir}.
+##' @param path The relative path to the data package. The default is the
+##'   working directory.
+##' @param envir The environment to search for objects to save. Defaults to
+##'   calling environment.
 ##' @author jmtaylor
 ##' @export
 dpr_save <- function(objects, path = ".", envir = parent.frame()){
