@@ -44,12 +44,14 @@ dpr_render <- function(path=".", ...){
     output_dir = ifelse(yml$write_to_vignettes, file.path(path, "vignettes"), tempdir()),
     output_format = "md_document"
   )
-  render_fn <- switch(yml$render_env_mode,
-                      share = render_share,
-                      isolate = render_isolate)
 
   # render and convert to environment
-  env <- as.environment(render_fn(files_to_process, render_args))
+  if (yml$render_env_mode == 'isolate'){
+    render_lst <- render_isolate(files_to_process, render_args)
+  } else if (yml$render_env_mode == 'share'){
+    render_lst <- render_share(files_to_process, render_args)
+  }
+  env <- as.environment(render_lst)
 
   saved_objects <- character()
   for( obj in intersect(ls(env), yml$objects) ){
