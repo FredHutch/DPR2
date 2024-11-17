@@ -166,11 +166,14 @@ dpr_description_set <- function(path=".", ...){
 ##'   working directory.
 ##' @param envir The environment to search for objects to save. Defaults to
 ##'   calling environment.
+##' @returns The original \code{objects} argument, invisibly.
 ##' @author jmtaylor
 ##' @export
 dpr_save <- function(objects, path = ".", envir = parent.frame()){
   if(!is.character(objects))
     stop("Only character vectors allowed.")
-  for(obj in objects)
+  for(obj in objects){
     save(list=obj, file = file.path(path, "data", paste0(obj, ".rda")), envir=envir)
+  }
+  invisible(objects)
 }

@@ -16,6 +16,9 @@ working directory.}
 \item{envir}{The environment to search for objects to save. Defaults to
 calling environment.}
 }
+\value{
+The original \code{objects} argument, invisibly.
+}
 \description{
 A convenience function for writing data objects to the package data
 directory.
