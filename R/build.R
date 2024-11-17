@@ -53,8 +53,8 @@ dpr_render <- function(path=".", ...){
   }
   env <- as.environment(render_lst)
 
-  saved_objects <- vapply(
-    intersect(ls(env), yml$objects), dpr_save, '', path = path, envir = env
+  saved_objects <- dpr_save(
+    intersect(ls(env), as.character(yml$objects)), path, env
   )
 
   missed_objects <- setdiff(yml$objects, saved_objects)
