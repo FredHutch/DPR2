@@ -45,8 +45,8 @@ dpr_render <- function(path=".", ...){
     output_format = "md_document"
   )
   render_fn <- switch(yml$render_env_mode,
-                      share = render_shared,
-                      isolate = render_isolated)
+                      share = render_share,
+                      isolate = render_isolate)
 
   # render and convert to environment
   env <- as.environment(render_fn(files_to_process, render_args))
@@ -74,7 +74,7 @@ dpr_render <- function(path=".", ...){
 #'
 #' @return list of objects created by render of all processing files
 #' @noRd
-render_isolated <- function(files_to_process, render_args){
+render_isolate <- function(files_to_process, render_args){
   lst_each_process <- lapply(files_to_process, function(src){
     callr_args <- c(render_args, input = src)
     callr_fn <- function(...){
@@ -103,7 +103,7 @@ render_isolated <- function(files_to_process, render_args){
 #' @param render_args Named list of arguments to be passed to [rmarkdown::render()]
 #' @returns list of objects created by render of all processing files
 #' @noRd
-render_shared <- function(files_to_process, render_args){
+render_share <- function(files_to_process, render_args){
   rs <- callr::r_session$new()
   on.exit(rs$close())
   lapply(files_to_process, function(src){
