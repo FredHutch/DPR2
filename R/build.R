@@ -51,6 +51,7 @@ dpr_render <- function(path=".", ...){
   } else if (yml$render_env_mode == 'share'){
     render_lst <- render_share(files_to_process, render_args)
   }
+  # parent.env(env) will be emptyenv(). See ?as.environment
   env <- as.environment(render_lst)
 
   saved_objects <- dpr_save(
