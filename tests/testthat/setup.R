@@ -33,7 +33,7 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
   do.call(dpr_create, args)
 
   path <- file.path(temp_dir, package_name)
-  
+
   writeLines(
     c(
       "library(yaml)",
@@ -44,7 +44,7 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
       "objYml1 <- 'test objects values 1'",
       "objYml2 <- 'test objects values 2'",
       "dpr_save('mydataframe')",
-      "save(yml, file='data/myyaml.rda')"
+      "save(yml, file=dpr_path('data', 'myyaml.rda'))"
     ),
     file.path(path, "processing/01.R")
   )
@@ -59,13 +59,13 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
       "library(yaml)",
       "df  <- data.frame(x=1:10, y=LETTERS[1:10])",
       "yml <- as.yaml(df)",
-      "save(df,  file='data/mydataframe_rmd.rda')",
-      "save(yml, file='data/myyaml_rmd.rda')",
+      "save(df,  file=dpr_path('data', 'mydataframe_rmd.rda'))",
+      "save(yml, file=dpr_path('data', 'myyaml_rmd.rda'))",
       "```"
     ),
     file.path(path, "processing/01.Rmd")
   )
-  
+
   writeLines(
     c(
       "mymatrix <- matrix(1:16, nrow=4)",
@@ -79,7 +79,7 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
     c(
       "dat <- as.list(LETTERS)",
       "ourLetters <- c('d', 'p', 'r')",
-      "save(dat, file='data/letters.rda')",
+      "save(dat, file=dpr_path('data', 'letters.rda'))",
       "dpr_save('ourLetters')"
     ),
     file.path(path, "processing/A1.R")

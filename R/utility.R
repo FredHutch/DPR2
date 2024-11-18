@@ -160,10 +160,10 @@ dpr_description_set <- function(path=".", ...){
 ##'
 ##' @title dpr_save
 ##' @param objects a character vector of object names to saved from the calling environment
-##' @param path The relative path to the data package. The default is the working directory.
+##' @param path The path to the data package. Defaults to [dpr_path()].
 ##' @author jmtaylor
 ##' @export
-dpr_save <- function(objects, path = "."){
+dpr_save <- function(objects, path = dpr_path()){
   if(!is.character(objects))
     stop("Only character vectors allowed.")
   for(obj in objects)
