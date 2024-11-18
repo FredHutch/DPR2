@@ -102,4 +102,12 @@ createPkg <- function(temp_dir, package_name, more_args = list()){
     file.path(path, "processing/S1.R")
   )
 
+  ## reproducibility: check no access to library only attached in main R process
+  writeLines(
+    c(
+      "dpr_path()"
+    ),
+    file.path(path, "processing/nolib.R")
+  )
+
 }
