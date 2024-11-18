@@ -1,7 +1,8 @@
 ##' Private. A function for purging the data directory.
 ##'
 ##' @title dpr_purge_data_directory
-##' @param path the package path
+##' @param path A character string specifying the directory path of the data package. The default is the
+##'   working directory
 ##' @param yml an R yaml list object
 ##' @return nothing
 ##' @author jmtaylor
@@ -14,7 +15,8 @@ dpr_purge_data_directory <- function(path=".", yml){
 ##' Private. A function for updating the data digest components.
 ##'
 ##' @title dpr_update_data_digest
-##' @param path the package path
+##' @param path A character string specifying the directory path of the data package. The default is the
+##'   working directory
 ##' @param yml an R yaml list object
 ##' @return nothing
 ##' @author jmtaylor
@@ -33,22 +35,21 @@ dpr_update_data_digest <- function(path=".", yml){
     )
 }
 
-##' Render all processing scripts in the for the data package. Does
-##' not build. Using the `dpr_render()` calling environment. For
-##' evaluation.
+##' The dpr_render function process and render all processing scripts defined in the datapackager.yml configuration file. Does
+##' not build or install the data package. For full package build and installation, use the dpr_build function.
+##'
 ##'
 ##' @title dpr_render
-##' @param path The full path to the data package. The default is the
+##' @param path A character string specifying the directory path of the data package. The default is the
 ##'   working directory.
-##' @param ... datapakager.yml value overrides. When arguments are
-##'   specified, those arguments are used as the YAML key value pairs
-##'   instead of what is specified by the `datapackager.yml`.
-##' @return nothing
+##' @param ... Additional arguments that overrides datapackager.yml default configuration values.
+##'
+##' @return does not return anything but performs rendering, processing and data-saving operation defined in configuration file
 ##' @author jmtaylor
 ##' @export
 dpr_render <- function(path=".", ...){
   yml <- DPR2::dpr_yaml_get(path, ...)
-  
+
   if(yml$purge_data_directory)
     dpr_purge_data_directory(path, yml)
 
@@ -73,7 +74,7 @@ dpr_render <- function(path=".", ...){
         envir = env,
         quiet = TRUE
       )
-      
+
       if( !is.null(yml$objects) ){
         for( obj in yml$objects ){
           if( exists(obj, envir=env) ){
@@ -84,14 +85,14 @@ dpr_render <- function(path=".", ...){
           }
         }
       }
-      
+
     },
     error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message))
     )
   }
 }
 
-##' Render and build data package. Uses a special environment,
+##' The dpr_build function process, render and build data package. Uses a special environment,
 ##' `dpr_build_env`, for the evaluation environment. `dpr_build_env`
 ##' is removed from the .GlobalEnv once complete.
 ##'
@@ -101,7 +102,7 @@ dpr_render <- function(path=".", ...){
 ##' @param ... datapakager.yml value overrides. When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs
 ##'   instead of what is specified by the `datapackager.yml`.
-##' @return nothing
+##' @return does not return any value. It performs rendering, building and installing the package based on the configuration
 ##' @author jmtaylor
 ##' @export
 dpr_build <- function(path=".", ...){
@@ -131,7 +132,7 @@ dpr_build <- function(path=".", ...){
           )
           utils::install.packages(pkgp, repo=NULL)
         }
-        
+
     },
     error = function(e) stop(sprintf("dpr_build() failed: %s \n", e$message))
 

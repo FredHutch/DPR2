@@ -1,4 +1,4 @@
-##' Private. Load `datapackager.yml` into memory. If missing, throw exception.
+##' A private function for loading `datapackager.yml` into memory. If missing, throw exception.
 ##'
 ##' @title dpr_yaml_load
 ##' @param pkgp the package path
@@ -11,7 +11,7 @@ dpr_yaml_load <- function(pkgp){
   return( yaml::yaml.load_file(file.path(pkgp, "datapackager.yml")) )
 }
 
-##' Private. Check yaml values that must be specific.
+##' A Private function for checking yaml values that must be specific.
 ##'
 ##' @title dpr_yaml_validate
 ##' @param yml a parsed yaml object
@@ -46,7 +46,7 @@ dpr_yaml_validate <- function(yml){
 
 }
 
-##' Private. Load the package DESCRIPTION file into memory.
+##' A Private function for loading the package DESCRIPTION file into memory.
 ##'
 ##' @title dpr_description_load
 ##' @param pkgp the package path
@@ -56,12 +56,12 @@ dpr_description_load <- function(pkgp){
   desc::desc(file = pkgp)
 }
 
-##' Private. Replace and add key:value pairs in old list with new.
+##' A private function for updating or adding adds key:value pairs in old list.
 ##'
 ##' @title dpr_set_keys
 ##' @param old key:values list object
 ##' @param new key:values list object to add/modify
-##' @return list
+##' @return the modified list with updated or added key-value pairs
 ##' @author jmtaylor
 dpr_set_keys <- function(old, new){
   ## replace any new keys with new
@@ -86,7 +86,7 @@ dpr_set_keys <- function(old, new){
 dpr_yaml_get <- function(path=".", ...){
   new <- list(...)
   yml <- dpr_set_keys(
-    dpr_yaml_load(path), 
+    dpr_yaml_load(path),
     new
   )
   dpr_yaml_validate(yml)
@@ -96,9 +96,9 @@ dpr_yaml_get <- function(path=".", ...){
 ##' Write new datapackager.yml with new or modified key:value pairs.
 ##'
 ##' @title dpr_yaml_set
-##' @param path The full path to the data package. The default is the
+##' @param path A character string specifying the full path to the data package. The default is the
 ##'   working directory.
-##' @param ... datapakager.yml value overrides. When arguments are
+##' @param ... Named key-value pairs that sets or updates datapakager.yml value. When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs
 ##'   instead of what is specified by the `datapackager.yml`.
 ##' @return nothing
@@ -110,7 +110,7 @@ dpr_yaml_set <- function(path=".", ...){
   yaml::write_yaml(new, file.path(path, "datapackager.yml"))
 }
 
-##' Write new DESCRIPTION file with new or modified key:value pairs.
+##' Write a new DESCRIPTION file with new or modified key:value pairs.
 ##'
 ##' @title dpr_description_set
 ##' @param path The full path to the data package. The default is the
@@ -132,12 +132,15 @@ dpr_description_set <- function(path=".", ...){
   )
 }
 
-##' Retrieve data.frame of data object names and versions rendered to the data directory.
+##' The dpr_data_versions function allows users to easily access and view the data object names and
+##' versions rendered to the data directory. It outputs a hash or checksum to uniquely identify the contents of
+##' each file, which is useful for tracking data changes over time.
 ##'
 ##' @title dpr_data_versions
-##' @param path The full path to the data package. The default is the
+##' @param path A character string specifying the full path to the data package. The default is the
 ##'   working directory.
-##' @return data.frame
+##' @return a data.frame of each data object and the contents of each digest file, which includes a hash
+##' representing the data version for the data object
 ##' @author jmtaylor
 ##' @export
 dpr_data_versions <- function(path="."){
@@ -149,10 +152,10 @@ dpr_data_versions <- function(path="."){
   )
 }
 
-##' A convenience function for writing data objects to the package data directory.
+##' A convenience function for writing and saving data objects to the package data directory.
 ##'
 ##' @title dpr_save
-##' @param objects a character vector of object names to saved from the calling environment.
+##' @param objects a character vector specifying the names of the object to be saved.
 ##' @author jmtaylor
 ##' @export
 dpr_save <- function(objects){
