@@ -20,11 +20,11 @@ dpr_yaml_load <- function(path="."){
   stop("`datapackager.yml` is invalid or missing.")
 }
 
-##' Private. Check that some yaml keys have specific values.
+##' A private function for validating yaml keys
 ##'
 ##' @title dpr_yaml_value_check
 ##' @param yml a yaml object or list
-##' @return elements of the list of key value pairs to check that did not pass
+##' @return elements of the list of key value pairs that failed validation
 ##' @author jmtaylor
 dpr_yaml_value_check <- function(yml){
   key_value = list(
@@ -34,11 +34,12 @@ dpr_yaml_value_check <- function(yml){
   return( key_value[!key_check] )
 }
 
-##' Private. Check that yaml keys required by DPR2 are found in yaml.
+##' A private function for checking that yaml keys required by DPR2 are found in yaml.
 ##'
 ##' @title dpr_yaml_required_check
 ##' @param yml a yaml object or list
-##' @return required yaml keys not found
+##' @return A list of default key-value pairs missing in the yaml.
+##' If all required keys are present, resturns an empty list
 ##' @author jmtaylor
 dpr_yaml_required_check <- function(yml){
   def <- dpr_yaml_defaults()
@@ -139,9 +140,11 @@ dpr_yaml_get <- function(path=".", ...){
 ##' Write new datapackager.yml with new or modified key:value pairs.
 ##'
 ##' @title dpr_yaml_set
-##' @param path A character string specifying the full path to the data package. The default is the
+##' @param path A character string specifying the full path to the data package.
+##'  The default is the
 ##'   working directory.
-##' @param ... Named key-value pairs that sets or updates datapakager.yml value. When arguments are
+##' @param ... Named key-value pairs that sets or updates datapakager.yml value.
+##'  When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs
 ##'   instead of what is specified by the `datapackager.yml`.
 ##' @return nothing
@@ -177,14 +180,17 @@ dpr_description_set <- function(path=".", ...){
 }
 
 
-##' The dpr_data_versions function allows users to easily access and view the data object names and
-##' versions rendered to the data directory. It outputs a hash or checksum to uniquely identify the contents of
+##' The dpr_data_versions function allows users to easily access and view the
+##' data object names and versions rendered to the data directory.
+##' It outputs a hash or checksum to uniquely identify the contents of
 ##' each file, which is useful for tracking data changes over time.
 ##'
 ##' @title dpr_data_versions
-##' @param path A character string specifying the full path to the data package. The default is the
+##' @param path A character string specifying the full path to the data package.
+##' The default is the
 ##'   working directory.
-##' @return a data.frame of each data object and the contents of each digest file, which includes a hash
+##' @return a data.frame of each data object and the contents of each digest file,
+##'  which includes a hash
 ##' representing the data version for the data object
 ##' @author jmtaylor
 ##' @export
@@ -197,7 +203,8 @@ dpr_data_versions <- function(path="."){
   )
 }
 
-##' A convenience function for writing and saving data objects to the package data directory.
+##' A convenience function for writing and saving data objects to the package
+##' data directory.
 ##' @title dpr_save
 ##' @param objects a character vector of object names to saved from the calling environment
 ##' @param path The relative path to the data package. The default is the working directory.

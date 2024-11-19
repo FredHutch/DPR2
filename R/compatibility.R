@@ -53,7 +53,7 @@ dpr_is_dpr1 <- function(path="."){
   return(FALSE)
 }
 
-##' A private function that Checks if the spcified path is a DPR2 package.
+##' A private function that Checks if the specified path is a DPR2 package.
 ##'
 ##' @title dpr_is_dpr2
 ##' @param path path to datapackage
