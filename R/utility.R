@@ -1,63 +1,94 @@
 ##' A private function for loading `datapackager.yml` into memory. If missing, throw exception.
-##'
+##' @title dpr_is
+##' @param path path to datapackage
+##' @return boolean
+##' @author jmtaylor
+dpr_is <- function(path){
+  return( dpr_is_dpr1(path) || dpr_is_dpr2(path) )
+}
+
+##' A private function for loading `datapackager.yml` into memory.
 ##' @title dpr_yaml_load
-##' @param pkgp the package path
+##' @param path the package path
 ##' @return a yaml object
 ##' @author jmtaylor
-dpr_yaml_load <- function(pkgp){
-  ## looking for exising yaml
-  if( !file.exists(file.path(pkgp, "datapackager.yml")) )
-    stop("`datapackager.yml` does not exist. Either working directory is not at a package root, or 'datapackager.yml' is not found in data package.")
-  return( yaml::yaml.load_file(file.path(pkgp, "datapackager.yml")) )
+dpr_yaml_load <- function(path="."){
+  if( dpr_is_dpr1(path) )
+    return( dpr_dpr1_yaml_load(path) )
+  if( dpr_is_dpr2(path) )
+    return( yaml::read_yaml(file.path(path, "datapackager.yml")) )
+  stop("`datapackager.yml` is invalid or missing.")
+}
+
+##' Private. Check that some yaml keys have specific values.
+##'
+##' @title dpr_yaml_value_check
+##' @param yml a yaml object or list
+##' @return elements of the list of key value pairs to check that did not pass
+##' @author jmtaylor
+dpr_yaml_value_check <- function(yml){
+  key_value = list(
+    "render_env_mode" = c("isolate", "share")
+  )
+  key_check <- vapply(names(key_value), function(key) yml[[key]] %in% key_value[[key]], T)
+  return( key_value[!key_check] )
+}
+
+##' Private. Check that yaml keys required by DPR2 are found in yaml.
+##'
+##' @title dpr_yaml_required_check
+##' @param yml a yaml object or list
+##' @return required yaml keys not found
+##' @author jmtaylor
+dpr_yaml_required_check <- function(yml){
+  def <- dpr_yaml_defaults()
+  def["data_digest_directory"] <- NULL # data_digest_directory is not required from the default set
+  return( def[!(names(def) %in% names(yml))] )
 }
 
 ##' A Private function for checking yaml values that must be specific.
 ##'
-##' @title dpr_yaml_validate
+##' @title dpr_yaml_check
 ##' @param yml a parsed yaml object
 ##' @author jmtaylor
-dpr_yaml_validate <- function(yml){
-
+dpr_yaml_check <- function(yml){
   ## check that all controlled key values are correct
-  key_value = list(
-    "render_env_mode" = c("isolate", "share")
-  )
-  for(key in names(key_value)){
-    if(!yml[[key]] %in% key_value[[key]]){
-      stop(
-        sprintf(
-          "Invalid `%s` yaml value used. Please one of these: %s",
-          key, paste(key_value[[key]], collapse = ", ")
+  kv <- dpr_yaml_value_check(yml)
+  if(length(kv) != 0)
+    stop(
+      sprintf(
+        "Invalid yaml values used for the following keys:\n %s",
+        paste0(
+          Map(function(k, v) sprintf("    %s: %s", k, paste0(v, collapse = ", ")), names(kv), kv),
+          collapse = "\n"
         )
       )
-    }
-  }
+    )
 
   ## check that all default yaml values are present, should catch typos manually entered in yaml
-  def <- dpr_yaml_defaults()
-  nameCheck <- !(names(def) %in% names(yml))
-  if(any(nameCheck)){
-    nm <- paste(names(def)[nameCheck], collapse = ",")
+  nm <- dpr_yaml_required_check(yml)
+  if(length(nm) != 0)
     stop(
-      "The following required yaml values are not found: ", nm, ". ",
-      "Please add those using `dpr_yaml_set()`, or directly in the `datapackager.yml` file."
+      "The following required yaml keys are not found: ", paste(names(nm), collapse = ", "), ". ",
+      "Please add those using `dpr_yaml_set()`, or directly in the `datapackager.yml` file. ",
+      "Use `dpr_yaml_defaults()` to see a list of default values."
     )
-  }
 
 }
 
 ##' A Private function for loading the package DESCRIPTION file into memory.
 ##'
 ##' @title dpr_description_load
-##' @param pkgp the package path
+##' @param path the package path
 ##' @return a desc object
 ##' @author jmtaylor
-dpr_description_load <- function(pkgp){
-  desc::desc(file = pkgp)
+dpr_description_load <- function(path){
+  dpr_is(path)
+  desc::desc(file = path)
 }
 
+
 ##' A private function for updating or adding adds key:value pairs in old list.
-##'
 ##' @title dpr_set_keys
 ##' @param old key:values list object
 ##' @param new key:values list object to add/modify
@@ -78,8 +109,8 @@ dpr_set_keys <- function(old, new){
 ##' @param path The full path to the data package. The default is the
 ##'   working directory.
 ##' @param ... datapakager.yml value overrides. When arguments are
-##'   specified, those arguments are used as the YAML key:value pairs
-##'   instead of what is specified by the `datapackager.yml`.
+##'   specified, those arguments are used as the YAML key:value
+##'   pairs instead of what is specified by the `datapackager.yml`.
 ##' @return list
 ##' @author jmtaylor
 ##' @export
@@ -91,6 +122,18 @@ dpr_yaml_get <- function(path=".", ...){
   )
   dpr_yaml_validate(yml)
   return(yml)
+
+  if( dpr_is(path) ){
+    new <- list(...)
+    yml <- utils::modifyList(
+      dpr_yaml_load(path),
+      new,
+      keep.null = TRUE
+    )
+    dpr_yaml_check(yml)
+    return(yml)
+  }
+  stop("`path` argument is not a DataPackageR or DPR2 package.")
 }
 
 ##' Write new datapackager.yml with new or modified key:value pairs.
@@ -106,7 +149,7 @@ dpr_yaml_get <- function(path=".", ...){
 ##' @export
 dpr_yaml_set <- function(path=".", ...){
   yml <- dpr_yaml_get(path)
-  new <- dpr_set_keys(yml, list(...))
+  new <- utils::modifyList(yml, list(...), keep.null = TRUE)
   yaml::write_yaml(new, file.path(path, "datapackager.yml"))
 }
 
@@ -122,6 +165,7 @@ dpr_yaml_set <- function(path=".", ...){
 ##' @author jmtaylor
 ##' @export
 dpr_description_set <- function(path=".", ...){
+  dpr_is(path)
   new <- list(...)
   def <- dpr_description_defaults()
   invisible(
@@ -131,6 +175,7 @@ dpr_description_set <- function(path=".", ...){
       Map(desc::desc_set_list, key = names(new), list_value = new, file = path)
   )
 }
+
 
 ##' The dpr_data_versions function allows users to easily access and view the data object names and
 ##' versions rendered to the data directory. It outputs a hash or checksum to uniquely identify the contents of
@@ -153,22 +198,14 @@ dpr_data_versions <- function(path="."){
 }
 
 ##' A convenience function for writing and saving data objects to the package data directory.
-##'
 ##' @title dpr_save
-##' @param objects a character vector specifying the names of the object to be saved.
+##' @param objects a character vector of object names to saved from the calling environment
+##' @param path The relative path to the data package. The default is the working directory.
 ##' @author jmtaylor
 ##' @export
-dpr_save <- function(objects){
-  if(!is.character(objects)){
+dpr_save <- function(objects, path = "."){
+  if(!is.character(objects))
     stop("Only character vectors allowed.")
-  }
-  for(obj in objects){
-    x <- get(obj, envir=parent.frame())
-    save(
-      x,
-      file = file.path(
-        dpr_yaml_get()$data_directory, paste0(obj, ".rda")
-      )
-    )
-  }
+  for(obj in objects)
+    save(list=obj, file = file.path(path, "data", paste0(obj, ".rda")), envir=parent.frame(1))
 }

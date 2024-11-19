@@ -7,10 +7,10 @@
 dpr_build(path = ".", ...)
 }
 \arguments{
-\item{path}{The full path to the data package. The default is the
+\item{path}{The relative path to the data package. The default is the
 working directory.}
 
-\item{...}{datapakager.yml value overrides. When arguments are
+\item{...}{datapackager.yml value overrides. When arguments are
 specified, those arguments are used as the YAML key value pairs
 instead of what is specified by the \code{datapackager.yml}.}
 }

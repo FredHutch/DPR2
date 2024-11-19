@@ -11,16 +11,16 @@ dpr_yaml_get(path = ".", ...)
 working directory.}
 
 \item{...}{datapakager.yml value overrides. When arguments are
-specified, those arguments are used as the YAML key:value pairs
-instead of what is specified by the \code{datapackager.yml}.}
+specified, those arguments are used as the YAML key:value
+pairs instead of what is specified by the \code{datapackager.yml}.}
 }
 \value{
 list
 }
 \description{
-Get the current datapackager.yml key:value pairs and add to or
-modify those with with new values. All additions and modifications
-happen only in memory, not on disc.
+Get the current datapackager.yml key:value pairs and temporarily
+add to or modify those with with new values. All additions and
+modifications happen only in memory, not on disc.
 }
 \author{
 jmtaylor

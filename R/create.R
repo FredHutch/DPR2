@@ -1,26 +1,19 @@
-##' Provides a set of default key:value pairs for the data package datapackager.yml file.
-##'
-##' Definitions of yaml key:value pairs
+##' dpr_get_template function lets users locate file templates by matching file names against a specified regular expression
+##' @title dpr_get_template
+##' @return a character vector
+##' @author jmtaylor
+##' @param regex a regular expression
+dpr_get_template <- function(regex){
+  list.files(system.file("templates", package="DPR2"), regex, full.names = TRUE)
+}
+
+##' This function returns default key:value pairs for the data package datapackager.yml.
 ##' @title dpr_yaml_defaults
 ##' @return a named list with default values for the YAML file
 ##' @author jmtaylor
 ##' @export
 dpr_yaml_defaults <- function(){
-  list(
-    "build_output"                 = "../",
-    "data_directory"               = "data",
-    "source_data_directory"        = "inst/extdata",
-    "install_on_build"             = FALSE,
-    "build_tarball"                = FALSE,
-    "process_directory"            = "processing",
-    "process_on_build"             = "",
-    "render_on_build"              = TRUE,
-    "write_to_vignettes"           = TRUE,
-    "auto_increment_data_versions" = TRUE,
-    "purge_data_directory"         = TRUE,
-    "data_digest_directory"        = "inst/data_digest",
-    "render_env_mode"              = "isolate"
-  )
+  return(yaml::read_yaml(dpr_get_template("datapackager.yml$")))
 }
 
 ##' Provides a set of default key:value pairs for the data package DESCRIPTION file.
@@ -30,15 +23,11 @@ dpr_yaml_defaults <- function(){
 ##' @author jmtaylor
 ##' @export
 dpr_description_defaults <- function(){
-  list(
-    "Package"     = "MyDataPackage",
-    "Title"       = "MyDataPackageTitle",
-    "Version"     = "1.0",
-    "Authors"     = "FirstName LastName [aut, cre]",
-    "Description" = "What the package does (one paragraph).",
-    "License"     = "See `https://www.gnu.org/licenses/license-list.html` or `https://choosealicense.com/` for more information",
-    "Encoding"    = "UTF-8",
-    "Depends"     = "R (>= 3.5)"
+  defd <- dpr_get_template("DESCRIPTION")
+  return(
+    as.list(
+      desc::desc_get(desc::desc_fields(defd), defd)
+    )
   )
 }
 
@@ -51,25 +40,18 @@ dpr_description_defaults <- function(){
 ##' @param pkgp the file path of the package where DESCRIPTION file is located
 ##' @author jmtaylor
 dpr_description_init_set <- function(desc, pkgp){
-  defa <- dpr_description_defaults()
-  invisible(
-    Map(desc::desc_set_list, key = names(defa), list_value = defa, file = pkgp)
-  )
-  invisible(
-    Map(desc::desc_set_list, key = names(desc), list_value = desc, file = pkgp)
-  )
+  do.call(desc::desc_set, c(desc, file = pkgp))
 }
 
-##' Private. A function that sets custom values and generates yaml file
-##' key:values pairs in a new data package.
-##'
+
+##' A private function that sets custom values and generates yaml file
 ##' @title dpr_yaml_init_set
 ##' @param yml a list of custom values to be set in the YAML file
 ##' @param pkgp the file path of the package where datapackager.yml file is saved
 ##' @author jmtaylor
 dpr_yaml_init_set <- function(yml, pkgp){
   def <- dpr_yaml_defaults()
-  new <- dpr_set_keys(def, yml)
+  new <- utils::modifyList(def, yml, keep.null = TRUE)
   yaml::write_yaml(new, file.path(pkgp, "datapackager.yml"))
 }
 
@@ -86,12 +68,7 @@ dpr_yaml_init_set <- function(yml, pkgp){
 ##' @author jmtaylor
 ##' @export
 dpr_yaml_init <- function(...){
-  vals <- list(...)
-  yaml <- dpr_yaml_defaults()
-  ## override defaults and add options with arguments
-  for(val in names(vals))
-    yaml[[val]] <- vals[[val]]
-  return(yaml)
+  utils::modifyList(dpr_yaml_defaults(), list(...), keep.null = TRUE)
 }
 
 ##' A function for creating and customizing package descriptions, allowing users to set and override default metadata elements of the package.
@@ -113,10 +90,9 @@ dpr_description_init <- function(...){
   if(!"Package" %in% names(vals))
     warning("Default package name used: ", desc$Package)
   ## override defaults and add options with arguments
-  for(val in names(vals))
-    desc[val] <- vals[[val]]
-  return(desc)
+  utils::modifyList(desc, vals, keep.null = TRUE)
 }
+
 
 ##' Initialize a data package by creating a structured directory skeleton for a new R package . Sets up essential directories, initializes
 ##' package metadata in datapackager.yml and DESCRIPTION files as described by
@@ -129,7 +105,7 @@ dpr_description_init <- function(...){
 ##' @param renv_init A logical value indicating whether to initiate renv (default TRUE)
 ##' @author jmtaylor
 ##' @export
-dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
+dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
   pkgp <- file.path(path, desc$Package)
 
   if(dir.exists(pkgp))
@@ -137,25 +113,32 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
   if(!dir.exists(dirname(pkgp)))
     stop("Package directory does not exist.")
 
+  if(!dir.exists(path))
+    stop("`path` argument does not point to an existing directory.")
+
   tryCatch(
   {
 
     ## create package skeleton
-    dirnm <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
+    dirs <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
+    dir.create(pkgp, showWarnings = FALSE)
 
-    tpath <- system.file("templates", package="DPR2")
+    for( dir in dirs )
+      if(!dir.create(file.path(pkgp, dir), showWarnings = FALSE))
+        warning(sprintf("`%s` was found, skipping creating that directory.", dir))
 
-    dir.create(pkgp)
-    for( dir in dirnm )
-      dir.create(file.path(pkgp, dir))
-    for( fil in c("NAMESPACE", "DESCRIPTION"))
-      file.copy(file.path(tpath, fil), file.path(pkgp, fil))
-
-    dpr_description_init_set(desc, pkgp)
-    dpr_yaml_init_set(yaml, pkgp)
+    for( fil in c("NAMESPACE", "DESCRIPTION", "datapackager.yml") )
+      if(!file.copy(system.file("templates", fil, package="DPR2"), file.path(pkgp, fil)))
+        warning(sprintf("`%s` was found, skipping creating that file.", fil))
+      else {
+        if( fil == "DESCRIPTION" )
+          dpr_description_init_set(desc, pkgp)
+        if( fil == "datapackager.yml" )
+          dpr_yaml_init_set(yaml, pkgp)
+      }
 
     ## init renv
-    if(renv_init == TRUE)
+    if(renv_init && !file.exists(file.path(pkgp, "renv.lock")))
       renv::init(
         pkgp,
         settings = list(snapshot.type = "implicit"),
@@ -168,8 +151,34 @@ dpr_init <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_
     if(dir.exists(pkgp))
       unlink(pkgp, recursive=TRUE)
     stop(e, traceback())
-  },
-  finally = {
   })
 
+}
+
+##' A wrapper for dpr_create that uses the parent directory as the
+##' location to create the data package, setting the package name as
+##' the current directory.
+##'
+##' @title dpr_init
+##' @author jmtaylor
+##' @param path a path value to init at a specific path, when using
+##'   the default the current working directory is used.
+##' @param yaml A returned list for dpr_yaml_init()
+##' @param desc A returned list for dpr_description_init()
+##' @param renv_init Logical; whether to initiate renv (default TRUE)
+
+##' @export
+dpr_init <- function(
+    path = ".",
+    yaml = dpr_yaml_init(),
+    desc = dpr_description_init(),
+    renv_init = TRUE)
+{
+  path <- normalizePath(path)
+  dpr_create(
+    dirname(path),
+    yaml = yaml,
+    desc = utils::modifyList(desc, list(Package = basename(path)), keep.null = TRUE),
+    renv_init = renv_init
+  )
 }

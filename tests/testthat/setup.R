@@ -8,19 +8,20 @@ cleanup <- function(temp_dir){
   if(dir.exists(temp_dir)){
     unlink(
       file.path(temp_dir),
-      recursive=T
+      recursive=TRUE,
+      force=TRUE
     )
   }
 }
 
-initPkg <- function(temp_dir, package_name, more_args=NULL){
+createPkg <- function(temp_dir, package_name, more_args=NULL){
   args <- list(
     path=temp_dir,
-    yaml=dpr_yaml_init(process_on_build=c("01.R", "02.R")),
+    yaml=dpr_yaml_init(process_on_build=c("01.R", "02.R", "01.Rmd")),
     desc=dpr_description_init(Package=package_name)
   )
 
-  ## additional arguments add to the dpr_init call other than the presets listed above at `args`.
+  ## additional arguments add to the dpr_create call other than the presets listed above at `args`.
   ## this is set by the more_args argument in initPkg
   for(arg in names(args)){
     new <- more_args[[arg]]
@@ -29,13 +30,15 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
   newArgs <- more_args[!names(more_args) %in% names(args)]
   args[names(newArgs)] <- newArgs
 
-  do.call(dpr_init, args)
+  do.call(dpr_create, args)
 
   path <- file.path(temp_dir, package_name)
   
   writeLines(
     c(
       "library(yaml)",
+      "library(lubridate)",
+      "date('2024-01-01')", # test function masking of `date()`
       "mydataframe <- data.frame(x=1:10, y=LETTERS[1:10])",
       "yml <- as.yaml(mydataframe)",
       "objYml1 <- 'test objects values 1'",
@@ -46,6 +49,23 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
     file.path(path, "processing/01.R")
   )
 
+  writeLines(
+    c(
+      "---",
+      "title: test report",
+      "---",
+      "test text",
+      "```{r}",
+      "library(yaml)",
+      "df  <- data.frame(x=1:10, y=LETTERS[1:10])",
+      "yml <- as.yaml(df)",
+      "save(df,  file='data/mydataframe_rmd.rda')",
+      "save(yml, file='data/myyaml_rmd.rda')",
+      "```"
+    ),
+    file.path(path, "processing/01.Rmd")
+  )
+  
   writeLines(
     c(
       "mymatrix <- matrix(1:16, nrow=4)",
@@ -59,7 +79,7 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
     c(
       "dat <- as.list(LETTERS)",
       "ourLetters <- c('d', 'p', 'r')",
-      "save(dat, file=file.path(dpr_yaml_get()$data_directory, 'letters.rda'))",
+      "save(dat, file='data/letters.rda')",
       "dpr_save('ourLetters')"
     ),
     file.path(path, "processing/A1.R")
@@ -74,13 +94,5 @@ initPkg <- function(temp_dir, package_name, more_args=NULL){
     ),
     file.path(path, "processing/S1.R")
   )
-  
-  writeLines(
-    c(
-      "df <- data.frame(letters, LETTERS)",
-      "dpr_save(c('df', 'letters'))"
-    ),
-    file.path(path, "processing/SV1.R")
-  )
-  
+
 }
