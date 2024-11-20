@@ -103,7 +103,7 @@ test_that("init populates exisiting directory", {
     write.csv(data.frame(1:10), "extdata/src.csv")
     expect_warning(
       dpr_init(),
-      "[`processing`|`extdata`] was found"
+      "(`processing`|`extdata`) was found"
     )
     expect_true('DESCRIPTION' %in% list.files())
 
