@@ -7,7 +7,7 @@
 dpr_init(
   path = ".",
   yaml = dpr_yaml_init(),
-  desc = dpr_description_init(),
+  desc = dpr_description_init(Package = basename(path)),
   renv_init = TRUE
 )
 }
