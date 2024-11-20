@@ -7,7 +7,7 @@
 dpr_dpr1_yaml_load(path = ".")
 }
 \arguments{
-\item{path}{The relative path to the data package. The default is the
+\item{path}{The reative path to the data package. The default is the
 working directory.}
 }
 \value{

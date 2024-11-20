@@ -7,7 +7,7 @@
 dpr_yaml_init_set(yml, pkgp)
 }
 \arguments{
-\item{yml}{an R yaml object.}
+\item{yml}{an R yaml object containing user-defined YAML configurations}
 
 \item{pkgp}{the package path}
 }

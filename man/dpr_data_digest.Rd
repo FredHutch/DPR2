@@ -10,7 +10,8 @@ dpr_data_digest(path = ".")
 \item{path}{path to data package}
 }
 \value{
-a data.frame showing the hashes found in the data digest
+a data.frame with the names of the data files and the the corresponding hash values
+extracted from the data digest
 }
 \description{
 Return the current hashes recorded to the data digest directory generated during the last

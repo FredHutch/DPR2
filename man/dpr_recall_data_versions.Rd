@@ -12,7 +12,7 @@ dpr_recall_data_versions(hashes, path = ".")
 \item{path}{the path to the data package}
 }
 \value{
-a list of objects loaded from an rda file pulled from the git history
+a list with names of corresponding .rda object and the versions generated from the object
 }
 \description{
 Load a data version into memory by its hash. Only rda files in the data directory will be recalled.

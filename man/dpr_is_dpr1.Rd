@@ -10,10 +10,10 @@ dpr_is_dpr1(path = ".")
 \item{path}{The relative path to the data package. The default is the working directory.}
 }
 \value{
-logical
+a boolean value indicating whether the specified directory contains a DataPackageR package or not
 }
 \description{
-Private. Checks if path is a DataPackageR package.
+A private function to verify whether a specified directory contains a DataPackageR package.
 }
 \author{
 jmtaylor

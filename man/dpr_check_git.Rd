@@ -10,10 +10,10 @@ dpr_check_git(path)
 \item{path}{path to data package}
 }
 \value{
-boolean
+a logical value indicating if the conditions are satisfied
 }
 \description{
-Private. Checks for nessessary git features for using dpr_data_history.
+Private. Verifies if necessary conditions are met for accessing Git features
 }
 \author{
 jmtaylor

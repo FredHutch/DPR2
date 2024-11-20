@@ -13,7 +13,7 @@ dpr_get_template(regex)
 a character vector
 }
 \description{
-Private. Return a full path of file from installed templates directory.
+A private function that return a full path of file from installed templates directory.
 }
 \author{
 jmtaylor

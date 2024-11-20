@@ -7,7 +7,7 @@
 dpr_envs_to_checksums(envs)
 }
 \arguments{
-\item{envs}{environments to extact checksums}
+\item{envs}{environments to extract checksums}
 }
 \value{
 singleton character vector

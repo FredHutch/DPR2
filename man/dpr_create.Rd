@@ -21,7 +21,8 @@ dpr_create(
 \item{renv_init}{Logical; whether to initiate renv (default TRUE)}
 }
 \description{
-Create an empty data package. Package is created with
+Initialize a data package by creating a structured directory skeleton for a new R package .
+Sets up essential directories, initializes package metadata in
 datapackager.yml and DESCRIPTION files as described by
 dpr_yaml_init() and dpr_description_init() function calls.
 }

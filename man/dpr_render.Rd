@@ -15,12 +15,13 @@ specified, those arguments are used as the YAML key value pairs
 instead of what is specified by the \code{datapackager.yml}.}
 }
 \value{
-nothing
+does not return anything but performs rendering, processing and
+data-saving operation defined in configuration file
 }
 \description{
-Render all processing scripts in the for the data package. Does
-not build. Using the \code{dpr_render()} calling environment. For
-evaluation.
+The dpr_render function process and render all processing scripts defined in the
+datapackager.yml configuration file. Does  not build or install the data package.
+For full package build and installation, use the dpr_build function.
 }
 \author{
 jmtaylor

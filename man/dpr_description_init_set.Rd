@@ -7,12 +7,13 @@
 dpr_description_init_set(desc, pkgp)
 }
 \arguments{
-\item{desc}{an R desc object.}
+\item{desc}{an R desc object containing a list of metadata fields and corresponding
+values to set in the DESCRIPTION file}
 
 \item{pkgp}{the package path}
 }
 \description{
-Private. A function that generates sets DESCRIPTION file
+Private. A function that sets and generates a DESCRIPTION file
 key:values pairs in a new data package.
 }
 \author{

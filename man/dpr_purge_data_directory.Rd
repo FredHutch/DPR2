@@ -7,7 +7,9 @@
 dpr_purge_data_directory(path = ".", yml)
 }
 \arguments{
-\item{path}{the package path}
+\item{path}{A character string specifying the directory path of the data package.
+The default is the
+working directory}
 
 \item{yml}{an R yaml list object}
 }

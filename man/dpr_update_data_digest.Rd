@@ -9,13 +9,14 @@ dpr_update_data_digest(path = ".", yml)
 \arguments{
 \item{path}{path to data package}
 
-\item{yml}{the yml object used for the build}
+\item{yml}{the yml list object used for the build}
 }
 \value{
 nothing
 }
 \description{
-Private. A function for updating the data digest components.
+Private. A function for updating the data digest components by generating hashes
+for all .rda files in the specified directory
 }
 \author{
 jmtaylor

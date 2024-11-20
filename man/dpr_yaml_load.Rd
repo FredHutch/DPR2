@@ -13,7 +13,8 @@ dpr_yaml_load(path = ".")
 a yaml object
 }
 \description{
-Private. Load \code{datapackager.yml} into memory.
+Private. Load \code{datapackager.yml} into memory. Works with both DPR1 and
+DPR2 package.
 }
 \author{
 jmtaylor

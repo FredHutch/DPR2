@@ -13,7 +13,7 @@ dpr_is_dpr2(path = ".")
 logical
 }
 \description{
-Private. Checks if path is a DPR2 package.
+A private function to verify whether a specified directory contains a DPR2 package or not
 }
 \author{
 jmtaylor
