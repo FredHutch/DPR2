@@ -122,7 +122,7 @@ test_that("no dpr_(description_)_init warning about default package name", {
   twd <- tempfile()
   dir.create(twd)
   setwd(twd)
-  expect_no_warning(dpr_init(renv = FALSE))
+  expect_no_warning(dpr_init(renv_init = FALSE))
 })
 
 cleanup(tdir)
