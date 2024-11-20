@@ -1,7 +1,9 @@
 ##' Private. A function for purging the data directory.
 ##'
 ##' @title dpr_purge_data_directory
-##' @param path the package path
+##' @param path A character string specifying the directory path of the data package.
+##' The default is the
+##' working directory
 ##' @param yml an R yaml list object
 ##' @return nothing
 ##' @author jmtaylor
@@ -12,9 +14,10 @@ dpr_purge_data_directory <- function(path=".", yml){
   }
 }
 
-##' Render all processing scripts in the for the data package. Does
-##' not build. Using the `dpr_render()` calling environment. For
-##' evaluation.
+##' The dpr_render function process and render all processing scripts defined in the
+##' datapackager.yml configuration file. Does  not build or install the data package.
+##' For full package build and installation, use the dpr_build function.
+##'
 ##'
 ##' @title dpr_render
 ##' @param path The relative path to the data package. The default is the
@@ -22,7 +25,8 @@ dpr_purge_data_directory <- function(path=".", yml){
 ##' @param ... datapakager.yml value overrides. When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs
 ##'   instead of what is specified by the `datapackager.yml`.
-##' @return nothing
+##' @return does not return anything but performs rendering, processing and
+##' data-saving operation defined in configuration file
 ##' @author jmtaylor
 ##' @export
 dpr_render <- function(path=".", ...){
@@ -80,7 +84,7 @@ dpr_render <- function(path=".", ...){
     )
 }
 
-##' Render and build data package. Uses a special environment,
+##' The dpr_build function process, render and build data package. Uses a special environment,
 ##' `dpr_build_env`, for the evaluation environment. `dpr_build_env`
 ##' is removed from the .GlobalEnv once complete.
 ##'
@@ -90,7 +94,8 @@ dpr_render <- function(path=".", ...){
 ##' @param ... datapackager.yml value overrides. When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs
 ##'   instead of what is specified by the `datapackager.yml`.
-##' @return nothing
+##' @return does not return any value. It performs rendering, building and
+##' installing the package based on the configuration file
 ##' @author jmtaylor
 ##' @export
 dpr_build <- function(path=".", ...){

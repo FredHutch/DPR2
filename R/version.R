@@ -1,8 +1,8 @@
-##' Private. A function for updating the data digest components.
-##'
+##' Private. A function for updating the data digest components by generating hashes
+##' for all .rda files in the specified directory
 ##' @title dpr_update_data_digest
 ##' @param path path to data package
-##' @param yml the yml object used for the build
+##' @param yml the yml list object used for the build
 ##' @return nothing
 ##' @author jmtaylor
 dpr_update_data_digest <- function(path=".", yml){
@@ -13,7 +13,7 @@ dpr_update_data_digest <- function(path=".", yml){
     stop(sprintf("Data digest directory does not exist: %s", dig))
 
   unlink(list.files(dig, full.names = T))
-  
+
   for(d in rda)
     write(dpr_hash_files(d), file.path(dig, paste0(basename(d), "_")))
 
@@ -36,11 +36,11 @@ dpr_list_rda <- function(path){
   )
 }
 
-##' Private. Checks for nessessary git features for using dpr_data_history.
+##' Private. Verifies if necessary conditions are met for accessing Git features
 ##'
 ##' @title dpr_check_git
 ##' @param path path to data package
-##' @return boolean
+##' @return a logical value indicating if the conditions are satisfied
 ##' @author jmtaylor
 dpr_check_git <- function(path){
   git <- c(TRUE, TRUE)
@@ -52,7 +52,7 @@ dpr_check_git <- function(path){
     warning("Package is not under git version control (no `.git` directory found at package path).")
     git[2] <- FALSE
   }
-  return(all(git))  
+  return(all(git))
 }
 
 ##' Return hash of file at the path provided. Hash is equivalent to the git blob hash of the file.
@@ -90,7 +90,7 @@ dpr_hash_files <- function(paths){
 ##'
 ##' @title dpr_validate_data_digest_source
 ##' @param path path to data package
-##' @return a list of a data digest source 
+##' @return a list of a data digest source
 ##' @author jmtaylor
 dpr_validate_data_digest_source <- function(path){
   data_digest <- list.files(
@@ -109,9 +109,10 @@ dpr_validate_data_digest_source <- function(path){
 ##'
 ##' @title dpr_data_digest
 ##' @param path path to data package
-##' @return a data.frame showing the hashes found in the data digest
+##' @return a data.frame with the names of the data files and the the corresponding hash values
+##' extracted from the data digest
 ##' @author jmtaylor
-##' @export 
+##' @export
 dpr_data_digest <- function(path="."){
   data_digest <- dpr_validate_data_digest_source(path)
   return(
@@ -126,7 +127,7 @@ dpr_data_digest <- function(path="."){
 ##'
 ##' @title dpr_data_hashes
 ##' @param path path to data package
-##' @return a data.frame
+##' @return a data.frame containing the name of the rda object and the corresponding hash
 ##' @author jmtaylor
 ##' @export
 dpr_data_hashes <- function(path="."){
@@ -141,15 +142,16 @@ dpr_data_hashes <- function(path="."){
 
 ##' A data digest comparison table, comparing the current data digest
 ##' hashes with the current file hashes in the data directory.
-##' 
+##'
 ##' Compare the current hashes for the data listed in the data
 ##' directory with the hashes listed in the data digest. The data
 ##' digest is only updated when the package is built, not when it is
 ##' simply rendered using `dpr_render()`.
 ##' @title dpr_compare_data_digest
 ##' @param path path to data package
-##' @param display_digits how many digits in the compare to display
-##' @return a data.frame
+##' @param display_digits number of characters to display for hash values
+##' @return a data.frame with the file name, corresponding data hash, existing data_digest hash and a boolean
+##' value indicating if they are same or not
 ##' @author jmtaylor
 ##' @export
 dpr_compare_data_digest <- function(path=".", display_digits = 7){
@@ -198,8 +200,8 @@ dpr_hashes_to_envs <- function(hashes, path = ".") {
 ##' environments.
 ##'
 ##' @title dpr_envs_to_checksums
-##' @param envs environments to extact checksums
-##' @return singleton character vector 
+##' @param envs environments to extract checksums
+##' @return singleton character vector
 ##' @author jmtaylor
 dpr_envs_to_checksums <- function(envs){
   vapply(
@@ -208,7 +210,7 @@ dpr_envs_to_checksums <- function(envs){
       nms <- ls(envir=env)
       if(length(nms) > 1)
         return("No checksum computed for rda files containing more than 1 object.")
-      else 
+      else
         return(digest::digest(get(nms, envir=env), algo="md5"))
     }, "")
 }
@@ -219,7 +221,7 @@ dpr_envs_to_checksums <- function(envs){
 ##' @title dpr_hashes_to_checksums
 ##' @param hashes a character vector of full sha1 hashes
 ##' @param path a path to a data package
-##' @return a character vector of checksums 
+##' @return a character vector of checksums
 ##' @author jmtaylor
 dpr_hashes_to_checksums <- function(hashes, path){
   dpr_envs_to_checksums(
@@ -234,7 +236,7 @@ dpr_hashes_to_checksums <- function(hashes, path){
 ##' @param include_checksums a boolean value indicating if checksums
 ##'   should be included in the returned data.frame object; computing
 ##'   checksums is less performant
-##' @return a data.frame object
+##' @return a data.frame object with the git hash, file name, author name, time of creation and md5 checksum of the file
 ##' @author jmtaylor
 ##' @export
 dpr_data_history <- function(path=".", include_checksums=FALSE){
@@ -245,7 +247,7 @@ dpr_data_history <- function(path=".", include_checksums=FALSE){
     warning("Returning data digest comparision table instead of data history.")
     return(dpr_compare_data_digest(path))
   }
-  
+
   odb <- git2r::odb_blobs(path)
   odb <- odb[
     odb$path == "data",
@@ -269,24 +271,24 @@ dpr_data_history <- function(path=".", include_checksums=FALSE){
 ##' @title dpr_recall_data_version
 ##' @param hashes the hashes of the data to recall; partial hashes allowed from 1 to 40 hexadecimal digits
 ##' @param path the path to the data package
-##' @return a list of objects loaded from an rda file pulled from the git history
+##' @return a list with names of corresponding .rda object and the versions generated from the object
 ##' @author jmtaylor
-##' @export 
+##' @export
 dpr_recall_data_versions <- function(hashes, path = "."){
   dpr_is(path)
   if(!dpr_check_git(path))
     stop("Datapackage is not under git version control. Data can not be recalled.")
   odb <- git2r::odb_blobs(path)
-  
+
   rda <- unique(
     odb[
-      odb$path == "data" & 
+      odb$path == "data" &
         grepl(paste0(paste0("^", hashes), collapse = "|"), odb$sha, ignore.case = TRUE) &
         grepl("\\.rda$", odb$name, ignore.case = TRUE),
       c("name", "sha")
     ]
   )
-    
+
   if( nrow(rda) == 0 )
     stop("Data version not found. Either version hash is not found, or the hash does not point to an `rda` file in the `data` directory.")
 

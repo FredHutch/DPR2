@@ -1,4 +1,4 @@
-##' Private. Checks if path is a DataPackageR or DPR2 package.
+##' Private. Verifies whether a specified path is a DataPackageR or DPR2 package.
 ##'
 ##' @title dpr_is
 ##' @param path path to datapackage
@@ -8,7 +8,8 @@ dpr_is <- function(path){
   return( dpr_is_dpr1(path) || dpr_is_dpr2(path) )
 }
 
-##' Private. Load `datapackager.yml` into memory.
+##' Private. Load `datapackager.yml` into memory. Works with both DPR1 and
+##' DPR2 package.
 ##'
 ##' @title dpr_yaml_load
 ##' @param path the package path
