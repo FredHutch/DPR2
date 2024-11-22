@@ -19,9 +19,9 @@ does not return anything but performs rendering, processing and
 data-saving operation defined in configuration file
 }
 \description{
-The dpr_render function process and render all processing scripts defined in the
-datapackager.yml configuration file. Does  not build or install the data package.
-For full package build and installation, use the dpr_build function.
+Process and render all processing scripts defined in the datapackager.yml
+configuration file. Does not build or install the data package. For full
+package build and installation, use the dpr_build function.
 }
 \author{
 jmtaylor

@@ -155,16 +155,17 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
 
 }
 
-##' A wrapper for dpr_create that uses the parent directory as the
-##' location to create the data package, setting the package name as
-##' the current directory.
+##' A wrapper for dpr_create that uses the parent directory as the location to
+##' create the data package, setting the package name as the current directory.
 ##'
 ##' @title dpr_init
 ##' @author jmtaylor
-##' @param path a path value to init at a specific path, when using
-##'   the default the current working directory is used.
-##' @param yaml A returned list for dpr_yaml_init()
-##' @param desc A returned list for dpr_description_init()
+##' @param path a path value to init at a specific path, when using the default
+##'   the current working directory is used.
+##' @param yaml A returned list from [dpr_yaml_init()]
+##' @param desc A returned list from [dpr_description_init()]. The default
+##'   argument sets the package name to the name of the directory containing the
+##'   data package.
 ##' @param renv_init Logical; whether to initiate renv (default TRUE)
 
 ##' @export
