@@ -34,10 +34,9 @@ callr_render <- function(files_to_process, render_args, render_mode){
   rs <- callr::r_session$new()
   on.exit(rs$close())
 
-  if(render_mode == "isolate")
-    objs <- list()
+  if (render_mode == "isolate") objs <- list()
 
-  for(file_to_process in files_to_process) {
+  for (file_to_process in files_to_process) {
 
     # If in share mode, earlier object(s) with same name are overwritten here
     res <- rs$run_with_output(
@@ -50,7 +49,7 @@ callr_render <- function(files_to_process, render_args, render_mode){
       stop(res$error)
     }
 
-    if(render_mode == "isolate"){
+    if (render_mode == "isolate"){
       # Earlier object(s) with same name are overwritten here
       objs <- utils::modifyList(objs, callr_get_objects(rs), keep.null = TRUE)
       rs$close()
@@ -59,7 +58,7 @@ callr_render <- function(files_to_process, render_args, render_mode){
 
   }
 
-  if(render_mode == "share")
+  if (render_mode == "share")
     objs <- callr_get_objects(rs)
 
   return(objs)
