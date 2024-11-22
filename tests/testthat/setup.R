@@ -14,30 +14,34 @@ cleanup <- function(temp_dir){
   }
 }
 
-createPkg <- function(temp_dir, package_name, more_args=NULL){
+#' Private, for tests only. Create test data package.
+#'
+#' @param temp_dir Character, directory to contain the created data package
+#' @param package_name Character, package name
+#' @param more_args List of arguments additionally passed to [dpr_create()].
+#'   Will overwrite presets defined in 'args' at beginning of function.
+#'
+#' @return Called for side effect of creating a test data package.
+#' @noRd
+createPkg <- function(temp_dir, package_name, more_args = list()){
   args <- list(
     path=temp_dir,
     yaml=dpr_yaml_init(process_on_build=c("01.R", "02.R", "01.Rmd")),
     desc=dpr_description_init(Package=package_name)
   )
 
-  ## additional arguments add to the dpr_create call other than the presets listed above at `args`.
-  ## this is set by the more_args argument in initPkg
-  for(arg in names(args)){
-    new <- more_args[[arg]]
-    args[[arg]][names(new)] <- new
-  }
-  newArgs <- more_args[!names(more_args) %in% names(args)]
-  args[names(newArgs)] <- newArgs
-
-  do.call(dpr_create, args)
+  do.call(
+    dpr_create,
+    utils::modifyList(args, more_args, keep.null = TRUE)
+  )
 
   path <- file.path(temp_dir, package_name)
-  
+
   writeLines(
     c(
       "library(yaml)",
       "library(lubridate)",
+      "library(DPR2)",
       "date('2024-01-01')", # test function masking of `date()`
       "mydataframe <- data.frame(x=1:10, y=LETTERS[1:10])",
       "yml <- as.yaml(mydataframe)",
@@ -65,9 +69,10 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
     ),
     file.path(path, "processing/01.Rmd")
   )
-  
+
   writeLines(
     c(
+      "library(DPR2)",
       "mymatrix <- matrix(1:16, nrow=4)",
       "dpr_save('mymatrix')"
     ),
@@ -77,6 +82,7 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
   ## a processing script that accesses the datapackager.yml
   writeLines(
     c(
+      "library(DPR2)",
       "dat <- as.list(LETTERS)",
       "ourLetters <- c('d', 'p', 'r')",
       "save(dat, file='data/letters.rda')",
@@ -88,11 +94,20 @@ createPkg <- function(temp_dir, package_name, more_args=NULL){
   ## check if environment is shared
   writeLines(
     c(
+      "library(DPR2)",
       "mymatrix[1] <- 100",
       "newmatrix <- mymatrix",
       "dpr_save('newmatrix')"
     ),
     file.path(path, "processing/S1.R")
+  )
+
+  ## reproducibility: check no access to library only attached in main R process
+  writeLines(
+    c(
+      "dpr_path()"
+    ),
+    file.path(path, "processing/nolib.R")
   )
 
 }

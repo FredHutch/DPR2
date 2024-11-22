@@ -4,15 +4,24 @@
 \alias{dpr_save}
 \title{dpr_save}
 \usage{
-dpr_save(objects, path = ".")
+dpr_save(objects, path = ".", envir = parent.frame())
 }
 \arguments{
-\item{objects}{a character vector of object names to saved from the calling environment}
+\item{objects}{Character vector of object names to be saved from the
+environment specified in \code{envir}.}
 
-\item{path}{The relative path to the data package. The default is the working directory.}
+\item{path}{The relative path to the data package. The default is the
+working directory.}
+
+\item{envir}{The environment to search for objects to save. Defaults to
+calling environment.}
+}
+\value{
+The original \code{objects} argument, invisibly.
 }
 \description{
-A convenience function for writing data objects to the package data directory.
+A convenience function for writing data objects to the package data
+directory.
 }
 \author{
 jmtaylor

@@ -14,10 +14,61 @@ dpr_purge_data_directory <- function(path=".", yml){
   }
 }
 
-##' The dpr_render function process and render all processing scripts defined in the
-##' datapackager.yml configuration file. Does  not build or install the data package.
-##' For full package build and installation, use the dpr_build function.
+##' Private. A function for fetch all global objects from a callr session.
 ##'
+##' @param session a callr session
+##' @return a list of objects
+##' @noRd
+get_callr_globals <- function(session){
+  return(session$run(function() as.list(globalenv())))
+}
+
+#' Private. Render in separate callr R process(es) with error handling
+#'
+#' @param files_to_process Character vector of file paths to be rendered
+#' @param process_args Named list of arguments to be passed to
+#'   [rmarkdown::render()]
+#' @param render_mode The render environment mode from datapackager.yml
+#'   \code{render_env_mode}
+#' @return A list of objects created by all of the processing files
+#' @noRd
+callr_render <- function(files_to_process, render_args, render_mode){
+  rs <- callr::r_session$new()
+  on.exit(rs$close())
+
+  if (render_mode == "isolate") objs <- list()
+
+  for (file_to_process in files_to_process) {
+
+    # If in share mode, earlier object(s) with same name are overwritten here
+    res <- rs$run_with_output(
+      function(...) rmarkdown::render(envir = globalenv(), ...),
+      c(render_args, input = file_to_process)
+    )
+    if (!is.null(res$error)) {
+      # Include useful debugging info from stderr in the actual error msg
+      res$error$message <- paste0(res$error$message, res$error$stderr)
+      stop(res$error)
+    }
+
+    if (render_mode == "isolate"){
+      # Earlier object(s) with same name are overwritten here
+      objs <- utils::modifyList(objs, get_callr_globals(rs), keep.null = TRUE)
+      rs$close()
+      rs <- callr::r_session$new()
+    }
+
+  }
+
+  if (render_mode == "share")
+    objs <- get_callr_globals(rs)
+
+  return(objs)
+}
+
+##' Process and render all processing scripts defined in the datapackager.yml
+##' configuration file. Does not build or install the data package. For full
+##' package build and installation, use the dpr_build function.
 ##'
 ##' @title dpr_render
 ##' @param path The relative path to the data package. The default is the
@@ -38,43 +89,27 @@ dpr_render <- function(path=".", ...){
   if(yml$purge_data_directory)
     dpr_purge_data_directory(path, yml)
 
-  mode <- yml$render_env_mode
-
-  if(mode == "share")
-    env <- new.env(parent = .GlobalEnv)
-
-  if (is.null(yml$process_on_build)){
+  # Prepare to render
+  if(is.null(yml$process_on_build)){
     stop("No files specified to process_on_build. See datapackager.yml file.")
   }
+  files_to_process = file.path(path, yml$process_directory, yml$process_on_build)
+  render_args <- list(
+    knit_root_dir = normalizePath(path),
+    output_dir = ifelse(yml$write_to_vignettes, file.path(path, "vignettes"), tempdir()),
+    output_format = "md_document"
+  )
 
-  save_objects <- c()
+  # render and convert to environment
+  objects <- callr_render(files_to_process, render_args, yml$render_env_mode)
+  # parent.env(env) will be emptyenv(). See ?as.environment
+  env <- as.environment(objects)
 
-  for(src in yml$process_on_build){
+  saved_objects <- dpr_save(
+    intersect(ls(env), as.character(yml$objects)), path, env
+  )
 
-    if(mode == "isolate")
-      env <- new.env(parent = .GlobalEnv)
-
-    tryCatch({
-      rmarkdown::render(
-        input = file.path(path, yml$process_directory, src),
-        knit_root_dir = normalizePath(path),
-        output_dir = { if(yml$write_to_vignettes) file.path(path, "vignettes") else tempdir() },
-        output_format = "md_document",
-        envir = env,
-        quiet = TRUE
-      )
-
-      for( obj in intersect(ls(env), yml$objects) ){
-        assign(obj, get(obj, envir=env))
-        dpr_save(obj, path)
-        save_objects <- c(save_objects, obj)
-      }
-
-    },
-    error = function(e) stop(sprintf("dpr_render() failed: %s \n", e$message)))
-  }
-
-  missed_objects <- setdiff(yml$objects, save_objects)
+  missed_objects <- setdiff(yml$objects, saved_objects)
   if(length(missed_objects) != 0)
     warning(
       sprintf(
@@ -100,37 +135,31 @@ dpr_render <- function(path=".", ...){
 ##' @export
 dpr_build <- function(path=".", ...){
   quiet <- identical(Sys.getenv("TESTTHAT"), "true")
-  tryCatch(
-    expr = {
-      yml <- dpr_yaml_get(path, ...)
+  yml <- dpr_yaml_get(path, ...)
 
-      if(yml$render_on_build)
-        dpr_render(path, ...)
+  if(yml$render_on_build)
+    dpr_render(path, ...)
 
-      if("data_digest_directory" %in% names(yml))
-        dpr_update_data_digest(path, yml)
+  if("data_digest_directory" %in% names(yml))
+    dpr_update_data_digest(path, yml)
 
-      if(yml$build_tarball)
-        pkgp <- pkgbuild::build(
-          path = path,
-          dest_path = file.path(path, yml$build_output),
-          quiet = quiet
-        )
+  if(yml$build_tarball)
+    pkgp <- pkgbuild::build(
+      path = path,
+      dest_path = file.path(path, yml$build_output),
+      quiet = quiet
+    )
 
-      if(yml$install_on_build)
-        if(yml$build_tarball){
-          utils::install.packages(pkgp, repo=NULL, quiet = quiet)
-        } else {
-          pkgp <- pkgbuild::build(
-            path = path,
-            dest_path = tempdir(),
-            quiet = quiet
-          )
-          utils::install.packages(pkgp, repo=NULL, quiet = quiet)
-        }
-
-    },
-    error = function(e) stop(sprintf("dpr_build() failed: %s \n", e$message))
-
-  )
+  if(yml$install_on_build){
+    if(yml$build_tarball){
+      utils::install.packages(pkgp, repo=NULL, quiet = quiet)
+    } else {
+      pkgp <- pkgbuild::build(
+        path = path,
+        dest_path = tempdir(),
+        quiet = quiet
+      )
+      utils::install.packages(pkgp, repo=NULL, quiet = quiet)
+    }
+  }
 }
