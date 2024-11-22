@@ -153,9 +153,11 @@ dpr_data_hashes <- function(path="."){
 ##' simply rendered using `dpr_render()`.
 ##' @title dpr_compare_data_digest
 ##' @param path path to data package
-##' @param display_digits number of characters to display for hash values
-##' @return a data.frame with the file name, corresponding data hash, existing data_digest hash and a boolean
-##' value indicating if they are same or not
+##' @param display_digits number of characters to display for hash
+##'   values
+##' @return a data.frame with the file name, corresponding data hash,
+##'   existing data_digest hash and a boolean value indicating if they
+##'   are same or not
 ##' @author jmtaylor
 ##' @export
 dpr_compare_data_digest <- function(path=".", display_digits = 7){
@@ -243,7 +245,8 @@ dpr_hashes_to_checksums <- function(hashes, path){
 ##' @param include_checksums a boolean value indicating if checksums
 ##'   should be included in the returned data.frame object; computing
 ##'   checksums is less performant
-##' @return a data.frame object with the git hash, file name, author name, time of creation and md5 checksum of the file
+##' @return a data.frame object with the git hash, file name, author
+##'   name, time of creation and md5 checksum of the file
 ##' @author jmtaylor
 ##' @export
 dpr_data_history <- function(path=".", include_checksums=FALSE){
@@ -273,12 +276,15 @@ dpr_data_history <- function(path=".", include_checksums=FALSE){
   return(odb)
 }
 
-##' Load a data version into memory by its hash. Only rda files in the data directory will be recalled.
+##' Load a data version into memory by its hash. Only rda files in the
+##' data directory will be recalled.
 ##'
 ##' @title dpr_recall_data_version
-##' @param hashes the hashes of the data to recall; partial hashes allowed from 1 to 40 hexadecimal digits
+##' @param hashes the hashes of the data to recall; partial hashes
+##'   allowed from 1 to 40 hexadecimal digits
 ##' @param path the path to the data package
-##' @return a list with names of corresponding .rda object and the versions generated from the object
+##' @return a list with names of corresponding .rda object and the
+##'   versions generated from the object
 ##' @author jmtaylor
 ##' @export
 dpr_recall_data_versions <- function(hashes, path = "."){
