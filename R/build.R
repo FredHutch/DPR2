@@ -98,8 +98,8 @@ dpr_render <- function(path=".", ...){
   )
 
   # render and convert to environment
-  # parent.env(env) will be emptyenv(). See ?as.environment
   objects <- callr_render(files_to_process, render_args, yml$render_env_mode)
+  # parent.env(env) will be emptyenv(). See ?as.environment
   env <- as.environment(objects)
 
   saved_objects <- dpr_save(
