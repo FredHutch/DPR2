@@ -17,7 +17,7 @@ dpr_purge_data_directory <- function(path=".", yml){
 ##' @param session a callr session
 ##' @return a list of objects
 ##' @noRd
-callr_get_objects <- function(session){
+get_callr_globals <- function(session){
   return(session$run(function() as.list(globalenv())))
 }
 
@@ -51,7 +51,7 @@ callr_render <- function(files_to_process, render_args, render_mode){
 
     if (render_mode == "isolate"){
       # Earlier object(s) with same name are overwritten here
-      objs <- utils::modifyList(objs, callr_get_objects(rs), keep.null = TRUE)
+      objs <- utils::modifyList(objs, get_callr_globals(rs), keep.null = TRUE)
       rs$close()
       rs <- callr::r_session$new()
     }
@@ -59,7 +59,7 @@ callr_render <- function(files_to_process, render_args, render_mode){
   }
 
   if (render_mode == "share")
-    objs <- callr_get_objects(rs)
+    objs <- get_callr_globals(rs)
 
   return(objs)
 }
