@@ -21,18 +21,20 @@ callr_get_objects <- function(session){
   return(session$run(function() as.list(globalenv())))
 }
 
-#' Private. Shared rendering mode in a separate R process with error handling
+#' Private. Render in separate callr R process(es) with error handling
 #'
 #' @param files_to_process Character vector of file paths to be rendered
-#' @param process_args Named list of arguments to be passed to [rmarkdown::render()]
-#' @param mode The render environment mode from datapackager yaml render_env_mode
-#' @return A list of objects created by all of the  processing files
+#' @param process_args Named list of arguments to be passed to
+#'   [rmarkdown::render()]
+#' @param render_mode The render environment mode from datapackager.yml
+#'   \code{render_env_mode}
+#' @return A list of objects created by all of the processing files
 #' @noRd
-callr_render <- function(files_to_process, render_args, mode){
+callr_render <- function(files_to_process, render_args, render_mode){
   rs <- callr::r_session$new()
   on.exit(rs$close())
 
-  if(mode == "isolate")
+  if(render_mode == "isolate")
     objs <- list()
 
   for(file_to_process in files_to_process) {
@@ -48,7 +50,7 @@ callr_render <- function(files_to_process, render_args, mode){
       stop(res$error)
     }
 
-    if(mode == "isolate"){
+    if(render_mode == "isolate"){
       # Earlier object(s) with same name are overwritten here
       objs <- utils::modifyList(objs, callr_get_objects(rs), keep.null = TRUE)
       rs$close()
@@ -57,7 +59,7 @@ callr_render <- function(files_to_process, render_args, mode){
 
   }
 
-  if(mode == "share")
+  if(render_mode == "share")
     objs <- callr_get_objects(rs)
 
   return(objs)
