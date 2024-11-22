@@ -43,6 +43,7 @@ callr_render <- function(files_to_process, render_args, mode){
       c(render_args, input = src)
     )
     if (!is.null(res$error)) {
+      # Include useful debugging info from stderr in the actual error msg
       res$error$message <- paste0(res$error$message, res$error$stderr)
       stop(res$error)
     }
