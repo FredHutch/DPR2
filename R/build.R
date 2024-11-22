@@ -37,6 +37,7 @@ callr_render <- function(files_to_process, render_args, mode){
 
   for(src in files_to_process) {
 
+    # If in share mode, earlier object(s) with same name are overwritten here
     res <- rs$run_with_output(
       function(...) rmarkdown::render(envir = globalenv(), ...),
       c(render_args, input = src)
@@ -47,7 +48,7 @@ callr_render <- function(files_to_process, render_args, mode){
     }
 
     if(mode == "isolate"){
-      # Earlier object(s) with same name will be overwritten
+      # Earlier object(s) with same name are overwritten here
       objs <- modifyList(objs, callr_get_objects(rs))
       rs$close()
       rs <- callr::r_session$new()
