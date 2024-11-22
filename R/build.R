@@ -12,6 +12,54 @@ dpr_purge_data_directory <- function(path=".", yml){
   }
 }
 
+##' Private. A function for fetch all global objects from a callr session.
+##'
+##' @param session a callr session
+##' @return a list of objects
+callr_get_objects <- function(session){
+  return(session$run(function() as.list(globalenv())))
+}
+
+#' Private. Shared rendering mode in a separate R process with error handling
+#'
+#' @param files_to_process Character vector of file paths to be rendered
+#' @param process_args Named list of arguments to be passed to [rmarkdown::render()]
+#' @param mode The render environment mode from datapackager yaml render_env_mode
+#' @return A list of objects created by all of the  processing files
+#' @noRd
+callr_render <- function(files_to_process, render_args, mode){
+  rs <- callr::r_session$new()
+  on.exit(rs$close())
+
+  if(mode == "isolate")
+    objs <- list()
+
+  for(src in files_to_process) {
+
+    res <- rs$run_with_output(
+      function(...) rmarkdown::render(envir = globalenv(), ...),
+      c(render_args, input = src)
+    )
+    if (!is.null(res$error)) {
+      res$error$message <- paste0(res$error$message, res$error$stderr)
+      stop(res$error)
+    }
+
+    if(mode = "isolate")){
+      # Earlier object(s) with same name will be overwritten
+      objs <- modifyList(objs, callr_get_objects(rs))
+      rs$close()
+      rs <- callr::r_session$new()
+    }
+
+  }
+
+  if(mode == "share")
+    objs <- callr_get_objects(rs)
+
+  return(objs)
+}
+
 ##' Render all processing scripts in the for the data package. Does
 ##' not build. Using the `dpr_render()` calling environment. For
 ##' evaluation.
@@ -46,14 +94,9 @@ dpr_render <- function(path=".", ...){
   )
 
   # render and convert to environment
-  if (yml$render_env_mode == 'isolate'){
-    render_lst <- render_isolate(files_to_process, render_args)
-  } else if (yml$render_env_mode == 'share'){
-    render_lst <- render_share(files_to_process, render_args)
-  }
-
   # parent.env(env) will be emptyenv(). See ?as.environment
-  env <- as.environment(render_lst)
+  objects <- callr_render(files_to_process, render_args, yml$render_env_mode)
+  env <- as.environment(objects)
 
   saved_objects <- dpr_save(
     intersect(ls(env), as.character(yml$objects)), path, env
@@ -67,73 +110,6 @@ dpr_render <- function(path=".", ...){
         paste(missed_objects, collapse = ", ")
       )
     )
-}
-
-##' Private. A render function for callr
-##'
-##' @param ... arguments passed to the callr function
-##' @param mode the return mode of the function, "isolate" returns
-##'   objects of the callr global env to be parsed for any save
-##'   objects listed in datapackager.yml
-##' @return return a list of objects when mode isolate, otherwise return nothing
-##' @author jmtaylor
-callr_render <- function(..., mode){
-  rmarkdown::render(envir = globalenv(), ...)
-  if(mode == "isolate")
-    return(as.list(globalenv()))
-}
-
-#' Private. Isolated rendering in separate R processes with error handling
-#'
-#' @param files_to_process Character vector of file paths to be rendered
-#' @param render_args Named list of arguments to be passed to [rmarkdown::render()]
-#'
-#' @return list of objects created by render of all processing files
-#' @noRd
-render_isolate <- function(files_to_process, render_args){
-  process_envs <- lapply(files_to_process, function(src){
-    callr_args <- c(render_args, input = src, mode = "isolate")
-    rs <- callr::r_session$new()
-    on.exit(rs$close())
-    res <- rs$run_with_output(callr_render, callr_args)
-    if (!is.null(res$error)){
-      res$error$message <- paste0(res$error$message, res$error$stderr)
-      stop(res$error)
-    }
-    return(res$result)
-  })
-
-  # Recombine. Earlier object(s) with same name will be overwritten
-  objs <- Reduce(
-    function(...) utils::modifyList(..., keep.null = TRUE),
-    process_envs
-  )
-
-  return(objs)
-}
-
-#' Private. Shared rendering mode in a separate R process with error handling
-#'
-#' @param files_to_process Character vector of file paths to be rendered
-#' @param render_args Named list of arguments to be passed to [rmarkdown::render()]
-#' @return a list of objects created by render of all processing files
-#' @noRd
-render_share <- function(files_to_process, render_args){
-  rs <- callr::r_session$new()
-  on.exit(rs$close())
-
-  for(src in files_to_process) {
-    # Earlier object(s) with same name will be overwritten
-    callr_args <- c(render_args, input = src, mode = "share")
-    res <- rs$run_with_output(callr_render, callr_args)
-    if (!is.null(res$error)) {
-      res$error$message <- paste0(res$error$message, res$error$stderr)
-      stop(res$error)
-    }
-  }
-
-  objs <- rs$run(function() as.list(globalenv()))
-  return(objs)
 }
 
 ##' Render and build data package. Uses a special environment,
