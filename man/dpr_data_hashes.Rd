@@ -10,7 +10,8 @@ dpr_data_hashes(path = ".")
 \item{path}{path to data package}
 }
 \value{
-a data.frame
+a data.frame containing the name of the rda object and the
+corresponding hash
 }
 \description{
 Return table of current hashes for rda files in the data directory.

@@ -12,19 +12,20 @@ dpr_init(
 )
 }
 \arguments{
-\item{path}{a path value to init at a specific path, when using
-the default the current working directory is used.}
+\item{path}{a path value to init at a specific path, when using the default
+the current working directory is used.}
 
-\item{yaml}{A returned list for dpr_yaml_init()}
+\item{yaml}{A returned list from \code{\link[=dpr_yaml_init]{dpr_yaml_init()}}}
 
-\item{desc}{A returned list for dpr_description_init()}
+\item{desc}{A returned list from \code{\link[=dpr_description_init]{dpr_description_init()}}. The default
+argument sets the package name to the name of the directory containing the
+data package.}
 
 \item{renv_init}{Logical; whether to initiate renv (default TRUE)}
 }
 \description{
-A wrapper for dpr_create that uses the parent directory as the
-location to create the data package, setting the package name as
-the current directory.
+A wrapper for dpr_create that uses the parent directory as the location to
+create the data package, setting the package name as the current directory.
 }
 \author{
 jmtaylor

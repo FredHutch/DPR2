@@ -1,10 +1,12 @@
 ##' Private. A function for purging the data directory.
 ##'
 ##' @title dpr_purge_data_directory
-##' @param path the package path
+##' @param path A character string specifying the directory path of the data
+##'   package. The default is the working directory
 ##' @param yml an R yaml list object
 ##' @return nothing
 ##' @author jmtaylor
+##' @noRd
 dpr_purge_data_directory <- function(path=".", yml){
   datadir <- file.path(path, "data")
   for(d in list.files(datadir)){
@@ -64,9 +66,9 @@ callr_render <- function(files_to_process, render_args, render_mode){
   return(objs)
 }
 
-##' Render all processing scripts in the for the data package. Does
-##' not build. Using the `dpr_render()` calling environment. For
-##' evaluation.
+##' Process and render all processing scripts defined in the datapackager.yml
+##' configuration file. Does not build or install the data package. For full
+##' package build and installation, use the dpr_build function.
 ##'
 ##' @title dpr_render
 ##' @param path The relative path to the data package. The default is the
@@ -74,7 +76,8 @@ callr_render <- function(files_to_process, render_args, render_mode){
 ##' @param ... datapakager.yml value overrides. When arguments are
 ##'   specified, those arguments are used as the YAML key value pairs
 ##'   instead of what is specified by the `datapackager.yml`.
-##' @return nothing
+##' @return does not return anything but performs rendering, processing and
+##' data-saving operation defined in configuration file
 ##' @author jmtaylor
 ##' @export
 dpr_render <- function(path=".", ...){
@@ -116,17 +119,16 @@ dpr_render <- function(path=".", ...){
     )
 }
 
-##' Render and build data package. Uses a special environment,
-##' `dpr_build_env`, for the evaluation environment. `dpr_build_env`
-##' is removed from the .GlobalEnv once complete.
+##' Process, render and build data package.
 ##'
 ##' @title dpr_build
 ##' @param path The relative path to the data package. The default is the
 ##'   working directory.
-##' @param ... datapackager.yml value overrides. When arguments are
-##'   specified, those arguments are used as the YAML key value pairs
-##'   instead of what is specified by the `datapackager.yml`.
-##' @return nothing
+##' @param ... datapackager.yml value overrides. When arguments are specified,
+##'   those arguments are used as the YAML key value pairs instead of what is
+##'   specified by the `datapackager.yml`.
+##' @return does not return any value. It performs rendering, building and
+##'   installing the package based on the configuration file
 ##' @author jmtaylor
 ##' @export
 dpr_build <- function(path=".", ...){

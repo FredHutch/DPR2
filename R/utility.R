@@ -1,19 +1,23 @@
-##' Private. Checks if path is a DataPackageR or DPR2 package.
+##' Private. Verifies whether a specified path is a DataPackageR or DPR2
+##' package.
 ##'
 ##' @title dpr_is
 ##' @param path path to datapackage
 ##' @return boolean
 ##' @author jmtaylor
+##' @noRd
 dpr_is <- function(path){
   return( dpr_is_dpr1(path) || dpr_is_dpr2(path) )
 }
 
-##' Private. Load `datapackager.yml` into memory.
+##' Private. Load `datapackager.yml` into memory. Works with both DPR1 and
+##' DPR2 package.
 ##'
 ##' @title dpr_yaml_load
 ##' @param path the package path
 ##' @return a yaml object
 ##' @author jmtaylor
+##' @noRd
 dpr_yaml_load <- function(path="."){
   if( dpr_is_dpr1(path) )
     return( dpr_dpr1_yaml_load(path) )
@@ -28,6 +32,7 @@ dpr_yaml_load <- function(path="."){
 ##' @param yml a yaml object or list
 ##' @return elements of the list of key value pairs to check that did not pass
 ##' @author jmtaylor
+##' @noRd
 dpr_yaml_value_check <- function(yml){
   key_value = list(
     "render_env_mode" = c("isolate", "share")
@@ -42,9 +47,11 @@ dpr_yaml_value_check <- function(yml){
 ##' @param yml a yaml object or list
 ##' @return required yaml keys not found
 ##' @author jmtaylor
+##' @noRd
 dpr_yaml_required_check <- function(yml){
   def <- dpr_yaml_defaults()
-  def["data_digest_directory"] <- NULL # data_digest_directory is not required from the default set
+  # data_digest_directory is not required from the default set
+  def["data_digest_directory"] <- NULL
   return( def[!(names(def) %in% names(yml))] )
 }
 
@@ -53,6 +60,7 @@ dpr_yaml_required_check <- function(yml){
 ##' @title dpr_yaml_check
 ##' @param yml a parsed yaml object
 ##' @author jmtaylor
+##' @noRd
 dpr_yaml_check <- function(yml){
   ## check that all controlled key values are correct
   kv <- dpr_yaml_value_check(yml)
@@ -67,7 +75,8 @@ dpr_yaml_check <- function(yml){
       )
     )
 
-  ## check that all default yaml values are present, should catch typos manually entered in yaml
+  ## check that all default yaml values are present, should catch typos manually
+  ## entered in yaml
   nm <- dpr_yaml_required_check(yml)
   if(length(nm) != 0)
     stop(
@@ -84,6 +93,7 @@ dpr_yaml_check <- function(yml){
 ##' @param path the package path
 ##' @return a desc object
 ##' @author jmtaylor
+##' @noRd
 dpr_description_load <- function(path){
   dpr_is(path)
   desc::desc(file = path)
