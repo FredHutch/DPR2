@@ -10,7 +10,8 @@ dpr_yaml_defaults()
 a list containing default yaml key-value pairs from datapackager.yml
 }
 \description{
-This function returns default key:value pairs for the data package datapackager.yml
+This function returns default key:value pairs for the data package
+datapackager.yml
 }
 \details{
 Definitions of yaml key:value pairs

@@ -119,18 +119,16 @@ dpr_render <- function(path=".", ...){
     )
 }
 
-##' The dpr_build function process, render and build data package. Uses a special environment,
-##' `dpr_build_env`, for the evaluation environment. `dpr_build_env`
-##' is removed from the .GlobalEnv once complete.
+##' Process, render and build data package.
 ##'
 ##' @title dpr_build
 ##' @param path The relative path to the data package. The default is the
 ##'   working directory.
-##' @param ... datapackager.yml value overrides. When arguments are
-##'   specified, those arguments are used as the YAML key value pairs
-##'   instead of what is specified by the `datapackager.yml`.
+##' @param ... datapackager.yml value overrides. When arguments are specified,
+##'   those arguments are used as the YAML key value pairs instead of what is
+##'   specified by the `datapackager.yml`.
 ##' @return does not return any value. It performs rendering, building and
-##' installing the package based on the configuration file
+##'   installing the package based on the configuration file
 ##' @author jmtaylor
 ##' @export
 dpr_build <- function(path=".", ...){

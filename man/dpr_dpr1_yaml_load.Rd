@@ -7,14 +7,15 @@
 dpr_dpr1_yaml_load(path = ".")
 }
 \arguments{
-\item{path}{The reative path to the data package. The default is the
+\item{path}{The relative path to the data package. The default is the
 working directory.}
 }
 \value{
 a list of DPR2 yaml key:values pairs
 }
 \description{
-Converts a DataPackageR yaml file to a DPR2 yaml file. Returns a writeable yaml object.
+Converts a DataPackageR yaml file to a DPR2 yaml file. Returns a writeable
+yaml object.
 }
 \author{
 jmtaylor

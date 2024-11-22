@@ -1,4 +1,5 @@
-##' Private. Verifies whether a specified path is a DataPackageR or DPR2 package.
+##' Private. Verifies whether a specified path is a DataPackageR or DPR2
+##' package.
 ##'
 ##' @title dpr_is
 ##' @param path path to datapackage
@@ -49,7 +50,8 @@ dpr_yaml_value_check <- function(yml){
 ##' @noRd
 dpr_yaml_required_check <- function(yml){
   def <- dpr_yaml_defaults()
-  def["data_digest_directory"] <- NULL # data_digest_directory is not required from the default set
+  # data_digest_directory is not required from the default set
+  def["data_digest_directory"] <- NULL
   return( def[!(names(def) %in% names(yml))] )
 }
 
@@ -73,7 +75,8 @@ dpr_yaml_check <- function(yml){
       )
     )
 
-  ## check that all default yaml values are present, should catch typos manually entered in yaml
+  ## check that all default yaml values are present, should catch typos manually
+  ## entered in yaml
   nm <- dpr_yaml_required_check(yml)
   if(length(nm) != 0)
     stop(

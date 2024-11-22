@@ -14,17 +14,17 @@ dpr_create(
 \arguments{
 \item{path}{A path to the data package.}
 
-\item{yaml}{A returned list for dpr_yaml_init()}
+\item{yaml}{A returned list for \code{\link[=dpr_yaml_init]{dpr_yaml_init()}}}
 
-\item{desc}{A returned list for dpr_description_init()}
+\item{desc}{A returned list for \code{\link[=dpr_description_init]{dpr_description_init()}}}
 
 \item{renv_init}{Logical; whether to initiate renv (default TRUE)}
 }
 \description{
-Initialize a data package by creating a structured directory skeleton for a new R package .
-Sets up essential directories, initializes package metadata in
-datapackager.yml and DESCRIPTION files as described by
-dpr_yaml_init() and dpr_description_init() function calls.
+Initialize a data package by creating a structured directory skeleton for a
+new R package. Sets up essential directories, initializes package metadata
+in datapackager.yml and DESCRIPTION files as described by \code{\link[=dpr_yaml_init]{dpr_yaml_init()}}
+and \code{\link[=dpr_description_init]{dpr_description_init()}} function calls.
 }
 \author{
 jmtaylor

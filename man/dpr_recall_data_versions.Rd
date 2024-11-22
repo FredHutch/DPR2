@@ -7,15 +7,18 @@
 dpr_recall_data_versions(hashes, path = ".")
 }
 \arguments{
-\item{hashes}{the hashes of the data to recall; partial hashes allowed from 1 to 40 hexadecimal digits}
+\item{hashes}{the hashes of the data to recall; partial hashes
+allowed from 1 to 40 hexadecimal digits}
 
 \item{path}{the path to the data package}
 }
 \value{
-a list with names of corresponding .rda object and the versions generated from the object
+a list with names of corresponding .rda object and the
+versions generated from the object
 }
 \description{
-Load a data version into memory by its hash. Only rda files in the data directory will be recalled.
+Load a data version into memory by its hash. Only rda files in the
+data directory will be recalled.
 }
 \author{
 jmtaylor

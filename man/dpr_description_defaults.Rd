@@ -10,7 +10,8 @@ dpr_description_defaults()
 a list containing default metadata from the DESCRIPTION file
 }
 \description{
-This function returns default key:value pairs for the data package DESCRIPTION file.
+This function returns default key:value pairs for the data package
+DESCRIPTION file.
 }
 \author{
 jmtaylor

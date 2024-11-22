@@ -1,5 +1,5 @@
-##' Private. A function for updating the data digest components by generating hashes
-##' for all .rda files in the specified directory
+##' Private. A function for updating the data digest components by generating
+##' hashes for all .rda files in the specified directory
 ##' @title dpr_update_data_digest
 ##' @param path path to data package
 ##' @param yml the yml list object used for the build
@@ -20,7 +20,8 @@ dpr_update_data_digest <- function(path=".", yml){
 
 }
 
-##' Private. Standard way of listing rda files available in data for use across all functions.
+##' Private. Standard way of listing rda files available in data for use across
+##' all functions.
 ##'
 ##' @title dpr_list_rda
 ##' @param path path to data package
@@ -58,19 +59,22 @@ dpr_check_git <- function(path){
   return(all(git))
 }
 
-##' Return hash of file at the path provided. Hash is equivalent to the git blob hash of the file.
+##' Return hash of file at the path provided. Hash is equivalent to the git blob
+##' hash of the file.
 ##'
-##' This function will return a git style sha1 hash of a file found at the path argument. Git
-##' style hashing pads the front of the file with "blob" the length of the file in bytes, a null
-##' character, and then the binary content of the file itself. This style of hashing is used here
-##' to ensure that data objects created that have the same blob can be compared whether the
-##' package is under version control or not, or packages that are put under version control at
-##' future dates can compare objects with versions of the package from before version control was
-##' applied.
+##' This function will return a git style sha1 hash of a file found at the path
+##' argument. Git style hashing pads the front of the file with "blob" the
+##' length of the file in bytes, a null character, and then the binary content
+##' of the file itself. This style of hashing is used here to ensure that data
+##' objects created that have the same blob can be compared whether the package
+##' is under version control or not, or packages that are put under version
+##' control at future dates can compare objects with versions of the package
+##' from before version control was applied.
 ##'
 ##' @title dpr_hash_file
 ##' @param paths path of file to hash
-##' @return a character string of the SHA1 hash of the file using git style hash padding.
+##' @return a character string of the SHA1 hash of the file using git style hash
+##'   padding.
 ##' @author jmtaylor
 ##' @export
 dpr_hash_files <- function(paths){
@@ -89,7 +93,8 @@ dpr_hash_files <- function(paths){
   )
 }
 
-##' Private. Reads a data digest source, validates it's contents, and returns a list.
+##' Private. Reads a data digest source, validates it's contents, and returns a
+##' list.
 ##'
 ##' @title dpr_validate_data_digest_source
 ##' @param path path to data package
@@ -108,13 +113,13 @@ dpr_validate_data_digest_source <- function(path){
   return(data_digest)
 }
 
-##' Return the current hashes recorded to the data digest directory generated during the last
-##' build.
+##' Return the current hashes recorded to the data digest directory generated
+##' during the last build.
 ##'
 ##' @title dpr_data_digest
 ##' @param path path to data package
-##' @return a data.frame with the names of the data files and the the corresponding hash values
-##' extracted from the data digest
+##' @return a data.frame with the names of the data files and the the
+##'   corresponding hash values extracted from the data digest
 ##' @author jmtaylor
 ##' @export
 dpr_data_digest <- function(path="."){
@@ -131,7 +136,8 @@ dpr_data_digest <- function(path="."){
 ##'
 ##' @title dpr_data_hashes
 ##' @param path path to data package
-##' @return a data.frame containing the name of the rda object and the corresponding hash
+##' @return a data.frame containing the name of the rda object and the
+##'   corresponding hash
 ##' @author jmtaylor
 ##' @export
 dpr_data_hashes <- function(path="."){
@@ -238,15 +244,16 @@ dpr_hashes_to_checksums <- function(hashes, path){
   )
 }
 
-##' Return the history of all the former and current files in the `data` directory.
+##' Return the history of all the former and current files in the `data`
+##' directory.
 ##'
 ##' @title dpr_data_history
 ##' @param path path to data package
-##' @param include_checksums a boolean value indicating if checksums
-##'   should be included in the returned data.frame object; computing
-##'   checksums is less performant
-##' @return a data.frame object with the git hash, file name, author
-##'   name, time of creation and md5 checksum of the file
+##' @param include_checksums a boolean value indicating if checksums should be
+##'   included in the returned data.frame object; computing checksums is less
+##'   performant
+##' @return a data.frame object with the git hash, file name, author name, time
+##'   of creation and md5 checksum of the file
 ##' @author jmtaylor
 ##' @export
 dpr_data_history <- function(path=".", include_checksums=FALSE){

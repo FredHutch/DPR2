@@ -9,11 +9,13 @@ dpr_compare_data_digest(path = ".", display_digits = 7)
 \arguments{
 \item{path}{path to data package}
 
-\item{display_digits}{number of characters to display for hash values}
+\item{display_digits}{number of characters to display for hash
+values}
 }
 \value{
-a data.frame with the file name, corresponding data hash, existing data_digest hash and a boolean
-value indicating if they are same or not
+a data.frame with the file name, corresponding data hash,
+existing data_digest hash and a boolean value indicating if they
+are same or not
 }
 \description{
 A data digest comparison table, comparing the current data digest

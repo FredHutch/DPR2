@@ -7,19 +7,18 @@
 dpr_yaml_init(...)
 }
 \arguments{
-\item{...}{Arguments are treated as key value pairs for the
-datapackager.yml file.}
+\item{...}{Arguments are treated as key value pairs for the datapackager.yml
+file.}
 }
 \value{
-A list of key:value pairs for generating a
-datapackager.yml file.
+A list of key:value pairs for generating a datapackager.yml file.
 }
 \description{
-A function that provides a convenient way to initialize a YAML configuration by
-merging default settings with user specific values to the
-datapackager.yml file's key:value pairs. If no  arguments are provided, it will return the
-datapackager.yml default values. see \code{dpr_yaml_defaults()} for a list of
-default values, or call this function with no arguments.
+A function that provides a convenient way to initialize a YAML configuration
+by merging default settings with user specific values to the
+datapackager.yml file's key:value pairs. If no  arguments are provided, it
+will return the datapackager.yml default values. see \code{dpr_yaml_defaults()}
+for a list of default values, or call this function with no arguments.
 }
 \author{
 jmtaylor

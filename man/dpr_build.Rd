@@ -10,18 +10,16 @@ dpr_build(path = ".", ...)
 \item{path}{The relative path to the data package. The default is the
 working directory.}
 
-\item{...}{datapackager.yml value overrides. When arguments are
-specified, those arguments are used as the YAML key value pairs
-instead of what is specified by the \code{datapackager.yml}.}
+\item{...}{datapackager.yml value overrides. When arguments are specified,
+those arguments are used as the YAML key value pairs instead of what is
+specified by the \code{datapackager.yml}.}
 }
 \value{
 does not return any value. It performs rendering, building and
 installing the package based on the configuration file
 }
 \description{
-The dpr_build function process, render and build data package. Uses a special environment,
-\code{dpr_build_env}, for the evaluation environment. \code{dpr_build_env}
-is removed from the .GlobalEnv once complete.
+Process, render and build data package.
 }
 \author{
 jmtaylor
