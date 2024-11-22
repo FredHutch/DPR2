@@ -49,7 +49,7 @@ callr_render <- function(files_to_process, render_args, mode){
 
     if(mode == "isolate"){
       # Earlier object(s) with same name are overwritten here
-      objs <- modifyList(objs, callr_get_objects(rs))
+      objs <- utils::modifyList(objs, callr_get_objects(rs), keep.null = TRUE)
       rs$close()
       rs <- callr::r_session$new()
     }
