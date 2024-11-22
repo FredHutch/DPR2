@@ -35,12 +35,12 @@ callr_render <- function(files_to_process, render_args, mode){
   if(mode == "isolate")
     objs <- list()
 
-  for(src in files_to_process) {
+  for(file_to_process in files_to_process) {
 
     # If in share mode, earlier object(s) with same name are overwritten here
     res <- rs$run_with_output(
       function(...) rmarkdown::render(envir = globalenv(), ...),
-      c(render_args, input = src)
+      c(render_args, input = file_to_process)
     )
     if (!is.null(res$error)) {
       # Include useful debugging info from stderr in the actual error msg
