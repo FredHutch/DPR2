@@ -45,7 +45,7 @@ callr_render <- function(files_to_process, render_args, mode){
       stop(res$error)
     }
 
-    if(mode = "isolate")){
+    if(mode == "isolate"){
       # Earlier object(s) with same name will be overwritten
       objs <- modifyList(objs, callr_get_objects(rs))
       rs$close()
