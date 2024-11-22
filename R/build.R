@@ -16,6 +16,7 @@ dpr_purge_data_directory <- function(path=".", yml){
 ##'
 ##' @param session a callr session
 ##' @return a list of objects
+##' @noRd
 callr_get_objects <- function(session){
   return(session$run(function() as.list(globalenv())))
 }
