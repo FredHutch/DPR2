@@ -1,3 +1,6 @@
+# keep this line first in test-build.R file
+attached_before_test_builds <- names(sessionInfo()$otherPkgs)
+
 tdir <- getPkgDir()
 pkgn <- "testPkg"
 
@@ -5,6 +8,11 @@ testthat::test_that("checking package build", {
 
   path <- file.path(tdir, pkgn)
   createPkg(tdir, pkgn, list(renv_init = FALSE))
+
+  expect_error(
+    dpr_build(path, process_on_build = 'nolib.R'),
+    'could not find function'
+  )
 
   dpr_build(path, process_on_build = "01.R")
   vign <- list.files(file.path(path, "vignettes"))
@@ -142,3 +150,13 @@ testthat::test_that("checking package render",{
 })
 
 cleanup(tdir)
+
+# Keep this test last in test-build.R file
+testthat::test_that("R/Rmd library() calls not attached to main R process",{
+  attached_in_scripts <- c('yaml', 'lubridate')
+  pkgs_to_check <- setdiff(attached_in_scripts, attached_before_test_builds)
+  skip_if(length(pkgs_to_check) == 0L, 'pkgs already attached before testing')
+  expect_false(
+    any(pkgs_to_check %in% names(sessionInfo()$otherPkgs))
+  )
+})
