@@ -1,12 +1,12 @@
-##' Private. A function for purging the data directory.
-##'
-##' @title dpr_purge_data_directory
-##' @param path A character string specifying the directory path of the data
-##'   package. The default is the working directory
-##' @param yml an R yaml list object
-##' @return nothing
-##' @author jmtaylor
-##' @noRd
+#' Private. A function for purging the data directory.
+#'
+#' @title dpr_purge_data_directory
+#' @param path A character string specifying the directory path of the data
+#'   package. The default is the working directory
+#' @param yml an R yaml list object
+#' @return nothing
+#' @author jmtaylor
+#' @noRd
 dpr_purge_data_directory <- function(path=".", yml){
   datadir <- file.path(path, "data")
   for(d in list.files(datadir)){
@@ -14,11 +14,11 @@ dpr_purge_data_directory <- function(path=".", yml){
   }
 }
 
-##' Private. A function for fetch all global objects from a callr session.
-##'
-##' @param session a callr session
-##' @return a list of objects
-##' @noRd
+#' Private. A function for fetch all global objects from a callr session.
+#'
+#' @param session a callr session
+#' @return a list of objects
+#' @noRd
 get_callr_globals <- function(session){
   return(session$run(function() as.list(globalenv())))
 }
@@ -66,20 +66,20 @@ callr_render <- function(files_to_process, render_args, render_mode){
   return(objs)
 }
 
-##' Process and render all processing scripts defined in the datapackager.yml
-##' configuration file. Does not build or install the data package. For full
-##' package build and installation, use the dpr_build function.
-##'
-##' @title dpr_render
-##' @param path The relative path to the data package. The default is the
-##'   working directory.
-##' @param ... datapakager.yml value overrides. When arguments are
-##'   specified, those arguments are used as the YAML key value pairs
-##'   instead of what is specified by the `datapackager.yml`.
-##' @return does not return anything but performs rendering, processing and
-##' data-saving operation defined in configuration file
-##' @author jmtaylor
-##' @export
+#' Process and render all processing scripts defined in the datapackager.yml
+#' configuration file. Does not build or install the data package. For full
+#' package build and installation, use the dpr_build function.
+#'
+#' @title dpr_render
+#' @param path The relative path to the data package. The default is the
+#'   working directory.
+#' @param ... datapakager.yml value overrides. When arguments are
+#'   specified, those arguments are used as the YAML key value pairs
+#'   instead of what is specified by the `datapackager.yml`.
+#' @return does not return anything but performs rendering, processing and
+#' data-saving operation defined in configuration file
+#' @author jmtaylor
+#' @export
 dpr_render <- function(path=".", ...){
   if( dpr_is_dpr1(path) )
     warning("Rendering a data package using DPR2 when the yaml is from DataPackageR. See docs for list of side effects.")
@@ -119,18 +119,18 @@ dpr_render <- function(path=".", ...){
     )
 }
 
-##' Process, render and build data package.
-##'
-##' @title dpr_build
-##' @param path The relative path to the data package. The default is the
-##'   working directory.
-##' @param ... datapackager.yml value overrides. When arguments are specified,
-##'   those arguments are used as the YAML key value pairs instead of what is
-##'   specified by the `datapackager.yml`.
-##' @return does not return any value. It performs rendering, building and
-##'   installing the package based on the configuration file
-##' @author jmtaylor
-##' @export
+#' Process, render and build data package.
+#'
+#' @title dpr_build
+#' @param path The relative path to the data package. The default is the
+#'   working directory.
+#' @param ... datapackager.yml value overrides. When arguments are specified,
+#'   those arguments are used as the YAML key value pairs instead of what is
+#'   specified by the `datapackager.yml`.
+#' @return does not return any value. It performs rendering, building and
+#'   installing the package based on the configuration file
+#' @author jmtaylor
+#' @export
 dpr_build <- function(path=".", ...){
   quiet <- identical(Sys.getenv("TESTTHAT"), "true")
   yml <- dpr_yaml_get(path, ...)

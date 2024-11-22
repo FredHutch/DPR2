@@ -1,12 +1,12 @@
-##' Converts a DataPackageR yaml file to a DPR2 yaml file. Returns a writeable
-##' yaml object.
-##'
-##' @title dpr_yaml_convert
-##' @param path The relative path to the data package. The default is the
-##'   working directory.
-##' @author jmtaylor
-##' @return a list of DPR2 yaml key:values pairs
-##' @export
+#' Converts a DataPackageR yaml file to a DPR2 yaml file. Returns a writeable
+#' yaml object.
+#'
+#' @title dpr_yaml_convert
+#' @param path The relative path to the data package. The default is the
+#'   working directory.
+#' @author jmtaylor
+#' @return a list of DPR2 yaml key:values pairs
+#' @export
 dpr_dpr1_yaml_load <- function(path="."){
   yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
   pro <- yml$configuration$files
@@ -21,13 +21,13 @@ dpr_dpr1_yaml_load <- function(path="."){
   return(yml)
 }
 
-##' Replaces a DataPackageR yaml with a DPR2 yaml.
-##'
-##' @title dpr_dpr1_yaml_convert
-##' @param path The relative path to the data package. The default is the
-##'   working directory.
-##' @author jmtaylor
-##' @export
+#' Replaces a DataPackageR yaml with a DPR2 yaml.
+#'
+#' @title dpr_dpr1_yaml_convert
+#' @param path The relative path to the data package. The default is the
+#'   working directory.
+#' @author jmtaylor
+#' @export
 dpr_dpr1_yaml_convert <- function(path="."){
   if( dpr_is_dpr1(path) )
     yaml::write_yaml(dpr_dpr1_yaml_load(path), file.path(path, "datapackager.yml"))
@@ -35,15 +35,15 @@ dpr_dpr1_yaml_convert <- function(path="."){
     stop("Must be a DataPackageR qualified data package to convert to the datapackager.yml to the DPR2 format.")
 }
 
-##' A private function to verify whether a specified directory contains a
-##' DataPackageR package.
-##'
-##' @title dpr_is_dpr1
-##' @param path The relative path to the data package. The default is the
-##'   working directory.
-##' @return a boolean value indicating whether the specified directory contains
-##'   a DataPackageR package or not
-##' @author jmtaylor
+#' A private function to verify whether a specified directory contains a
+#' DataPackageR package.
+#'
+#' @title dpr_is_dpr1
+#' @param path The relative path to the data package. The default is the
+#'   working directory.
+#' @return a boolean value indicating whether the specified directory contains
+#'   a DataPackageR package or not
+#' @author jmtaylor
 dpr_is_dpr1 <- function(path="."){
   if(file.exists(file.path(path, "datapackager.yml"))){
     yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
@@ -57,14 +57,14 @@ dpr_is_dpr1 <- function(path="."){
   return(FALSE)
 }
 
-##' A private function to verify whether a specified directory contains a DPR2
-##' package or not
-##'
-##' @title dpr_is_dpr2
-##' @param path path to datapackage
-##' @return logical
-##' @author jmtaylor
-##' @noRd
+#' A private function to verify whether a specified directory contains a DPR2
+#' package or not
+#'
+#' @title dpr_is_dpr2
+#' @param path path to datapackage
+#' @return logical
+#' @author jmtaylor
+#' @noRd
 dpr_is_dpr2 <- function(path="."){
   if(
     file.exists(file.path(path, "datapackager.yml")) &&
