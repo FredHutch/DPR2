@@ -1,12 +1,12 @@
 ##' Private. A function for purging the data directory.
 ##'
 ##' @title dpr_purge_data_directory
-##' @param path A character string specifying the directory path of the data package.
-##' The default is the
-##' working directory
+##' @param path A character string specifying the directory path of the data
+##'   package. The default is the working directory
 ##' @param yml an R yaml list object
 ##' @return nothing
 ##' @author jmtaylor
+##' @noRd
 dpr_purge_data_directory <- function(path=".", yml){
   datadir <- file.path(path, "data")
   for(d in list.files(datadir)){

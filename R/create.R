@@ -4,6 +4,7 @@
 ##' @return a character vector
 ##' @author jmtaylor
 ##' @param regex a regular expression
+##' @noRd
 dpr_get_template <- function(regex){
   list.files(system.file("templates", package="DPR2"), regex, full.names = TRUE)
 }
@@ -42,6 +43,7 @@ dpr_description_defaults <- function(){
 ##' values to set in the DESCRIPTION file
 ##' @param pkgp the package path
 ##' @author jmtaylor
+##' @noRd
 dpr_description_init_set <- function(desc, pkgp){
   do.call(desc::desc_set, c(desc, file = pkgp))
 }
@@ -53,6 +55,7 @@ dpr_description_init_set <- function(desc, pkgp){
 ##' @param yml an R yaml object containing user-defined YAML configurations
 ##' @param pkgp the package path
 ##' @author jmtaylor
+##' @noRd
 dpr_yaml_init_set <- function(yml, pkgp){
   def <- dpr_yaml_defaults()
   new <- utils::modifyList(def, yml, keep.null = TRUE)

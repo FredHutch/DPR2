@@ -59,6 +59,7 @@ dpr_is_dpr1 <- function(path="."){
 ##' @param path path to datapackage
 ##' @return logical
 ##' @author jmtaylor
+##' @noRd
 dpr_is_dpr2 <- function(path="."){
   if(
     file.exists(file.path(path, "datapackager.yml")) &&

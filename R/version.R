@@ -5,6 +5,7 @@
 ##' @param yml the yml list object used for the build
 ##' @return nothing
 ##' @author jmtaylor
+##' @noRd
 dpr_update_data_digest <- function(path=".", yml){
   rda <- dpr_list_rda(path)
   dig <- file.path(path, yml$data_digest_directory)
@@ -25,6 +26,7 @@ dpr_update_data_digest <- function(path=".", yml){
 ##' @param path path to data package
 ##' @return a character vector of rda files in the data directory
 ##' @author jmtaylor
+##' @noRd
 dpr_list_rda <- function(path){
   sort(
     list.files(
@@ -42,6 +44,7 @@ dpr_list_rda <- function(path){
 ##' @param path path to data package
 ##' @return a logical value indicating if the conditions are satisfied
 ##' @author jmtaylor
+##' @noRd
 dpr_check_git <- function(path){
   git <- c(TRUE, TRUE)
   if( !"git2r" %in% row.names(utils::installed.packages()) ){
@@ -92,6 +95,7 @@ dpr_hash_files <- function(paths){
 ##' @param path path to data package
 ##' @return a list of a data digest source
 ##' @author jmtaylor
+##' @noRd
 dpr_validate_data_digest_source <- function(path){
   data_digest <- list.files(
     file.path(path, dpr_yaml_get(path)$data_digest_directory),
@@ -181,6 +185,7 @@ dpr_compare_data_digest <- function(path=".", display_digits = 7){
 ##' @param path a path to a data package
 ##' @return list of envs containing objects loaded from git history
 ##' @author jmtaylor
+##' @noRd
 dpr_hashes_to_envs <- function(hashes, path = ".") {
   envs <- lapply(hashes, function(hash){
     tmp <- tempfile()
@@ -203,6 +208,7 @@ dpr_hashes_to_envs <- function(hashes, path = ".") {
 ##' @param envs environments to extract checksums
 ##' @return singleton character vector
 ##' @author jmtaylor
+##' @noRd
 dpr_envs_to_checksums <- function(envs){
   vapply(
     envs,
@@ -223,6 +229,7 @@ dpr_envs_to_checksums <- function(envs){
 ##' @param path a path to a data package
 ##' @return a character vector of checksums
 ##' @author jmtaylor
+##' @noRd
 dpr_hashes_to_checksums <- function(hashes, path){
   dpr_envs_to_checksums(
     dpr_hashes_to_envs(hashes, path)
