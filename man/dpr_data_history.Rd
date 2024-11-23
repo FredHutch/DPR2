@@ -9,15 +9,17 @@ dpr_data_history(path = ".", include_checksums = FALSE)
 \arguments{
 \item{path}{path to data package}
 
-\item{include_checksums}{a boolean value indicating if checksums
-should be included in the returned data.frame object; computing
-checksums is less performant}
+\item{include_checksums}{a boolean value indicating if checksums should be
+included in the returned data.frame object; computing checksums is less
+performant}
 }
 \value{
-a data.frame object
+a data.frame object with the git hash, file name, author name, time
+of creation and md5 checksum of the file
 }
 \description{
-Return the history of all the former and current files in the \code{data} directory.
+Return the history of all the former and current files in the \code{data}
+directory.
 }
 \author{
 jmtaylor

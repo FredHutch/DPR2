@@ -14,7 +14,8 @@ working directory.}
 a list of DPR2 yaml key:values pairs
 }
 \description{
-Converts a DataPackageR yaml file to a DPR2 yaml file. Returns a writeable yaml object.
+Converts a DataPackageR yaml file to a DPR2 yaml file. Returns a writeable
+yaml object.
 }
 \author{
 jmtaylor

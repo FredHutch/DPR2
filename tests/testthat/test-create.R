@@ -103,7 +103,7 @@ test_that("init populates exisiting directory", {
     write.csv(data.frame(1:10), "extdata/src.csv")
     expect_warning(
       dpr_init(),
-      "[`processing`|`extdata`] was found"
+      "(`processing`|`extdata`) was found"
     )
     expect_true('DESCRIPTION' %in% list.files())
 
@@ -111,6 +111,18 @@ test_that("init populates exisiting directory", {
 
   unlink(path, recursive = TRUE)
 
+})
+
+test_that("no dpr_(description_)_init warning about default package name", {
+  owd <- getwd()
+  on.exit({
+    setwd(owd)
+    unlink(twd, recursive = TRUE)
+  })
+  twd <- tempfile()
+  dir.create(twd)
+  setwd(twd)
+  expect_no_warning(dpr_init(renv_init = FALSE))
 })
 
 cleanup(tdir)

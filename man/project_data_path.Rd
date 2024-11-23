@@ -7,8 +7,8 @@
 project_data_path(...)
 }
 \arguments{
-\item{...}{Trailing path components passed to \code{\link[=file.path]{file.path()}}. All arguments must
-be the same length or length one.}
+\item{...}{Trailing path components passed to \code{\link[=file.path]{file.path()}}. All arguments
+must be the same length or length one.}
 }
 \value{
 The normalized path with the additional path components appended.
