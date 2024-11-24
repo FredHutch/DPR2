@@ -4,14 +4,22 @@
 #' @param path A character string specifying the directory path of the data
 #'   package. The default is the working directory
 #' @param yml an R yaml list object
-#' @return nothing
+#' @return A vector of successfully deleted file paths, invisibly
 #' @author jmtaylor
 #' @noRd
 dpr_purge_data_directory <- function(path=".", yml){
   datadir <- file.path(path, "data")
-  for(d in list.files(datadir)){
-    unlink(file.path(datadir, d), recursive=TRUE)
+  files <- file.path(datadir, list.files(datadir))
+  unlink(files, recursive=TRUE)
+  not_deleted <- file.exists(files)
+  if (any(not_deleted)){
+    stop(
+      sprintf(
+        'Error purging %s', paste(basename(files[not_deleted]), collapse = ', ')
+      )
+    )
   }
+  invisible(files)
 }
 
 #' Private. A function for fetch all global objects from a callr session.
