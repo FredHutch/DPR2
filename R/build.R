@@ -101,8 +101,13 @@ dpr_render <- function(path=".", ...){
 
   yml <- dpr_yaml_get(path, ...)
 
-  if(yml$purge_data_directory)
-    dpr_purge_data_directory(path, yml)
+  if(yml$purge_data_directory){
+    purge_backup_files <- dpr_purge_data_directory(path, yml)
+    purge_restore <- TRUE
+    on.exit({
+      if (purge_restore) file.copy(purge_backup_files, file.path(path, 'data'))
+    })
+  }
 
   # Prepare to render
   if(is.null(yml$process_on_build)){
@@ -119,6 +124,12 @@ dpr_render <- function(path=".", ...){
   objects <- callr_render(files_to_process, render_args, yml$render_env_mode)
   # parent.env(env) will be emptyenv(). See ?as.environment
   env <- as.environment(objects)
+
+  # now safe to cancel purge restore on exit and remove backup files
+  if(yml$purge_data_directory){
+    purge_restore <- FALSE
+    unlink(unique(dirname(purge_backup_files)), recursive = TRUE)
+  }
 
   saved_objects <- dpr_save(
     intersect(ls(env), as.character(yml$objects)), path, env
