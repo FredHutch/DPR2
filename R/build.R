@@ -113,10 +113,12 @@ dpr_render <- function(path=".", ...){
   if(is.null(yml$process_on_build)){
     stop("No files specified to process_on_build. See datapackager.yml file.")
   }
+  vignette_tempdir <- tempfile()
+  dir.create(vignette_tempdir)
   files_to_process = file.path(path, yml$process_directory, yml$process_on_build)
   render_args <- list(
     knit_root_dir = normalizePath(path),
-    output_dir = ifelse(yml$write_to_vignettes, file.path(path, "vignettes"), tempdir()),
+    output_dir = vignette_tempdir,
     output_format = "md_document"
   )
 
@@ -124,6 +126,17 @@ dpr_render <- function(path=".", ...){
   objects <- callr_render(files_to_process, render_args, yml$render_env_mode)
   # parent.env(env) will be emptyenv(). See ?as.environment
   env <- as.environment(objects)
+
+  # transfer vignettes to vignettes/ if desired, now that we're done rendering
+  if (yml$write_to_vignettes){
+    vignettes_dir <- file.path(path, 'vignettes')
+    if (! dir.exists(vignettes_dir)) dir.create(vignettes_dir)
+    file.copy(
+      list.files(vignette_tempdir, full.names = TRUE),
+      vignettes_dir,
+      overwrite = TRUE
+    )
+  }
 
   # now safe to cancel purge restore on exit and remove backup files
   if(yml$purge_data_directory){
