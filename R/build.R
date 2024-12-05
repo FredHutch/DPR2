@@ -106,6 +106,7 @@ dpr_render <- function(path=".", ...){
     purge_restore <- TRUE
     on.exit({
       if (purge_restore) file.copy(purge_backup_files, file.path(path, 'data'))
+      unlink(unique(dirname(purge_backup_files)), recursive = TRUE)
     })
   }
 
@@ -115,7 +116,6 @@ dpr_render <- function(path=".", ...){
   }
   vignette_tempdir <- tempfile()
   dir.create(vignette_tempdir)
-  files_to_process = file.path(path, yml$process_directory, yml$process_on_build)
   render_args <- list(
     knit_root_dir = normalizePath(path),
     output_dir = vignette_tempdir,
@@ -123,7 +123,11 @@ dpr_render <- function(path=".", ...){
   )
 
   # render and convert to environment
-  objects <- callr_render(files_to_process, render_args, yml$render_env_mode)
+  objects <- callr_render(
+    file.path(path, yml$process_directory, yml$process_on_build),
+    render_args,
+    yml$render_env_mode
+  )
   # parent.env(env) will be emptyenv(). See ?as.environment
   env <- as.environment(objects)
 
@@ -141,7 +145,6 @@ dpr_render <- function(path=".", ...){
   # now safe to cancel purge restore on exit and remove backup files
   if(yml$purge_data_directory){
     purge_restore <- FALSE
-    unlink(unique(dirname(purge_backup_files)), recursive = TRUE)
   }
 
   saved_objects <- dpr_save(
