@@ -117,6 +117,10 @@ dpr_render <- function(path=".", ...){
         paste(missed_objects, collapse = ", ")
       )
     )
+
+  if(length(ls(env)) != 0){
+    generate_all_docs(path=path, env=env)
+  }
 }
 
 #' Process, render and build data package.
