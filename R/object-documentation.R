@@ -36,8 +36,15 @@ generate_all_docs <- function(path = ".", out_dir = "R", env = NULL) {
   }
 
   # select only those objects that differ between digest file and data directory
-  digest_data <- dpr_compare_data_digest(path)
-  no_change <- gsub(".rda", "", digest_data$name[digest_data$same == TRUE])
+  no_change <- tryCatch({
+    digest_data <- dpr_compare_data_digest(path) #func returns error if no digest source is found. Will cause issues when building a brand new pkg.
+    gsub(".rda", "", digest_data$name[digest_data$same == TRUE])
+  },
+  error = function(e) {
+    message("Error occurred: ", e$message)
+    NA
+  }
+  )
 
   objects <- setdiff(all_objects, no_change)
 
