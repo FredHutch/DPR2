@@ -10,8 +10,8 @@
 #' @noRd
 generate_all_docs <- function(path = ".", out_dir = "R", env = NULL) {
 
-  if(!is.character(path)) stop("`path` must be a character string.")
-  if(!is.character(out_dir)) stop("`out_dir` must be a character string.")
+  if (!is.character(path)) stop("`path` must be a character string.")
+  if (!is.character(out_dir)) stop("`out_dir` must be a character string.")
   if (!is.null(env) && !is.environment(env)) stop("`env` must be an environment or NULL.")
 
   out_dir <- file.path(path, out_dir)
@@ -21,7 +21,7 @@ generate_all_docs <- function(path = ".", out_dir = "R", env = NULL) {
     dir.create(out_dir)
   }
 
-  if(is.null(env)){
+  if (is.null(env)){
     data_env <- new.env()
   } else {
     data_env <- env
@@ -37,12 +37,15 @@ generate_all_docs <- function(path = ".", out_dir = "R", env = NULL) {
 
   # select only those objects that differ between digest file and data directory
   no_change <- tryCatch({
-    digest_data <- dpr_compare_data_digest(path) #func returns error if no digest source is found. Will cause issues when building a brand new pkg.
+    digest_data <- dpr_compare_data_digest(path) #function returns error if no digest source is found. Will cause issues when building a brand new pkg.
     gsub(".rda", "", digest_data$name[digest_data$same == TRUE])
   },
   error = function(e) {
-    message("Error occurred: ", e$message)
-    NA
+    if (grepl("No digest files found. Has any data been added to the data package yet?", e$message)) {
+      return(NA)
+    } else {
+      stop(e)
+    }
   }
   )
 
@@ -114,7 +117,6 @@ template_doc_block <- function(object, object_name) {
   }
 
   # end roxygen comment block
-
   doc_block <- c(doc_block,
                  "#' }",
                  "#' @source Generated from script _________________",
