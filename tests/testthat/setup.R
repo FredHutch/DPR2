@@ -48,7 +48,7 @@ createPkg <- function(temp_dir, package_name, more_args = list()){
       "objYml1 <- 'test objects values 1'",
       "objYml2 <- 'test objects values 2'",
       "dpr_save('mydataframe')",
-      "save(yml, file='data/myyaml.rda')"
+      "save(yml, file=dpr_path('data', 'myyaml.rda'))"
     ),
     file.path(path, "processing/01.R")
   )
@@ -60,11 +60,12 @@ createPkg <- function(temp_dir, package_name, more_args = list()){
       "---",
       "test text",
       "```{r}",
+      "library(DPR2)",
       "library(yaml)",
       "df  <- data.frame(x=1:10, y=LETTERS[1:10])",
       "yml <- as.yaml(df)",
-      "save(df,  file='data/mydataframe_rmd.rda')",
-      "save(yml, file='data/myyaml_rmd.rda')",
+      "save(df,  file=dpr_path('data', 'mydataframe_rmd.rda'))",
+      "save(yml, file=dpr_path('data', 'myyaml_rmd.rda'))",
       "```"
     ),
     file.path(path, "processing/01.Rmd")
@@ -85,7 +86,7 @@ createPkg <- function(temp_dir, package_name, more_args = list()){
       "library(DPR2)",
       "dat <- as.list(LETTERS)",
       "ourLetters <- c('d', 'p', 'r')",
-      "save(dat, file='data/letters.rda')",
+      "save(dat, file=dpr_path('data', 'letters.rda'))",
       "dpr_save('ourLetters')"
     ),
     file.path(path, "processing/A1.R")

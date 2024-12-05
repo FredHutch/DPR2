@@ -172,14 +172,13 @@ dpr_description_set <- function(path=".", ...){
 #' @title dpr_save
 #' @param objects Character vector of object names to be saved from the
 #'   environment specified in \code{envir}.
-#' @param path The relative path to the data package. The default is the
-#'   working directory.
+#' @param path The path to the data package. Defaults to [dpr_path()].
 #' @param envir The environment to search for objects to save. Defaults to
 #'   calling environment.
 #' @returns The original \code{objects} argument, invisibly.
 #' @author jmtaylor
 #' @export
-dpr_save <- function(objects, path = ".", envir = parent.frame()){
+dpr_save <- function(objects, path = dpr_path(), envir = parent.frame()){
   if(!is.character(objects))
     stop("Only character vectors allowed.")
   for(obj in objects){
