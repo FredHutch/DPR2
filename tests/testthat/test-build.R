@@ -9,10 +9,14 @@ testthat::test_that("checking package build", {
   path <- file.path(tdir, pkgn)
   createPkg(tdir, pkgn, list(renv_init = FALSE))
 
+  rda_to_restore <- file.path(path, 'data', 'restore_me.rda')
+  file.create(rda_to_restore)
   expect_error(
     dpr_build(path, process_on_build = 'nolib.R'),
     'could not find function'
   )
+  expect_true(file.exists(rda_to_restore))
+  unlink(rda_to_restore)
 
   dpr_build(path, process_on_build = "01.R")
   vign <- list.files(file.path(path, "vignettes"))
