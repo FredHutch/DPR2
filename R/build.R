@@ -105,7 +105,9 @@ dpr_render <- function(path=".", ...){
     purge_backup_files <- dpr_purge_data_directory(path, yml)
     purge_restore <- TRUE
     on.exit({
+      # conditionally restore from backup
       if (purge_restore) file.copy(purge_backup_files, file.path(path, 'data'))
+      # always unlink backup files
       unlink(unique(dirname(purge_backup_files)), recursive = TRUE)
     })
   }
@@ -142,7 +144,7 @@ dpr_render <- function(path=".", ...){
     )
   }
 
-  # now safe to cancel purge restore on exit and remove backup files
+  # now safe to cancel purge restore on exit
   if(yml$purge_data_directory){
     purge_restore <- FALSE
   }
