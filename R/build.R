@@ -118,8 +118,8 @@ dpr_render <- function(path=".", ...){
       )
     )
 
-  if(length(ls(env)) != 0){
-    generate_all_docs(path=path, env=env)
+  if(!empty_folder(path=path)){
+    generate_all_docs(path=path)
   }
 }
 
