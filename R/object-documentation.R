@@ -8,32 +8,44 @@
 #' @return Creates `.R` files with documentation for each `.rda` data object.
 #' @author valduran18
 #' @noRd
-generate_all_docs <- function(path = ".", out_dir = "R", env = NULL) {
+generate_all_docs <- function(path = ".", out_dir = "R") {
 
   if (!is.character(path)) stop("`path` must be a character string.")
   if (!is.character(out_dir)) stop("`out_dir` must be a character string.")
-  if (!is.null(env) && !is.environment(env)) stop("`env` must be an environment or NULL.")
 
   out_dir <- file.path(path, out_dir)
 
-  # Ensure the output folder exists
+  # check the output folder exists
   if (!dir.exists(out_dir)) {
     dir.create(out_dir)
   }
 
-  if (is.null(env)){
-    data_env <- new.env()
-  } else {
-    data_env <- env
-  }
+  data_env <- new.env()
 
   # get all .rda files in the data folder
-  all_objects <- ls(data_env)
+  rda_files <- list.files(file.path(path, "data"), pattern = "\\.rda$", full.names = TRUE)
+  # load into environment and rename the object to the filename in cases where object was saved using save()
+  for (file in rda_files) {
+    filename <- tools::file_path_sans_ext(basename(file))
 
-  if (length(all_objects) == 0) {
-    warning("The environment is empty. No objects to document.")
+    temp_env <- new.env()
+    load(file, envir = temp_env)
 
+    # get obj name
+    object_name <- ls(temp_env)
+
+    if (length(object_name) == 1) {
+      # get object
+      obj <- get(object_name, envir = temp_env)
+
+      # assign the object to the filename
+      data_env[[filename]] <- obj
+    } else {
+      warning(sprintf("File '%s' contains multiple or no objects. Will not write documentation for it.", file))
+    }
   }
+
+  all_objects <- ls(data_env)
 
   # select only those objects that differ between digest file and data directory
   no_change <- tryCatch({
@@ -124,4 +136,19 @@ template_doc_block <- function(object, object_name) {
                  "#' \\link{}",
                  paste0('"', object_name, '"'))
 
+}
+
+#' Private. Check if data directory is empty.
+#'
+#' Lists files in data directory and checks if the returned list of files is empty.
+#'
+#' @title empty_folder
+#' @param path Path to data package.
+#' @return a logical value indicating TRUE for an empty directory and FALSE if not.
+#' @author valduran18
+#' @noRd
+empty_folder <- function(path = "."){
+  data_path <- file.path(path, "data")
+  files <- list.files(data_path, all.files = TRUE, no.. = TRUE)
+  length(files) == 0
 }
