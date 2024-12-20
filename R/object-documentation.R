@@ -41,7 +41,7 @@ generate_all_docs <- function(path = ".", out_dir = "R") {
       # assign the object to the filename
       data_env[[filename]] <- obj
     } else {
-      warning(sprintf("File '%s' contains multiple or no objects. Will not write documentation for it.", file))
+      warning(sprintf("'%s' contains multiple or no objects. Will skip writing documentation for it.", basename(file)))
     }
   }
 
