@@ -6,3 +6,4 @@ test_dpr-exported.html
 .httr-oauth
 .DS_Store
 .quarto
+inst/doc
