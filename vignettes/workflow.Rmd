@@ -1,8 +1,8 @@
 ---
-title: "workflow"
+title: "Typical DPR2 Workflow"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{workflow}
+  %\VignetteIndexEntry{Typical DPR2 Workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,8 +12,93 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+# Temporary working directory for example data package
+
+twd <- tempfile('vpkg')
+dir.create(twd)
+knitr::opts_knit$set(root.dir = twd)
 ```
+
+### Load DPR2
 
 ```{r setup}
 library(DPR2)
+```
+
+### Initialize a new DPR2 package
+
+```{r create}
+
+# Use the current working directory for the new data package
+
+dpr_init(renv_init = FALSE)
+
+# View the files created by dpr_init()
+
+list.files()
+
+# Alternatively, create a new DPR2 package in a different directory
+# dpr_create(path = "path_to_different_dir")
+```
+
+### Examine datapackager.yml
+
+```{r yaml}
+cat(readLines('datapackager.yml'), sep = '\n')
+```
+
+
+```{r add-processing-script, echo = FALSE}
+writeLines(
+    c(
+      "---",
+      "title: example processing script",
+      "---",
+      "Example text",
+      "",
+      "```{r}",
+      "library(DPR2)",
+      "my_df <- data.frame(a = 1:5, b = letters[1:5])",
+      "dpr_save('my_df')",
+      "```"
+    ),
+    dpr_path("processing", "make_my_df.Rmd")
+  )
+```
+
+### View example processing script
+
+Note: Use `dpr_path()` to refer to other paths within processing scripts and `dpr_save()` to save objects to `data/`.
+
+```{r view-processing-script}
+cat(readLines(dpr_path('processing', 'make_my_df.Rmd')), sep = '\n')
+```
+
+### Build the data package
+
+```{r build}
+dpr_build(process_on_build = 'make_my_df.Rmd')
+
+# examine data directory
+
+list.files(recursive = TRUE)
+```
+
+### Examine the data digest
+
+```{r examine-data-digest}
+
+dd_file <- list.files(dpr_path('inst', 'data_digest'), full.names = TRUE)
+dd_file
+
+cat(readLines(dd_file), sep = '\n')
+
+```
+
+### Examine the saved data object
+
+```{r object}
+load(dpr_path('data', 'my_df.rda'))
+my_df
 ```
