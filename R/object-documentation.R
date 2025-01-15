@@ -41,7 +41,7 @@ generate_all_docs <- function(path = ".", out_dir = "R") {
       # assign the object to the filename
       data_env[[filename]] <- obj
     } else {
-      warning(sprintf("'%s' contains multiple or no objects. Will skip writing documentation for it.", basename(file)))
+      message(sprintf("'%s' contains multiple or no objects. Will skip writing documentation for it.", basename(file)))
     }
   }
 
@@ -64,7 +64,7 @@ generate_all_docs <- function(path = ".", out_dir = "R") {
   objects <- setdiff(all_objects, no_change)
 
   if (length(objects) == 0) {
-    warning("No new data objects have been created, and no existing objects have been modified. There are no objects to document.")
+    message("No new data objects have been created, and no existing objects have been modified. There are no objects to document.")
 
   }
 

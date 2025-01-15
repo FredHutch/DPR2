@@ -11,12 +11,12 @@ test_that("check that R object documentation is written as expected", {
   expect_true(file.exists(file.path(path, "R", "mydataframe.R")))
 
   # check that there is no warning since a new object is being created
-  expect_no_warning(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")))
+  expect_no_message(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")))
   expect_true(file.exists(file.path(path, "R", "objYml2.R")))
 
-  #expect a warning when there are no changes to object or no new object is created
-  expect_warning(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")),
-                 "No new data objects have been created, and no existing objects have been modified.")
+  #expect a message when there are no changes to object or no new object is created
+  expect_message(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")),
+                 "No new data objects have been created, and no existing objects have been modified. There are no objects to document.")
 
   # expect a warning when rda has multiple objects
   # create test script
@@ -30,7 +30,7 @@ test_that("check that R object documentation is written as expected", {
   )
 
   dpr_yaml_set(path, process_on_build = "mult_obj.R")
-  expect_warning(
+  expect_message(
     dpr_build(path),
     "'df.rda' contains multiple or no objects. Will skip writing documentation for it."
   )
