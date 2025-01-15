@@ -4,14 +4,29 @@
 #' @param path A character string specifying the directory path of the data
 #'   package. The default is the working directory
 #' @param yml an R yaml list object
-#' @return nothing
+#' @return Invisibly, a vector of paths of backup copies of purged files
 #' @author jmtaylor
 #' @noRd
 dpr_purge_data_directory <- function(path=".", yml){
   datadir <- file.path(path, "data")
-  for(d in list.files(datadir)){
-    unlink(file.path(datadir, d), recursive=TRUE)
+  files_to_purge <- file.path(datadir, list.files(datadir))
+
+  backup_dir <- tempfile()
+  dir.create(backup_dir)
+  file.copy(files_to_purge, backup_dir)
+
+  unlink(files_to_purge, recursive=TRUE)
+
+  not_deleted <- file.exists(files_to_purge)
+  if (any(not_deleted)){
+    stop(
+      sprintf(
+        'Error purging %s', paste(basename(files_to_purge[not_deleted]), collapse = ', ')
+      )
+    )
   }
+
+  invisible(list.files(backup_dir, full.names = TRUE))
 }
 
 #' Private. A function for fetch all global objects from a callr session.
@@ -86,24 +101,53 @@ dpr_render <- function(path=".", ...){
 
   yml <- dpr_yaml_get(path, ...)
 
-  if(yml$purge_data_directory)
-    dpr_purge_data_directory(path, yml)
+  if(yml$purge_data_directory){
+    purge_backup_files <- dpr_purge_data_directory(path, yml)
+    purge_restore <- TRUE
+    on.exit({
+      # conditionally restore from backup
+      if (purge_restore) file.copy(purge_backup_files, file.path(path, 'data'))
+      # always unlink backup files
+      unlink(unique(dirname(purge_backup_files)), recursive = TRUE)
+    })
+  }
 
   # Prepare to render
   if(is.null(yml$process_on_build)){
     stop("No files specified to process_on_build. See datapackager.yml file.")
   }
-  files_to_process = file.path(path, yml$process_directory, yml$process_on_build)
+  vignette_tempdir <- tempfile()
+  dir.create(vignette_tempdir)
   render_args <- list(
     knit_root_dir = normalizePath(path),
-    output_dir = ifelse(yml$write_to_vignettes, file.path(path, "vignettes"), tempdir()),
+    output_dir = vignette_tempdir,
     output_format = "md_document"
   )
 
   # render and convert to environment
-  objects <- callr_render(files_to_process, render_args, yml$render_env_mode)
+  objects <- callr_render(
+    file.path(path, yml$process_directory, yml$process_on_build),
+    render_args,
+    yml$render_env_mode
+  )
   # parent.env(env) will be emptyenv(). See ?as.environment
   env <- as.environment(objects)
+
+  # transfer vignettes to vignettes/ if desired, now that we're done rendering
+  if (yml$write_to_vignettes){
+    vignettes_dir <- file.path(path, 'vignettes')
+    if (! dir.exists(vignettes_dir)) dir.create(vignettes_dir)
+    file.copy(
+      list.files(vignette_tempdir, full.names = TRUE),
+      vignettes_dir,
+      overwrite = TRUE
+    )
+  }
+
+  # now safe to cancel purge restore on exit
+  if(yml$purge_data_directory){
+    purge_restore <- FALSE
+  }
 
   saved_objects <- dpr_save(
     intersect(ls(env), as.character(yml$objects)), path, env
