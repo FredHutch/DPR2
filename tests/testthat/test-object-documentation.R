@@ -1,7 +1,7 @@
-tdir <- getPkgDir()
-pkgn <- "testPkg"
 
 test_that("check that R object documentation is written as expected", {
+  tdir <- getPkgDir()
+  pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
   createPkg(tdir, pkgn, list(renv_init = FALSE))
   dpr_build(path, process_on_build = "01.R", objects = "objYml1")
@@ -18,7 +18,7 @@ test_that("check that R object documentation is written as expected", {
   expect_message(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")),
                  "No new data objects have been created, and no existing objects have been modified. There are no objects to document.")
 
-  # expect a warning when rda has multiple objects
+  # expect a warning when RDA has multiple objects
   # create test script
   writeLines(
     c(
@@ -36,6 +36,7 @@ test_that("check that R object documentation is written as expected", {
   )
 
   unlink(path, recursive = TRUE)
+  cleanup(tdir)
 })
 
 test_that("check that write_doc_file writes documentation files correctly", {
