@@ -5,6 +5,21 @@ testthat::test_that("check dpr_hash against git2r hash", {
     dpr_hash_files(path) ==
       git2r::hashfile(path)
   )
+
+  temp <- tempfile()
+  saveRDS(1:10, temp)
+  expect_true(
+    dpr_hash_files(temp) ==
+      git2r::hashfile(temp)
+  )
+
+  temp <- tempfile()
+  saveRDS(letters[rep(1:26,1e4)], temp)
+  expect_true(
+    dpr_hash_files(temp) ==
+      git2r::hashfile(temp)
+  )
+
 })
 
 ## dpr_data_hashes and dpr_data_digest

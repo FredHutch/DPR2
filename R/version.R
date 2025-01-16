@@ -82,11 +82,14 @@ dpr_hash_files <- function(paths){
     stop("Cannot hash some paths because they don't exists: ", paste(paths[!file.exists(paths)], collapse = ","))
   return(
     vapply(paths, function(path) {
+      raw_file <- readBin(path, "raw", file.info(path)$size)
+      if ( all( raw_file[1:min(c(length(raw_file),8000))] != as.raw(00) ) ) # to detect if file is text or not as git does
+        raw_file <- raw_file[raw_file != as.hexmode("0d")] # to remove CR line endings if present
       digest::digest(
         c(
-          charToRaw(paste0("blob ", file.info(path)$size)),
-          as.raw(0),
-          readBin(path, "raw", file.info(path)$size)
+          charToRaw(paste0("blob ", length(raw_file))),
+          as.raw(00),
+          raw_file
         ), algo = "sha1", serialize = F
       )
     }, "", USE.NAMES = FALSE)
