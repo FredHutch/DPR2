@@ -79,7 +79,7 @@ dpr_check_git <- function(path){
 #' @export
 dpr_hash_files <- function(paths){
   if(!all(file.exists(paths)))
-    stop("Cannot hash some paths because they don't exists: ", paste(paths[!file.exists(paths)], collapse = ","))
+    stop("Cannot hash some paths because they don't exist: ", paste(paths[!file.exists(paths)], collapse = ","))
   return(
     vapply(paths, function(path) {
       raw_file <- readBin(path, "raw", file.info(path)$size)
