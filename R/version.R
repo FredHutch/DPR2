@@ -83,8 +83,8 @@ dpr_hash_files <- function(paths){
   return(
     vapply(paths, function(path) {
       raw_file <- readBin(path, "raw", file.info(path)$size)
-      if ( all( raw_file[1:min(c(length(raw_file),8000))] != as.raw(00) ) ) # to detect if file is text or not as git does
-        raw_file <- raw_file[raw_file != as.hexmode("0d")] # to remove CR line endings if present
+      if ( all(raw_file[seq_len(min(c(length(raw_file), 8000)))] != as.raw(00) ) ) # 8000 is the number of bytes tested by git to determine text or binary status https://git.kernel.org/pub/scm/git/git.git/tree/xdiff-interface.c?h=v2.30.0#n187
+        raw_file <- raw_file[raw_file != as.hexmode("0d")] # to remove CR line endings if present in text file
       digest::digest(
         c(
           charToRaw(paste0("blob ", length(raw_file))),
