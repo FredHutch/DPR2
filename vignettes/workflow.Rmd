@@ -47,6 +47,63 @@ list.files()
 ```{r yaml}
 cat(readLines('datapackager.yml'), sep = '\n')
 ```
+Current configuration on the YAML file can be viewed with `dpr_yaml_get()`
+
+```{r}
+dpr_yaml_get()
+```
+Main components of the YAML config files are the `process_directory` where all the scripts which are to be rendered are saved, `source_data_directory` which contains the data_objects to be rendered. 
+
+
+```{r yaml}
+cat(readLines('datapackager.yml'), sep = '\n')
+```
+
+Any YAML configurations can be changed by the user with dpr_yaml_set().
+
+```{r}
+dpr_yaml_set(render_on_build = "no")
+cat(readLines('datapackager.yml'), sep = '\n')
+```
+
+
+Sometimes we may encounter datapacakges created by DPR1 . DPR2 has function `dpr_dpr1_yaml_load` which converts a DPR1 YAML object into a DPR2 compatible yaml object
+
+```{r}
+#existing dpr1 project
+library(DataPackageR)
+library(yaml)
+my_temp_dir <- tempdir()
+#setup an empty DPR1 skeleton
+processing_code <-
+    system.file("extdata", "tests", "subsetCars.Rmd", package = "DataPackageR")
+
+# Create the package framework.
+DataPackageR::datapackage_skeleton(name = "mtcars20",
+                                   force = TRUE,
+                                   code_files = processing_code,
+                                   r_object_names = "cars_over_20",
+                                   path = my_temp_dir 
+                                   #dependencies argument is empty
+                                   #raw_data_dir argument is empty.
+                                   )
+yml <- DataPackageR::construct_yml_config(code = "subsetCars.Rmd", data = "cars_over_20")
+
+cat(yaml::as.yaml(yml))
+```
+After using dpr_dpr1_yaml_convert function and loading and looking over the yaml settings, we see the yaml configuration for the DPR1 package is converted to DPR2 compatible settings:
+```{r}
+dpr_dpr1_yaml_convert(file.path(my_temp_dir, "mtcars20"))
+dpr_yaml_get(path = file.path(my_temp_dir, "mtcars20") )
+```
+
+
+
+
+```{r}
+dpr_dpr1_yaml_convert(path = tempdir("mtcars20"))
+cat(readLines('datapackager.yml'), sep = '\n')
+```
 
 
 ```{r add-processing-script, echo = FALSE}
