@@ -32,11 +32,11 @@ library(DPR2)
 
 # Use the current working directory for the new data package
 
-dpr_init(renv_init = FALSE)
+dpr_init(twd,renv_init = FALSE)
 
 # View the files created by dpr_init()
 
-list.files()
+list.files(twd)
 
 # Alternatively, create a new DPR2 package in a different directory
 # dpr_create(path = "path_to_different_dir")
@@ -45,25 +45,25 @@ list.files()
 ### Examine datapackager.yml
 
 ```{r yaml}
-cat(readLines('datapackager.yml'), sep = '\n')
+cat(readLines(paste0(twd,'\\','datapackager.yml')), sep = '\n')
 ```
 Current configuration on the YAML file can be viewed with `dpr_yaml_get()`
 
 ```{r}
-dpr_yaml_get()
+dpr_yaml_get(twd)
 ```
-Main components of the YAML config files are the `process_directory` where all the scripts which are to be rendered are saved, `source_data_directory` which contains the data_objects to be rendered. 
+Main components of the YAML config files are the `process_directory` where all the scripts which are to be rendered are saved, `source_data_directory` which contains the data_objects to be rendered. `render_env_mode` does what ?
 
 
 ```{r yaml}
-cat(readLines('datapackager.yml'), sep = '\n')
+cat(readLines(paste0(twd,'\\','datapackager.yml')), sep = '\n')
 ```
 
-Any YAML configurations can be changed by the user with dpr_yaml_set().
+Any YAML configurations can be changed by the user with dpr_yaml_set(). In the example, we are changing the argument `render_on_build` to `no` which indicates objects and files will not be rendered at build
 
 ```{r}
-dpr_yaml_set(render_on_build = "no")
-cat(readLines('datapackager.yml'), sep = '\n')
+dpr_yaml_set(twd,render_on_build = FALSE)
+cat(readLines(paste0(twd,'\\','datapackager.yml')), sep = '\n')
 ```
 
 
@@ -100,12 +100,6 @@ dpr_yaml_get(path = file.path(my_temp_dir, "mtcars20") )
 
 
 
-```{r}
-dpr_dpr1_yaml_convert(path = tempdir("mtcars20"))
-cat(readLines('datapackager.yml'), sep = '\n')
-```
-
-
 ```{r add-processing-script, echo = FALSE}
 writeLines(
     c(
@@ -120,7 +114,7 @@ writeLines(
       "dpr_save('my_df')",
       "```"
     ),
-    dpr_path("processing", "make_my_df.Rmd")
+    dpr_path(twd,"processing", "make_my_df.Rmd")
   )
 ```
 
@@ -129,24 +123,24 @@ writeLines(
 Note: Use `dpr_path()` to refer to other paths within processing scripts and `dpr_save()` to save objects to `data/`.
 
 ```{r view-processing-script}
-cat(readLines(dpr_path('processing', 'make_my_df.Rmd')), sep = '\n')
+cat(readLines(dpr_path(twd,'processing', 'make_my_df.Rmd')), sep = '\n')
 ```
 
 ### Build the data package
 
 ```{r build}
-dpr_build(process_on_build = 'make_my_df.Rmd')
+dpr_build(path = twd,process_on_build = 'make_my_df.Rmd')
 
 # examine data directory
 
-list.files(recursive = TRUE)
+list.files(twd,recursive = TRUE)
 ```
 
 ### Examine the data digest
 
 ```{r examine-data-digest}
 
-dd_file <- list.files(dpr_path('inst', 'data_digest'), full.names = TRUE)
+dd_file <- list.files(paste0(twd,dpr_path('inst', 'data_digest')), full.names = TRUE)
 dd_file
 
 cat(readLines(dd_file), sep = '\n')
