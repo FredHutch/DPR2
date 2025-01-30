@@ -1,24 +1,16 @@
 ## check defaulting to data_digest when git is not used in the repository
 testthat::test_that("check dpr_hash against git2r hash", {
 
-  path <- "setup.R"
+  path <- "dpr1package/DESCRIPTION"
   expect_true(
     dpr_hash_files(path) ==
       system(paste("git hash-object", path), intern = T)
   )
 
-  temp <- tempfile()
-  saveRDS(1:10, temp)
+  path <- "dpr1package/data/iris.rda"
   expect_true(
-    dpr_hash_files(temp) ==
-      system(paste("git hash-object", temp), intern = T)
-  )
-
-  temp <- tempfile()
-  saveRDS(letters[rep(1:26,1e4)], temp)
-  expect_true(
-    dpr_hash_files(temp) ==
-      system(paste("git hash-object", temp), intern = T)
+    dpr_hash_files(path) ==
+       system(paste("git hash-object", path), intern = T)
   )
 
 })
