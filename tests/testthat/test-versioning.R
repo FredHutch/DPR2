@@ -1,5 +1,5 @@
 
-## dpr_data_hashes and dpr_data_digest
+## dpr_data_checksums and dpr_data_digest
 testthat::test_that("checking package data hashes report", {
 
   tdir <- getPkgDir()
@@ -19,7 +19,7 @@ testthat::test_that("checking package data hashes report", {
   dpr_render(path)
 
   expect_true(
-    nrow(dpr_data_hashes(path)) == 5
+    nrow(dpr_data_checksums(path)) == 5
   )
 
   expect_true(

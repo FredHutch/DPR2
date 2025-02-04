@@ -1,5 +1,5 @@
 #' Private. A function for updating the data digest components by generating
-#' hashes for all .rda files in the specified directory
+#' checksums for all .rda files in the specified directory
 #' @title dpr_update_data_digest
 #' @param path path to data package
 #' @param yml the yml list object used for the build
@@ -16,7 +16,7 @@ dpr_update_data_digest <- function(path=".", yml){
   unlink(list.files(dig, full.names = T))
 
   for(d in rda)
-    write(dpr_hash_files(d), file.path(dig, paste0(basename(d), "_")))
+    write(dpr_checksum_files(d), file.path(dig, paste0(basename(d), "_")))
 
 }
 
@@ -98,55 +98,48 @@ dpr_data_digest <- function(path="."){
   )
 }
 
-#' Return table of current hashes for rda files in the data directory.
+#' Return table of current in-memory checksums for rda files in the data directory.
 #'
-#' @title dpr_data_hashes
+#' @title dpr_data_checksums
 #' @param path path to data package
 #' @return a data.frame containing the name of the rda object and the
-#'   corresponding hash
+#'   corresponding checksum
 #' @author jmtaylor
 #' @export
-dpr_data_hashes <- function(path="."){
+dpr_data_checksums <- function(path="."){
   rda <- dpr_list_rda(path)
   return(
     data.frame(
       name = basename(rda),
-      data_md5 = dpr_hash_files(rda)
+      data_md5 = dpr_checksum_files(rda)
     )
   )
 }
 
 #' A data digest comparison table, comparing the current data digest
-#' hashes with the current file hashes in the data directory.
+#' checksums with the current file checksums in the data directory.
 #'
-#' Compare the current hashes for the data listed in the data
-#' directory with the hashes listed in the data digest. The data
+#' Compare the current checksums for the data listed in the data
+#' directory with the checksums listed in the data digest. The data
 #' digest is only updated when the package is built, not when it is
 #' simply rendered using `dpr_render()`.
 #' @title dpr_compare_data_digest
 #' @param path path to data package
-#' @param display_digits number of characters to display for hash
-#'   values
-#' @return a data.frame with the file name, corresponding data hash,
-#'   existing data_digest hash and a boolean value indicating if they
-#'   are same or not
+#' @return a data.frame with the file name, corresponding data
+#'   in-memory checksum, existing data_digest checksum, and a boolean
+#'   value indicating if they are same or not
 #' @author jmtaylor
 #' @export
-dpr_compare_data_digest <- function(path=".", display_digits = 7){
+dpr_compare_data_digest <- function(path="."){
   comp <- merge(
-    dpr_data_hashes(path), # the hashes of the files in the data directory
-    dpr_data_digest(path), # the hashes recorded to the data digest during the last build
+    dpr_data_checksums(path), # the checksums of the files in the data directory
+    dpr_data_digest(path), # the checksums recorded to the data digest during the last build
     by = "name",
     all.x = TRUE,
     all.y = TRUE
   )
 
-  comp$same <-
-    comp$data_md5 == comp$data_digest_md5
-  comp$data_md5 <-
-    substring(comp$data_md5, 1, display_digits)
-  comp$data_digest_md5 <-
-    substring(comp$data_digest_md5, 1, display_digits)
+  comp$same <- comp$data_md5 == comp$data_digest_md5
 
   return(comp)
 }
@@ -214,15 +207,15 @@ dpr_hashes_to_checksums <- function(hashes, path){
   )
 }
 
-#' This function will return an md5 hash of an R object into memory.
+#' This function will return an md5 checksum of an in-memory R object.
 #' 
-#' @title dpr_hash_files
+#' @title dpr_checksum_files
 #' @param paths path of files to hash
 #' @return a character string of the md5 hashes of a files loaded into memory.
 #' @export
-dpr_hash_files <- function(paths){
+dpr_checksum_files <- function(paths){
   if(!all(file.exists(paths)))
-    stop("Cannot hash some paths because they don't exists: ", paste(paths[!file.exists(paths)], collapse = ","))
+    stop("Cannot generate checksums for some paths because they don't exists: ", paste(paths[!file.exists(paths)], collapse = ","))
   if(!all(grepl("\\.rda|\\.rds", paths, ignore.case=TRUE)))
     stop("One or more paths provided are not `rda`, or `rds` files. All other file types are not supported")
   return(
