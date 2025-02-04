@@ -7,7 +7,7 @@
 dpr_recall_data_versions(hashes, path = ".")
 }
 \arguments{
-\item{hashes}{the hashes of the data to recall; partial hashes
+\item{hashes}{the git hashes of the data to recall; partial hashes
 allowed from 1 to 40 hexadecimal digits}
 
 \item{path}{the path to the data package}

@@ -59,40 +59,6 @@ dpr_check_git <- function(path){
   return(all(git))
 }
 
-#' Return hash of file at the path provided. Hash is equivalent to the git blob
-#' hash of the file.
-#'
-#' This function will return a git style sha1 hash of a file found at the path
-#' argument. Git style hashing pads the front of the file with "blob" the
-#' length of the file in bytes, a null character, and then the binary content
-#' of the file itself. This style of hashing is used here to ensure that data
-#' objects created that have the same blob can be compared whether the package
-#' is under version control or not, or packages that are put under version
-#' control at future dates can compare objects with versions of the package
-#' from before version control was applied.
-#'
-#' @title dpr_hash_file
-#' @param paths path of file to hash
-#' @return a character string of the SHA1 hash of the file using git style hash
-#'   padding.
-#' @author jmtaylor
-#' @export
-dpr_hash_files <- function(paths){
-  if(!all(file.exists(paths)))
-    stop("Cannot hash some paths because they don't exists: ", paste(paths[!file.exists(paths)], collapse = ","))
-  return(
-    vapply(paths, function(path) {
-      digest::digest(
-        c(
-          charToRaw(paste0("blob ", file.info(path)$size)),
-          as.raw(0),
-          readBin(path, "raw", file.info(path)$size)
-        ), algo = "sha1", serialize = F
-      )
-    }, "", USE.NAMES = FALSE)
-  )
-}
-
 #' Private. Reads a data digest source, validates it's contents, and returns a
 #' list.
 #'
@@ -127,7 +93,7 @@ dpr_data_digest <- function(path="."){
   return(
     data.frame(
       name = gsub("_$", "", basename(data_digest)),
-      data_digest_hash = vapply(data_digest, readLines, "", USE.NAMES = FALSE)
+      data_digest_md5 = vapply(data_digest, readLines, "", USE.NAMES = FALSE)
     )
   )
 }
@@ -145,7 +111,7 @@ dpr_data_hashes <- function(path="."){
   return(
     data.frame(
       name = basename(rda),
-      data_hash = dpr_hash_files(rda)
+      data_md5 = dpr_hash_files(rda)
     )
   )
 }
@@ -176,11 +142,11 @@ dpr_compare_data_digest <- function(path=".", display_digits = 7){
   )
 
   comp$same <-
-    comp$data_hash == comp$data_digest_hash
-  comp$data_hash <-
-    substring(comp$data_hash, 1, display_digits)
-  comp$data_digest_hash <-
-    substring(comp$data_digest_hash, 1, display_digits)
+    comp$data_md5 == comp$data_digest_md5
+  comp$data_md5 <-
+    substring(comp$data_md5, 1, display_digits)
+  comp$data_digest_md5 <-
+    substring(comp$data_digest_md5, 1, display_digits)
 
   return(comp)
 }
@@ -222,15 +188,19 @@ dpr_envs_to_checksums <- function(envs){
     envs,
     function(env){
       nms <- ls(envir=env)
-      if(length(nms) > 1)
-        return("No checksum computed for rda files containing more than 1 object.")
-      else
+      if(length(nms) > 1){
+        msg <- "No checksum computed for rda files containing more than 1 object."
+        warning(msg)
+        return(msg)
+      } else {
         return(digest::digest(get(nms, envir=env), algo="md5"))
+      }
     }, "")
 }
 
 #' Private. From a vector of hashes load the data and generate the
 #' checksum for the objects in memory.
+#' Return md5 hash of R file loaded into memory from the path provided. 
 #'
 #' @title dpr_hashes_to_checksums
 #' @param hashes a character vector of full sha1 hashes
@@ -241,6 +211,26 @@ dpr_envs_to_checksums <- function(envs){
 dpr_hashes_to_checksums <- function(hashes, path){
   dpr_envs_to_checksums(
     dpr_hashes_to_envs(hashes, path)
+  )
+}
+
+#' This function will return an md5 hash of an R object into memory.
+#' 
+#' @title dpr_hash_files
+#' @param paths path of files to hash
+#' @return a character string of the md5 hashes of a files loaded into memory.
+#' @export
+dpr_hash_files <- function(paths){
+  if(!all(file.exists(paths)))
+    stop("Cannot hash some paths because they don't exists: ", paste(paths[!file.exists(paths)], collapse = ","))
+  if(!all(grepl("\\.rda|\\.rds", paths, ignore.case=TRUE)))
+    stop("One or more paths provided are not `rda`, or `rds` files. All other file types are not supported")
+  return(
+    vapply(paths, function(path) {
+      load_env <- new.env()
+      load(path, envir = load_env)      
+      return( dpr_envs_to_checksums(list(load_env)) )
+    }, "", USE.NAMES = FALSE)
   )
 }
 
@@ -261,7 +251,7 @@ dpr_data_history <- function(path=".", include_checksums=FALSE){
     stop("`path` argument is not a DataPackageR or DPR2 package.")
 
   if( !dpr_check_git(path) ){
-    warning("Returning data digest comparision table instead of data history.")
+    warning("Returning data digest comparision table instead of data history. This package is not under git version control.")
     return(dpr_compare_data_digest(path))
   }
 
@@ -274,11 +264,11 @@ dpr_data_history <- function(path=".", include_checksums=FALSE){
   if(nrow(odb) == 0)
     stop("No files found at the `data` path commited to the git history.")
 
-  names(odb)[names(odb) == "sha"] <- "blob_file_hash"
+  names(odb)[names(odb) == "sha"] <- "blob_git_sha1"
   row.names(odb) <- 1:nrow(odb) # resetting the row names after subsetting
 
   if(include_checksums)
-    odb$object_md5 <- dpr_hashes_to_checksums(odb$blob_file_hash, path)
+    odb$object_checksum <- dpr_hashes_to_checksums(odb$blob_git_sha1, path)
 
   return(odb)
 }
@@ -287,7 +277,7 @@ dpr_data_history <- function(path=".", include_checksums=FALSE){
 #' data directory will be recalled.
 #'
 #' @title dpr_recall_data_version
-#' @param hashes the hashes of the data to recall; partial hashes
+#' @param hashes the git hashes of the data to recall; partial hashes
 #'   allowed from 1 to 40 hexadecimal digits
 #' @param path the path to the data package
 #' @return a list with names of corresponding .rda object and the

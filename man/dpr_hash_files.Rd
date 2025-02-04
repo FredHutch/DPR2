@@ -2,31 +2,16 @@
 % Please edit documentation in R/version.R
 \name{dpr_hash_files}
 \alias{dpr_hash_files}
-\title{dpr_hash_file}
+\title{dpr_hash_files}
 \usage{
 dpr_hash_files(paths)
 }
 \arguments{
-\item{paths}{path of file to hash}
+\item{paths}{path of files to hash}
 }
 \value{
-a character string of the SHA1 hash of the file using git style hash
-padding.
+a character string of the md5 hashes of a files loaded into memory.
 }
 \description{
-Return hash of file at the path provided. Hash is equivalent to the git blob
-hash of the file.
-}
-\details{
-This function will return a git style sha1 hash of a file found at the path
-argument. Git style hashing pads the front of the file with "blob" the
-length of the file in bytes, a null character, and then the binary content
-of the file itself. This style of hashing is used here to ensure that data
-objects created that have the same blob can be compared whether the package
-is under version control or not, or packages that are put under version
-control at future dates can compare objects with versions of the package
-from before version control was applied.
-}
-\author{
-jmtaylor
+This function will return an md5 hash of an R object into memory.
 }
