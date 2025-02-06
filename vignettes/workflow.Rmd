@@ -7,6 +7,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+### Purpose
+
+This vignette demonstrates how to use DPR2 to build a data package. For demonstrations, we will go over key DPR2 functions and how to build a datapackage from start to finish with a simple example script.
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -32,42 +36,43 @@ library(DPR2)
 
 # Use the current working directory for the new data package
 
-dpr_init(twd,renv_init = FALSE)
+dpr_init(renv_init = FALSE)
 
 # View the files created by dpr_init()
 
-list.files(twd)
+list.files()
 
 # Alternatively, create a new DPR2 package in a different directory
 # dpr_create(path = "path_to_different_dir")
 ```
 
+DPR2 can tackle problems of unstable and non-reproducible environments by setting `renv_init = TRUE`. Once set to TRUE, it will make sure once a package is installed by an user, it
+will use same versions of all the dependencies and inform users whether they need to install a particular version of a package or not. To know more details about how `renv` works, refer to [renv documentation](https://docs.posit.co/ide/user/ide/guide/environments/r/renv.html)
+
+
+
 ### Examine datapackager.yml
 
 ```{r yaml}
-cat(readLines(paste0(twd,'\\','datapackager.yml')), sep = '\n')
+cat(readLines(paste0('datapackager.yml')), sep = '\n')
 ```
+### Configuring YAML file
 Current configuration on the YAML file can be viewed with `dpr_yaml_get()`
 
 ```{r}
-dpr_yaml_get(twd)
+dpr_yaml_get()
 ```
-Main components of the YAML config files are the `process_directory` where all the scripts which are to be rendered are saved, `source_data_directory` which contains the data_objects to be rendered. `render_env_mode` does what ?
+Main components of the YAML config files are the `process_directory` where all the scripts which are to be rendered are saved, `source_data_directory` which contains the data_objects to be rendered.
 
+Any YAML configurations can be changed by the user with dpr_yaml_set(). In the example, we are changing the argument `render_on_build` to `FALSE` which indicates objects and files will not be rendered at build
 
-```{r yaml}
-cat(readLines(paste0(twd,'\\','datapackager.yml')), sep = '\n')
-```
-
-Any YAML configurations can be changed by the user with dpr_yaml_set(). In the example, we are changing the argument `render_on_build` to `no` which indicates objects and files will not be rendered at build
-
-```{r}
-dpr_yaml_set(twd,render_on_build = FALSE)
-cat(readLines(paste0(twd,'\\','datapackager.yml')), sep = '\n')
+```{r configure_YAML}
+dpr_yaml_set(render_on_build = FALSE)
+cat(readLines(paste0('datapackager.yml')), sep = '\n')
 ```
 
-
-Sometimes we may encounter datapacakges created by DPR1 . DPR2 has function `dpr_dpr1_yaml_load` which converts a DPR1 YAML object into a DPR2 compatible yaml object
+### Converting a DPR1 Datapackage to DPR2 
+Sometimes users may encounter datapackages created by DPR1 and still want to use DPR2 functionalities. DPR2 has function `dpr_dpr1_yaml_convert` which converts a DPR1 YAML object into a DPR2 compatible yaml object
 
 ```{r}
 #existing dpr1 project
@@ -97,9 +102,6 @@ dpr_dpr1_yaml_convert(file.path(my_temp_dir, "mtcars20"))
 dpr_yaml_get(path = file.path(my_temp_dir, "mtcars20") )
 ```
 
-
-
-
 ```{r add-processing-script, echo = FALSE}
 writeLines(
     c(
@@ -114,7 +116,7 @@ writeLines(
       "dpr_save('my_df')",
       "```"
     ),
-    dpr_path(twd,"processing", "make_my_df.Rmd")
+    dpr_path("processing", "make_my_df.Rmd")
   )
 ```
 
@@ -123,24 +125,39 @@ writeLines(
 Note: Use `dpr_path()` to refer to other paths within processing scripts and `dpr_save()` to save objects to `data/`.
 
 ```{r view-processing-script}
-cat(readLines(dpr_path(twd,'processing', 'make_my_df.Rmd')), sep = '\n')
+cat(readLines(dpr_path('processing', 'make_my_df.Rmd')), sep = '\n')
 ```
+DPR2 still keeps `project_path`,`project_data_path` and `project_extdata_path` functions to navigate different project directories but they are not recommended to use as they can be removed in a future version.
+
+### Render vs Build
+
+`dpr_render` can be used before `dpr_build` if the user doesn't immediately want to build the package but instead interested in only following :
+  - Check if YAML settings are correct
+  - Check if all processing scripts are rendered correctly
+  - Check if associated vignettes are rendered correctly
+
+```{r render}
+dpr_render(process_on_build = 'make_my_df.Rmd')
+
+```
+Users should see no errors if the rendering process is smooth.
 
 ### Build the data package
-
+After checking `dpr_render` renders the processing scripts without error, `dpr_build` can be used to build and install the package. Users also can choose to skip rendering and build package directly with this step
 ```{r build}
-dpr_build(path = twd,process_on_build = 'make_my_df.Rmd')
+dpr_build(process_on_build = 'make_my_df.Rmd')
 
 # examine data directory
 
-list.files(twd,recursive = TRUE)
+dd_file <- list.files(paste0('inst', '\\','data_digest'),full.names = TRUE)
+dd_file
 ```
 
 ### Examine the data digest
 
-```{r examine-data-digest}
+```{r examine-data-digest, eval=FALSE}
 
-dd_file <- list.files(paste0(twd,dpr_path('inst', 'data_digest')), full.names = TRUE)
+dd_file <- list.files(paste0('inst', '\\','data_digest'),full.names = TRUE)
 dd_file
 
 cat(readLines(dd_file), sep = '\n')
@@ -149,7 +166,12 @@ cat(readLines(dd_file), sep = '\n')
 
 ### Examine the saved data object
 
-```{r object}
+```{r object, eval=FALSE}
 load(dpr_path('data', 'my_df.rda'))
 my_df
 ```
+### Next Steps
+- **Version controlling data packages**
+    1. Call `git init` in the package source root to initialize a new git repository.
+    2. [Create a new repository for your data package on github](https://help.github.com/articles/create-a-repo/).
+    3. Push your local package repository to `github`. [see this step](https://help.github.com/articles/adding-an-existing-project-to-github-using-the-command-line/)
