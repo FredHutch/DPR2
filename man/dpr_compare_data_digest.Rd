@@ -4,26 +4,23 @@
 \alias{dpr_compare_data_digest}
 \title{dpr_compare_data_digest}
 \usage{
-dpr_compare_data_digest(path = ".", display_digits = 7)
+dpr_compare_data_digest(path = ".")
 }
 \arguments{
 \item{path}{path to data package}
-
-\item{display_digits}{number of characters to display for hash
-values}
 }
 \value{
-a data.frame with the file name, corresponding data hash,
-existing data_digest hash and a boolean value indicating if they
-are same or not
+a data.frame with the file name, corresponding data
+in-memory checksum, existing data_digest checksum, and a boolean
+value indicating if they are same or not
 }
 \description{
 A data digest comparison table, comparing the current data digest
-hashes with the current file hashes in the data directory.
+checksums with the current file checksums in the data directory.
 }
 \details{
-Compare the current hashes for the data listed in the data
-directory with the hashes listed in the data digest. The data
+Compare the current checksums for the data listed in the data
+directory with the checksums listed in the data digest. The data
 digest is only updated when the package is built, not when it is
 simply rendered using \code{dpr_render()}.
 }

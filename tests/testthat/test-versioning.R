@@ -1,13 +1,5 @@
-## check defaulting to data_digest when git is not used in the repository
-testthat::test_that("check dpr_hash against git2r hash", {
-  path <- "setup.R"
-  expect_true(
-    dpr_hash_files(path) ==
-      git2r::hashfile(path)
-  )
-})
 
-## dpr_data_hashes and dpr_data_digest
+## dpr_data_checksums and dpr_data_digest
 testthat::test_that("checking package data hashes report", {
 
   tdir <- getPkgDir()
@@ -27,7 +19,7 @@ testthat::test_that("checking package data hashes report", {
   dpr_render(path)
 
   expect_true(
-    nrow(dpr_data_hashes(path)) == 5
+    nrow(dpr_data_checksums(path)) == 5
   )
 
   expect_true(
@@ -47,7 +39,7 @@ testthat::test_that("checking package data hashes report", {
 
   expect_true(
     all(
-      names(comp) == c("name", "data_hash", "data_digest_hash", "same")
+      names(comp) == c("name", "data_md5", "data_digest_md5", "same")
     )
   )
 
@@ -109,14 +101,18 @@ testthat::test_that("checking package data history with git", {
   git2r::commit(repo = path, message="commit 4")
 
   writeLines(gsub("save\\(yml", "save(yml, objYml1", readLines(script)), script)
-  dpr_build(path)
+  expect_warning(
+    dpr_build(path)
+  )
 
   git2r::add(repo = path, path = ".")
   Sys.sleep(1)
   git2r::commit(repo = path, message="commit 5")
 
-  dataHistory <- dpr_data_history(path=path, include_checksums=TRUE)
-
+  expect_warning(
+    dataHistory <- dpr_data_history(path=path, include_checksums=TRUE)
+  )
+  
   expect_equal( ncol(dataHistory), 5 )
   expect_equal( nrow(dataHistory), 10 )
   expect_true( all(row.names(dataHistory) == 1:nrow(dataHistory)) )
@@ -125,7 +121,7 @@ testthat::test_that("checking package data history with git", {
       length(
           unique(
             dataHistory[
-              dataHistory$object_md5 %in% names(which(table(dataHistory$object_md5) > 1)),"object_md5"
+              dataHistory$object_checksum %in% names(which(table(dataHistory$object_checksum) > 1)),"object_checksum"
             ]
           )
       ), 2 # this should be 4... record of reverting the blobs seems to be dropped from odb_blobs, commit 3
@@ -133,7 +129,7 @@ testthat::test_that("checking package data history with git", {
 
   ## test recall objects are correctly named
 
-  fullHash <- dataHistory$blob_file_hash[c(1,2)]
+  fullHash <- dataHistory$blob_git_sha1[c(1,2)]
   subHash  <- substr(fullHash, 1, 5)
   missHash <- "0000000"
   notHash  <- "qwerty"
@@ -163,7 +159,7 @@ testthat::test_that("checking package data history with git", {
   )
 
   ## check that behavior multiple objects are saved
-  lastHash <- tail(dataHistory,1)$blob_file_hash
+  lastHash <- tail(dataHistory,1)$blob_git_sha1
   expect_true(
     sapply(dpr_recall_data_versions(lastHash, path), length) == 2
   )
@@ -171,7 +167,7 @@ testthat::test_that("checking package data history with git", {
   expect_true(
     grepl(
       "No checksum",
-      tail(dataHistory, 1)$object_md5
+      tail(dataHistory, 1)$object_checksum
     )
   )
 
