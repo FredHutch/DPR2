@@ -15,6 +15,10 @@ dpr_update_data_digest <- function(path=".", yml){
 
   unlink(list.files(dig, full.names = T))
 
+  # throw error if dpr_checksum_files throws a warning
+  warn <- options()$warn
+  on.exit(options("warn" = warn))
+  options("warn" = 2)
   for(d in rda)
     write(dpr_checksum_files(d), file.path(dig, paste0(basename(d), "_")))
 
