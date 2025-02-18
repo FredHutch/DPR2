@@ -17,7 +17,7 @@ a list with names of corresponding .rda object and the
 versions generated from the object
 }
 \description{
-Load a data version into memory by its hash. Only rda files in the
+Load a data version into memory by its hash. Only RDA files in the
 data directory will be recalled.
 }
 \author{

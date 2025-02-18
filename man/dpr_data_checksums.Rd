@@ -14,7 +14,7 @@ a data.frame containing the name of the rda object and the
 corresponding checksum
 }
 \description{
-Return table of current in-memory checksums for rda files in the data directory.
+Return table of current in-memory checksums for RDA files in the data directory.
 }
 \author{
 jmtaylor

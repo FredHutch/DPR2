@@ -7,7 +7,7 @@
 dpr_checksum_files(paths)
 }
 \arguments{
-\item{paths}{path of files to hash}
+\item{paths}{path of RDA files to hash}
 }
 \value{
 a character string of the md5 hashes of a files loaded into memory.

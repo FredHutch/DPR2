@@ -98,7 +98,7 @@ dpr_data_digest <- function(path="."){
   )
 }
 
-#' Return table of current in-memory checksums for rda files in the data directory.
+#' Return table of current in-memory checksums for RDA files in the data directory.
 #'
 #' @title dpr_data_checksums
 #' @param path path to data package
@@ -182,7 +182,7 @@ dpr_envs_to_checksums <- function(envs){
     function(env){
       nms <- ls(envir=env)
       if(length(nms) > 1){
-        msg <- "No checksum computed for rda files containing more than 1 object."
+        msg <- "No checksum computed for RDA files containing more than 1 object."
         warning(msg)
         return(msg)
       } else {
@@ -210,7 +210,7 @@ dpr_hashes_to_checksums <- function(hashes, path){
 #' This function will return an md5 checksum of an in-memory R object.
 #' 
 #' @title dpr_checksum_files
-#' @param paths path of files to hash
+#' @param paths path of RDA files to hash
 #' @return a character string of the md5 hashes of a files loaded into memory.
 #' @export
 dpr_checksum_files <- function(paths){
@@ -266,7 +266,7 @@ dpr_data_history <- function(path=".", include_checksums=FALSE){
   return(odb)
 }
 
-#' Load a data version into memory by its hash. Only rda files in the
+#' Load a data version into memory by its hash. Only RDA files in the
 #' data directory will be recalled.
 #'
 #' @title dpr_recall_data_version
