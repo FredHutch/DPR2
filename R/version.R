@@ -216,8 +216,8 @@ dpr_hashes_to_checksums <- function(hashes, path){
 dpr_checksum_files <- function(paths){
   if(!all(file.exists(paths)))
     stop("Cannot generate checksums for some paths because they don't exists: ", paste(paths[!file.exists(paths)], collapse = ","))
-  if(!all(grepl("\\.rda|\\.rds", paths, ignore.case=TRUE)))
-    stop("One or more paths provided are not `rda`, or `rds` files. All other file types are not supported")
+  if(!all(grepl("\\.rda$", paths, ignore.case=TRUE)))
+    stop("One or more paths provided are not RDA files. All other file types are not supported")
   return(
     vapply(paths, function(path) {
       load_env <- new.env()
