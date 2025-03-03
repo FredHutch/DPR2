@@ -19,10 +19,10 @@ testthat::test_that("checking package build", {
   unlink(rda_to_restore)
 
   dpr_build(path, process_on_build = "01.Rmd")
-  vign <- list.files(file.path(path, "vignettes"))
+  vign <- list.files(file.path(path, "vignettes"), full.names = TRUE)
   expect_true(length(vign) == 1)
   vignette <- readLines(vign[1])
-  expect_true("vignette: |" %in% vignette & any(grepl("VignetteIndexEntry{%s}", vignette)))
+  expect_true("vignette: |" %in% vignette & any(grepl("VignetteIndexEntry", vignette)))
   datn <- list.files(file.path(path, "data"))
   expect_true(all(datn == c("mydataframe_rmd.rda", "myyaml_rmd.rda")))
 
