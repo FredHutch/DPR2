@@ -100,6 +100,7 @@ callr_render <- function(files_to_process, render_args, render_mode){
       function(...) rmarkdown::render(envir = globalenv(), ...),
       c(render_args, input = file_to_process)
     )
+
     if (!is.null(res$error)) {
       # Include useful debugging info from stderr in the actual error msg
       res$error$message <- paste0(res$error$message, res$error$stderr)
@@ -156,8 +157,10 @@ dpr_render <- function(path=".", ...){
   if(is.null(yml$process_on_build)){
     stop("No files specified to process_on_build. See datapackager.yml file.")
   }
+
   vignette_tempdir <- tempfile()
   dir.create(vignette_tempdir)
+
   render_args <- list(
     knit_root_dir = normalizePath(path),
     output_dir = vignette_tempdir,
@@ -170,6 +173,7 @@ dpr_render <- function(path=".", ...){
     render_args,
     yml$render_env_mode
   )
+
   # parent.env(env) will be emptyenv(). See ?as.environment
   env <- as.environment(objects)
 
