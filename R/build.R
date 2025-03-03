@@ -29,6 +29,46 @@ dpr_purge_data_directory <- function(path=".", yml){
   invisible(list.files(backup_dir, full.names = TRUE))
 }
 
+#' Private. A function for making vingette files from rendered processing scripts.
+#'
+#' @param path the data package path to save the processed vignettes to.
+#' @param temp the temp location vignettes were saved to.
+#' @noRd
+process_vignettes <- function(path, processing_dir, vignette_tempdir){
+  vignettes_dir <- file.path(path, 'vignettes')
+  if (!dir.exists(vignettes_dir)) dir.create(vignettes_dir)
+
+  srcs <- list.files( file.path(path, processing_dir), full.names = TRUE )
+  mds  <- list.files( vignette_tempdir, full.names = TRUE )
+  vins <- file.path( path, "vignettes", gsub("\\.md$", ".rmd", basename(mds)) )
+
+  file.copy(mds, vins)
+
+  for(vin in vins){
+    lins <- readLines(vin)
+    vignette_yml <- "%%\\VignetteIndexEntry{%s}\n%%\\VignetteEngine{knitr::rmarkdown}\n%%\\VignetteEncoding{UTF-8}\n"
+
+    if (tolower(basename(vin)) %in% tolower(basename(srcs))) { # to check if the vinette was originally an rmd file and that it has a yaml header
+      src <- readLines(srcs[ tolower(basename(srcs)) %in% tolower(basename(vin)) ])
+
+      yml_idx <- which(grepl("^---$", src))
+      if(length(yml_idx)== 0)  yml_idx <- c(0, 0)
+      rmd_yml <- yaml::read_yaml(text = src[seq_len(yml_idx[2])])
+
+      rmd_yml$vignette <-
+        sprintf(
+          vignette_yml,
+          ifelse(!is.null(rmd_yml$title), rmd_yml$title, gsub("\\.rmd$", "", basename(src), ignore.case = T))
+        )
+
+    } else {
+      rmd_yml <- list(title = basename(vin), vignette = sprintf(vignette_yml, basename(vin)))
+    }
+    new_yml <- c("---", unlist(strsplit(yaml::as.yaml(rmd_yml), "\\n")), "---")
+    writeLines(c(new_yml, lins), vin)
+  }
+}
+
 #' Private. A function for fetch all global objects from a callr session.
 #'
 #' @param session a callr session
@@ -135,13 +175,7 @@ dpr_render <- function(path=".", ...){
 
   # transfer vignettes to vignettes/ if desired, now that we're done rendering
   if (yml$write_to_vignettes){
-    vignettes_dir <- file.path(path, 'vignettes')
-    if (! dir.exists(vignettes_dir)) dir.create(vignettes_dir)
-    file.copy(
-      list.files(vignette_tempdir, full.names = TRUE),
-      vignettes_dir,
-      overwrite = TRUE
-    )
+    process_vignettes(path, yml$process_directory, vignette_tempdir)
   }
 
   # now safe to cancel purge restore on exit
