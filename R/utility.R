@@ -20,7 +20,7 @@ dpr_is <- function(path){
 #' @noRd
 dpr_yaml_load <- function(path="."){
   if( dpr_is_dpr1(path) )
-    return( dpr_dpr1_yaml_load(path) )
+    stop( "Attemping to load a yaml of a DataPackageR package. Must convert to DPR2 first. See `?dpr_convert." )
   if( dpr_is_dpr2(path) )
     return( yaml::read_yaml(file.path(path, "datapackager.yml")) )
   stop("`datapackager.yml` is invalid or missing.")

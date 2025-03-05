@@ -97,7 +97,7 @@ callr_render <- function(files_to_process, render_args, render_mode){
 #' @export
 dpr_render <- function(path=".", ...){
   if( dpr_is_dpr1(path) )
-    warning("Rendering a data package using DPR2 when the yaml is from DataPackageR. See docs for list of side effects.")
+    stop("Rendering a data package using DPR2 when the yaml is from DataPackageR. Must use `dpr_convert()` first. See `?dpr_convert`.")
 
   yml <- dpr_yaml_get(path, ...)
 
@@ -177,6 +177,9 @@ dpr_render <- function(path=".", ...){
 #' @export
 dpr_build <- function(path=".", ...){
   quiet <- identical(Sys.getenv("TESTTHAT"), "true")
+  if( dpr_is_dpr1(path) )
+    stop("Rendering a data package using DPR2 when the yaml is from DataPackageR. Must use `dpr_convert()` first. See `?dpr_convert`.")
+
   yml <- dpr_yaml_get(path, ...)
 
   if(yml$render_on_build)
