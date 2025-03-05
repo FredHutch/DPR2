@@ -171,7 +171,6 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
 #'   argument sets the package name to the name of the directory containing the
 #'   data package.
 #' @param renv_init Logical; whether to initiate renv (default TRUE)
-
 #' @export
 dpr_init <- function(
     path = ".",
