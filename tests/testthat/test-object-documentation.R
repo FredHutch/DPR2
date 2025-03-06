@@ -121,7 +121,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
   cleanup(tdir)
 })
 
-test_that("check that devtools::document() generates .Rd files", {
+test_that("check that roxygen2::roxygenize() generates .Rd files", {
 
   tdir <- getPkgDir()
   pkgn <- "testPkg"
@@ -141,7 +141,7 @@ test_that("check that devtools::document() generates .Rd files", {
   dpr_yaml_set(path, process_on_build = "df_gen.R")
   dpr_build(path)
 
-  devtools::document(pkg = path)
+  roxygen2::roxygenize(path)
 
   expect_true(file.exists(file.path(path, "man", "df1.Rd")))
 
