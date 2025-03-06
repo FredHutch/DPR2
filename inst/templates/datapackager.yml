@@ -1,11 +1,11 @@
-build_output: ../
 source_data_directory: inst/extdata
+purge_data_directory: yes
 install_on_build: no
-build_tarball: no
 process_directory: processing
 process_on_build:
 render_on_build: yes
-write_to_vignettes: yes
-purge_data_directory: yes
-data_digest_directory: inst/data_digest
 render_env_mode: isolate
+write_to_vignettes: yes
+data_digest_directory: inst/data_digest
+build_tarball: no
+build_output: ../
