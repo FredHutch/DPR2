@@ -88,8 +88,10 @@ generate_all_docs <- function(path = ".", out_dir = "R") {
     }, error = function(e) {
       warning(sprintf("Error processing '%s': %s", object_name, e$message))
     })
+  }
 
-}
+  delete_unused_doc_files(path)
+
 }
 
 #' Private. Write Roxygen Documentation to an .R File
@@ -144,6 +146,34 @@ template_doc_block <- function(object, object_name) {
                  paste0('"', object_name, '"'))
 
 }
+
+#' Private. Delete unused R files from the "R" directory.
+#'
+#' Compares files in the "R" directory with files in the "data" directory and deletes
+#' files in the "R" directory that are not present in the "data" directory.
+#'
+#' @title delete_unused_doc_files
+#' @param path Character. Path to the root of the data package (default is the current directory ".").
+#' @return A logical vector indicating whether the files were successfully deleted.
+#' @author valduran18
+#' @noRd
+delete_unused_doc_files <- function(path = ".") {
+
+  doc_path <- file.path(path, "R")
+  doc_files <- tools::file_path_sans_ext(list.files(doc_path, all.files = TRUE, no.. = TRUE))
+  data_path <- file.path(path, "data")
+  data_files <- tools::file_path_sans_ext(list.files(data_path, all.files = TRUE, no.. = TRUE))
+  remove_files <- setdiff(doc_files, data_files)
+
+  if (length(remove_files) > 0) {
+    remove_files <- paste0(remove_files, ".R")
+    file_paths <- file.path(doc_path, remove_files)
+    invisible(file.remove(file_paths))
+  } else {
+    invisible(NULL)
+  }
+}
+
 
 #' Private. Check if data directory is empty.
 #'
