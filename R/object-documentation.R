@@ -61,6 +61,13 @@ generate_all_docs <- function(path = ".", out_dir = "R") {
   }
   )
 
+  # if object does not have a R doc file for some reason, remove from list
+  if (length(no_change) > 0) {
+    doc_files <- list.files(out_dir, all.files = TRUE, no.. = TRUE)
+    doc_basenames <- tools::file_path_sans_ext(basename(doc_files))
+    no_change <- intersect(no_change, doc_basenames)
+  }
+
   objects <- setdiff(all_objects, no_change)
 
   if (length(objects) == 0) {
