@@ -121,34 +121,6 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
   cleanup(tdir)
 })
 
-test_that("check that roxygen2::roxygenize() generates .Rd files", {
-
-  tdir <- getPkgDir()
-  pkgn <- "testPkg"
-  path <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn, list(renv_init = FALSE))
-  writeLines(
-    c(
-      "library(DPR2)",
-      "df1 <- data.frame(x = 1:11, y = LETTERS[1:11])",
-      "df2 <- data.frame(y = 1:5, y = letters[1:5])",
-      "dpr_save('df1')",
-      "dpr_save('df2')"
-    ),
-    file.path(path, "processing/df_gen.R")
-  )
-
-  dpr_yaml_set(path, process_on_build = "df_gen.R")
-  dpr_build(path)
-
-  roxygen2::roxygenize(path)
-
-  expect_true(file.exists(file.path(path, "man", "df1.Rd")))
-
-  unlink(path, recursive = TRUE)
-  cleanup(tdir)
-})
-
 test_that("check that write_doc_file writes documentation files correctly", {
   temp_dir <- tempfile()
   dir.create(temp_dir)

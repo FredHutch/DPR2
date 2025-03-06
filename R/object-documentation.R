@@ -174,7 +174,6 @@ delete_unused_doc_files <- function(path = ".") {
   }
 }
 
-
 #' Private. Check if data directory is empty.
 #'
 #' Lists files in data directory and checks if the returned list of files is empty.
