@@ -7,6 +7,19 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+# Temporary working directory for example data package
+
+twd <- tempfile('vpkg')
+dir.create(twd)
+knitr::opts_knit$set(root.dir = twd)
+```
+
 ### Converting a DPR1 Datapackage to DPR2 
 Sometimes users may encounter datapackages created by DPR1 and still want to use DPR2 functionalities. DPR2 has function `dpr_dpr1_yaml_convert` which converts a DPR1 YAML object into a DPR2 compatible yaml object
 
@@ -15,20 +28,22 @@ Sometimes users may encounter datapackages created by DPR1 and still want to use
 library(DPR2)
 library(DataPackageR)
 library(yaml)
-my_temp_dir <- tempdir()
+
 #setup an empty DPR1 skeleton
 processing_code <-
     system.file("extdata", "tests", "subsetCars.Rmd", package = "DataPackageR")
 
 # Create the package framework.
-DataPackageR::datapackage_skeleton(name = "mtcars20",
-                                   force = TRUE,
-                                   code_files = processing_code,
-                                   r_object_names = "cars_over_20",
-                                   path = my_temp_dir 
-                                   #dependencies argument is empty
-                                   #raw_data_dir argument is empty.
-                                   )
+DataPackageR::datapackage_skeleton(
+  name = "mtcars20",
+  code_files = processing_code,
+  r_object_names = "cars_over_20"
+)
+
+# set working directory for this vignette to the newly created datapackage
+knitr::opts_knit$set(root.dir = file.path(getwd(), 'mtcars20'))
+
+# create YML
 yml <- DataPackageR::construct_yml_config(code = "subsetCars.Rmd", data = "cars_over_20")
 
 cat(yaml::as.yaml(yml))
@@ -37,7 +52,8 @@ cat(yaml::as.yaml(yml))
 
 
 After using dpr_dpr1_yaml_convert function and loading and looking over the yaml settings, we see the yaml configuration for the DPR1 package is converted to DPR2 compatible settings:
+
 ```{r}
-dpr_dpr1_yaml_convert(file.path(my_temp_dir, "mtcars20"))
-dpr_yaml_get(path = file.path(my_temp_dir, "mtcars20") )
+DPR2::dpr_dpr1_yaml_convert()
+dpr_yaml_get()
 ```
