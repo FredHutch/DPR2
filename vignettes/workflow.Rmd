@@ -7,6 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -19,6 +20,10 @@ twd <- tempfile('vpkg')
 dir.create(twd)
 knitr::opts_knit$set(root.dir = twd)
 ```
+
+### Purpose
+
+This vignette demonstrates how to use DPR2 to build a data package. For demonstrations, we will go over key DPR2 functions and how to build a datapackage from start to finish with a simple example script.
 
 ### Load DPR2
 
@@ -42,9 +47,28 @@ list.files()
 # dpr_create(path = "path_to_different_dir")
 ```
 
+DPR2 can tackle problems of unstable and non-reproducible environments by setting `renv_init = TRUE`. Once set to TRUE, it will make sure once a package is installed by an user, it
+will use same versions of all the dependencies and inform users whether they need to install a particular version of a package or not. To know more details about how `renv` works, refer to [renv documentation](https://docs.posit.co/ide/user/ide/guide/environments/r/renv.html)
+
+
+
 ### Examine datapackager.yml
 
 ```{r yaml}
+cat(readLines('datapackager.yml'), sep = '\n')
+```
+### Configuring YAML file
+Current configuration on the YAML file can be viewed with `dpr_yaml_get()`
+
+```{r}
+dpr_yaml_get()
+```
+Main components of the YAML config files are the `process_directory` where all the scripts which are to be rendered are saved, `source_data_directory` which contains the data_objects to be rendered.
+
+Any YAML configurations can be changed by the user with dpr_yaml_set(). In the example, we are changing the argument `render_on_build` to `FALSE` which indicates objects and files will not be rendered at build
+
+```{r configure_YAML}
+dpr_yaml_set(render_on_build = FALSE)
 cat(readLines('datapackager.yml'), sep = '\n')
 ```
 
@@ -74,15 +98,30 @@ Note: Use `dpr_path()` to refer to other paths within processing scripts and `dp
 ```{r view-processing-script}
 cat(readLines(dpr_path('processing', 'make_my_df.Rmd')), sep = '\n')
 ```
+DPR2 still keeps `project_path`,`project_data_path` and `project_extdata_path` functions to navigate different project directories but they are not recommended to use as they can be removed in a future version.
+
+### Render vs Build
+
+`dpr_render` can be used before `dpr_build` if the user doesn't immediately want to build the package but instead interested in only following :
+  - Check if YAML settings are correct
+  - Check if all processing scripts are rendered correctly
+  - Check if associated vignettes are rendered correctly
+
+```{r render}
+dpr_render(process_on_build = 'make_my_df.Rmd')
+
+```
+Users should see no errors if the rendering process is smooth.
 
 ### Build the data package
-
+After checking `dpr_render` renders the processing scripts without error, `dpr_build` can be used to build and install the package. Users also can choose to skip rendering and build package directly with this step
 ```{r build}
 dpr_build(process_on_build = 'make_my_df.Rmd')
 
 # examine data directory
 
-list.files(recursive = TRUE)
+dd_file <- list.files("data")
+dd_file
 ```
 
 ### Examine the data digest
