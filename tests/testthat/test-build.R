@@ -141,6 +141,14 @@ testthat::test_that("checking package build", {
     "yaml.*not found.*render_on_build"
   )
 
+  path <- file.path(tdir, "multi")
+  dpr_create(tdir, desc=dpr_description_init(Package=basename(path)))
+  writeLines("x <- 1; y <- 1; save(x, y, file= 'data/multi.rda')", file.path(path, "processing/multi.R"))
+  expect_error(
+    dpr_build(path, process_on_build = "multi.R"),
+    "No checksum computed for RDA files containing more than"
+  )
+
   unlink(path, recursive = TRUE)
 
 })
