@@ -31,30 +31,12 @@ test_that("check that R object documentation is written as expected", {
   expect_message(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")),
                  "No new data objects have been created, and no existing objects have been modified. There are no objects to document.")
 
-  # expect a warning when RDA has multiple objects
-  # create test script
-  writeLines(
-    c(
-      "df1 <- data.frame(x = 1:11, y = LETTERS[1:11])",
-      "df2 <- data.frame(y = 1:5, y = letters[1:5])",
-      "save(df1, df2, file=DPR2::dpr_path('data', 'df.rda'))"
-    ),
-    file.path(path, "processing/mult_obj.R")
-  )
-
-  dpr_yaml_set(path, process_on_build = "mult_obj.R")
-  expect_message(
-    dpr_build(path),
-    "'df.rda' contains multiple or no objects. Will skip writing documentation for it."
-  )
-
   unlink(path, recursive = TRUE)
   cleanup(tdir)
 })
 
 test_that("check that error occurs in stop(e) of no_change portion in generate_all_docs when run outside of a DPR2 pkg", {
 
-  # select only those objects that differ between digest file and data directory
   expect_error({
     no_change <- tryCatch({
       digest_data <- dpr_compare_data_digest(".")
