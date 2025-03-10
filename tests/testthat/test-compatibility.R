@@ -30,7 +30,7 @@ testthat::test_that("checking DataPackageR compatibility functions", {
   )
 
   expect_warning(
-    dpr_convert(path1, renv_init = FALSE),
+    dpr_convert(path1),
     "`datapackager.yml` was found, skipping creating that file."
   )
 
@@ -39,9 +39,25 @@ testthat::test_that("checking DataPackageR compatibility functions", {
     !is.null(yml$process_directory) && yml$process_directory == "data-raw"
   )
 
+  expect_false(
+    all(
+      c(
+        file.exists(
+          file.path(path1, "DATADIGEST"),
+          file.path(path1, "NEWS.md"),
+          file.path(path1, "R/documentation.R"),
+          file.path(path1, "inst/extdata/Logfiles")
+        ),
+        dir.exists(
+          file.path(path1, "inst/extdata/Logfiles")
+        )
+      )
+    )
+  )
+
   expect_true(
     all(
-      yml$process_on_build == c("mtcars.R", "iris.R", "trees.Rmd")
+      yml$process_on_build == c("mtcars.R", "iris.R")
     )
   )
 

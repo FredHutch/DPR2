@@ -15,7 +15,7 @@ dpr1_yaml_load <- function(path="."){
       process_directory = "data-raw",
       process_on_build = names(pro)[unlist(pro)],
       purge_data_directory = FALSE,
-      objects = obj
+      objects = obj[unlist(pro)]
   )
   return(yml)
 }
@@ -68,7 +68,7 @@ dpr1_data_digest_convert <- function(path="."){
   # to write the new data digest files
   dig_dir <- dpr_yaml_load(path)$data_digest_directory
   for(d in names(dig)){
-    writeLines(dig[[d]], file.path(path, dig_dir, paste0("_", d, ".rda")))
+    writeLines(dig[[d]], file.path(path, dig_dir, paste0(d, ".rda_")))
   }
 }
 
@@ -78,9 +78,19 @@ dpr1_data_digest_convert <- function(path="."){
 ##' @author jmtaylor
 #' @noRd
 dpr1_clean <- function(path){
+
+  ## to remove the "Date" value in the DESCRIPTION file
+  desc <- readLines(file.path(path, "DESCRIPTION"))
+  writeLines(desc[!grepl("^Date:.+", desc)], file.path(path, "DESCRIPTION"))
+
   unlink(file.path(path, "DATADIGEST"))
   unlink(file.path(path, "NEWS.md"))
-  # a place holder to remove older documentation
+  unlink(file.path(path, "R/documentation.R"))
+  unlink(file.path(path, "inst/extdata/Logfiles"), recursive = TRUE)
+
+  ## to create a clean vignette directory
+  unlink(file.path(path, "vignettes"), recursive = TRUE)
+  dir.create(file.path(path, "vignettes"))
 }
 
 #' Convert a repository from DataPackageR to DPR2.
@@ -96,13 +106,13 @@ dpr1_clean <- function(path){
 #' @param renv_init to initialize renv at the newly converted data package
 #' @author jmtaylor
 #' @export
-dpr_convert <- function(path = ".", renv_init = TRUE){
+dpr_convert <- function(path = "."){
   if( !dpr_is_dpr1(path) )
     stop("Data package at path argument is not detected as DataPackageR package.")
-  dpr_init(path, renv_init = renv_init)
+  # renv should not be initialized, defaulting to the repo's current renv configuration, whatever that may be
+  dpr_init(path, dpr_yaml_init(process_directory = "data-raw"))
   dpr1_yaml_convert(path)
   dpr1_data_digest_convert(path)
-  # a place holder for converting documentation
   dpr1_clean(path)
 }
 
