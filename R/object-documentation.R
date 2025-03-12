@@ -72,7 +72,6 @@ generate_all_docs <- function(path = ".", out_dir = "R") {
 
   if (length(objects) == 0) {
     message("No new data objects have been created, and no existing objects have been modified. There are no objects to document.")
-
   }
 
   for (object_name in objects) {
@@ -126,8 +125,8 @@ template_doc_block <- function(object, object_name) {
     "#'",
     "#' A detailed description of the data",
     "#'",
-    paste0("#' ", "@format A ", class(object)[1], " with ", nrow(object), " rows and ", ncol(object), " columns with the following fields:"
-    ))
+    paste0("#' ", "@format A ", class(object)[1], " with ", nrow(object), " rows and ", ncol(object), " columns with the following fields:")
+  )
 
   # add variable descriptions
   doc_block <- c(doc_block, "#' \\describe{")
@@ -138,12 +137,14 @@ template_doc_block <- function(object, object_name) {
   }
 
   # end roxygen comment block
-  doc_block <- c(doc_block,
-                 "#' }",
-                 "#' @source Generated from script _________________",
-                 "#' @seealso",
-                 "#' \\link{}",
-                 paste0('"', object_name, '"'))
+  doc_block <- c(
+    doc_block,
+    "#' }",
+    "#' @source Generated from script _________________",
+    "#' @seealso",
+    "#' \\link{}",
+    paste0('"', object_name, '"')
+  )
 
 }
 
@@ -178,12 +179,12 @@ delete_unused_doc_files <- function(path = ".") {
 #'
 #' Lists files in data directory and checks if the returned list of files is empty.
 #'
-#' @title empty_folder
+#' @title data_is_empty
 #' @param path Path to data package.
 #' @return a logical value indicating TRUE for an empty directory and FALSE if not.
 #' @author valduran18
 #' @noRd
-empty_folder <- function(path = "."){
+data_is_empty <- function(path = "."){
   data_path <- file.path(path, "data")
   files <- list.files(data_path, all.files = TRUE, no.. = TRUE)
   length(files) == 0

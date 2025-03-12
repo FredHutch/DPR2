@@ -162,7 +162,7 @@ dpr_render <- function(path=".", ...){
       )
     )
 
-  if(!empty_folder(path=path)){
+  if(!data_is_empty(path=path)){
     generate_all_docs(path=path)
   }
 }
