@@ -6,6 +6,7 @@ process_directory: processing
 process_on_build:
 render_on_build: yes
 write_to_vignettes: yes
+write_docs: yes
 purge_data_directory: yes
 data_digest_directory: inst/data_digest
 render_env_mode: isolate

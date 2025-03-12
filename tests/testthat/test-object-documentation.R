@@ -83,8 +83,17 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
   )
 
   dpr_yaml_set(path, process_on_build = "df_gen.R")
-  dpr_build(path)
 
+  dpr_build(path, write_docs = FALSE)
+  expect_true(
+    length(list.files(file.path(path, "R"))) == 0
+  )
+
+  dpr_build(path)
+  expect_true(
+    length(list.files(file.path(path, "R"))) != 0
+  )
+  
   # remove one of the Rda files to test delete_unused_doc_files
   file.remove(file.path(path, "data", "df1.rda"))
 
