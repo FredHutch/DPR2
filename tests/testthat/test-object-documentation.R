@@ -1,14 +1,8 @@
 test_that("path and out_dir must be character strings in generate_all_docs", {
   # expect error when `path` is not a character string
   expect_error(
-    generate_all_docs(path = 123, out_dir = "dir"),
+    generate_all_docs(path = 123),
     "`path` must be a character string."
-  )
-
-  # expect error when `out_dir` is not a character string
-  expect_error(
-    generate_all_docs(path = ".", out_dir = list("dir")),
-    "`out_dir` must be a character string."
   )
 })
 

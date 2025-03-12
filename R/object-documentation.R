@@ -4,16 +4,14 @@
 #' and writes documentation to `.R` files using `write_doc_file`.
 #'
 #' @param path Path to data package.
-#' @param out_dir The path to the directory where the `.R` files will be saved (default is "R")
 #' @return Creates `.R` files with documentation for each `.rda` data object.
 #' @author valduran18
 #' @noRd
-generate_all_docs <- function(path = ".", out_dir = "R") {
+generate_all_docs <- function(path = ".") {
 
   if (!is.character(path)) stop("`path` must be a character string.")
-  if (!is.character(out_dir)) stop("`out_dir` must be a character string.")
 
-  out_dir <- file.path(path, out_dir)
+  out_dir <- file.path(path, "R")
 
   # check the output folder exists
   if (!dir.exists(out_dir)) {
