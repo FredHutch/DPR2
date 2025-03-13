@@ -161,6 +161,12 @@ dpr_render <- function(path=".", ...){
         paste(missed_objects, collapse = ", ")
       )
     )
+
+  if(yml$write_docs){
+    if(!data_is_empty(path=path)){
+      generate_all_docs(path=path)
+    }
+  }
 }
 
 #' Process, render and build data package.
