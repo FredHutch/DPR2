@@ -4,13 +4,11 @@
 \alias{dpr_convert}
 \title{dpr_convert}
 \usage{
-dpr_convert(path = ".", renv_init = TRUE)
+dpr_convert(path = ".")
 }
 \arguments{
 \item{path}{a path value to init at a specific path, when using the
 default the current working directory is used.}
-
-\item{renv_init}{to initialize renv at the newly converted data package}
 }
 \description{
 Convert a repository from DataPackageR to DPR2.

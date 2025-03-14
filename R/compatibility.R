@@ -103,7 +103,6 @@ dpr1_clean <- function(path){
 #' @title dpr_convert
 #' @param path a path value to init at a specific path, when using the
 #'   default the current working directory is used.
-#' @param renv_init to initialize renv at the newly converted data package
 #' @author jmtaylor
 #' @export
 dpr_convert <- function(path = "."){
