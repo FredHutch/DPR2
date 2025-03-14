@@ -46,12 +46,29 @@ testthat::test_that("checking DataPackageR compatibility functions", {
           file.path(path1, "DATADIGEST"),
           file.path(path1, "NEWS.md"),
           file.path(path1, "R/documentation.R"),
-          file.path(path1, "inst/extdata/Logfiles")
+          file.path(path1, "inst/extdata/Logfiles"),
+          file.path(path1, "Read-and-delete-me")
         ),
         dir.exists(
           file.path(path1, "inst/extdata/Logfiles")
         )
       )
+    )
+  )
+
+  expect_false("Date" %in% desc::desc(file.path(path1, "DESCRIPTION"))$fields())
+
+  expect_true(
+    all(
+      length(list.files(file.path(path1, "vignettes"))) == 1,
+      length(list.files(file.path(path1, "inst/doc"))) == 1
+    )
+  )
+
+  expect_true(
+    all(
+      basename(list.files(file.path(path1, "vignettes"))) == "welcome.Rmd",
+      basename(list.files(file.path(path1, "inst/doc"))) == "welcome.Rmd"
     )
   )
 

@@ -72,9 +72,26 @@ dpr1_data_digest_convert <- function(path="."){
   }
 }
 
+##' Private. Clean out a directory by processing script name sans ext.
+##'
+##' @title clean_docs
+##' @param process the process name from the processing script directory
+##' @param path the package path
+##' @param subpath the directory to clean at the process path
+##' @author Jason Taylor
+#' @noRd
+clean_docs <- function(process, path, subpath){
+  pro_name <- tools::file_path_sans_ext(basename(process))
+  for(sub in list.files(file.path(path, subpath), full.names=TRUE)){
+    sub_name <- tools::file_path_sans_ext(basename(sub))
+    if(pro_name == sub_name) unlink(sub)
+  }
+}
+
 ##' Private. A function for cleaning up after a DataPackageR to DPR2 conversion.
 ##'
 ##' @title dpr1_clean
+##' @param path the package path
 ##' @author jmtaylor
 #' @noRd
 dpr1_clean <- function(path){
@@ -85,12 +102,15 @@ dpr1_clean <- function(path){
 
   unlink(file.path(path, "DATADIGEST"))
   unlink(file.path(path, "NEWS.md"))
+  unlink(file.path(path, "Read-and-delete-me"))
   unlink(file.path(path, "R/documentation.R"))
   unlink(file.path(path, "inst/extdata/Logfiles"), recursive = TRUE)
 
-  ## to create a clean vignette directory
-  unlink(file.path(path, "vignettes"), recursive = TRUE)
-  dir.create(file.path(path, "vignettes"))
+  for(pro in list.files(file.path(path, "data-raw"), full.names=TRUE)){
+    clean_docs(pro, path, "vignettes")
+    clean_docs(pro, path, "inst/doc")
+    clean_docs(pro, path, "man")
+  }
 }
 
 #' Convert a repository from DataPackageR to DPR2.
