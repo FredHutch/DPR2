@@ -177,8 +177,7 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
         load = FALSE,
         restart = FALSE
       )
-
-    ## browser()
+    
     dpr_update_ignores(pkgp)
 
   },
