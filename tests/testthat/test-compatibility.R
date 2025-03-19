@@ -29,10 +29,7 @@ testthat::test_that("checking DataPackageR compatibility functions", {
     "not detected as DataPackageR package"
   )
 
-  expect_warning(
-    dpr_convert(path1),
-    "`datapackager.yml` was found, skipping creating that file."
-  )
+  dpr_convert(path1)
 
   yml <- yaml::read_yaml(file.path(path1, "datapackager.yml"))
   expect_true(
@@ -43,6 +40,7 @@ testthat::test_that("checking DataPackageR compatibility functions", {
     all(
       c(
         file.exists(
+          file.path(path1, "R/dpr1package.R"),
           file.path(path1, "DATADIGEST"),
           file.path(path1, "NEWS.md"),
           file.path(path1, "R/documentation.R"),
@@ -59,17 +57,11 @@ testthat::test_that("checking DataPackageR compatibility functions", {
   expect_false("Date" %in% desc::desc(file.path(path1, "DESCRIPTION"))$fields())
 
   expect_true(
-    all(
-      length(list.files(file.path(path1, "vignettes"))) == 1,
-      length(list.files(file.path(path1, "inst/doc"))) == 1
-    )
+    length(list.files(file.path(path1, "vignettes"))) == 1
   )
 
   expect_true(
-    all(
-      basename(list.files(file.path(path1, "vignettes"))) == "welcome.Rmd",
-      basename(list.files(file.path(path1, "inst/doc"))) == "welcome.Rmd"
-    )
+    basename(list.files(file.path(path1, "vignettes"))) == "welcome.Rmd"
   )
 
   expect_true(

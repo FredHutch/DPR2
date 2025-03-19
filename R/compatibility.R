@@ -99,16 +99,18 @@ dpr1_clean <- function(path){
   ## to remove the "Date" value in the DESCRIPTION file
   desc <- readLines(file.path(path, "DESCRIPTION"))
   writeLines(desc[!grepl("^Date:.+", desc)], file.path(path, "DESCRIPTION"))
+  pkgn <- gsub("Package: ", "", desc[[1]])
 
+  unlink(file.path(path, "R", paste0(pkgn, ".R")))
   unlink(file.path(path, "DATADIGEST"))
   unlink(file.path(path, "NEWS.md"))
   unlink(file.path(path, "Read-and-delete-me"))
   unlink(file.path(path, "R/documentation.R"))
   unlink(file.path(path, "inst/extdata/Logfiles"), recursive = TRUE)
+  unlink(file.path(path, "inst/docs"), recursive = TRUE)
 
   for(pro in list.files(file.path(path, "data-raw"), full.names=TRUE)){
     clean_docs(pro, path, "vignettes")
-    clean_docs(pro, path, "inst/doc")
     clean_docs(pro, path, "man")
   }
 }
@@ -129,7 +131,9 @@ dpr_convert <- function(path = "."){
   if( !dpr_is_dpr1(path) )
     stop("Data package at path argument is not detected as DataPackageR package.")
   # renv should not be initialized, defaulting to the repo's current renv configuration, whatever that may be
-  dpr_init(path, dpr_yaml_init(process_directory = "data-raw"), renv_init=FALSE)
+  suppressWarnings(
+    dpr_init(path, dpr_yaml_init(process_directory = "data-raw"), renv_init=FALSE)
+  )
   dpr1_yaml_convert(path)
   dpr1_data_digest_convert(path)
   dpr1_clean(path)
