@@ -59,7 +59,7 @@ dpr1_data_digest_convert <- function(path="."){
   dig <- dpr1_data_digest_load(path)
 
   # to check if the objects in dpr digest are the same names as the files in data
-  found <- names(dig) %in% gsub("\\.rda", "", dpr_list_rda(path), ignore.case=TRUE)
+  found <- names(dig) %in% gsub("\\.rda", "", basename(dpr_list_rda(path)), ignore.case=TRUE)
   if(!all(found))
     warning(
       "Items in DataPackageR `DATADIGEST` are not found in the data directory by RDA file name. Those not found will not be included in the DPR2 `data_digest` directory."
