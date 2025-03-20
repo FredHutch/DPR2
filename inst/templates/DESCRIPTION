@@ -7,3 +7,4 @@ License: See `https://www.gnu.org/licenses/license-list.html` or `https://choose
 Encoding: UTF-8
 Depends: R (>= 3.5)
 LazyData: true
+VignetteBuilder: knitr
