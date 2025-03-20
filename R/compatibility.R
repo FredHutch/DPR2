@@ -101,18 +101,23 @@ dpr1_clean <- function(path){
   desc$del("Date")
   desc$write()
 
-  unlink(file.path(path, "R", paste0(pkgn, ".R")))
-  unlink(file.path(path, "DATADIGEST"))
-  unlink(file.path(path, "NEWS.md"))
-  unlink(file.path(path, "Read-and-delete-me"))
-  unlink(file.path(path, "R/documentation.R"))
-  unlink(file.path(path, "inst/extdata/Logfiles"), recursive = TRUE)
-  unlink(file.path(path, "inst/docs"), recursive = TRUE)
-
-  for(pro in list.files(file.path(path, "data-raw"), full.names=TRUE)){
-    clean_docs(pro, path, "vignettes")
-    clean_docs(pro, path, "man")
+  for(process in list.files(file.path(path, "inst/extdata/Logfiles"), full.names=TRUE)){
+    clean_docs(process, path, "inst/doc")
   }
+
+  to_delete <- c(
+    paste0("R/", desc$get_field("Package"), ".R"),
+    "DATADIGEST",
+    "NEWS.md",
+    "Read-and-delete-me",
+    "R/documentation.R"
+  )
+
+  for(f in to_delete)
+    unlink(file.path(path, f))
+
+  unlink("inst/extdata/Logfiles", recursive = TRUE)
+
 }
 
 #' Convert a repository from DataPackageR to DPR2.

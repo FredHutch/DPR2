@@ -54,14 +54,16 @@ testthat::test_that("checking DataPackageR compatibility functions", {
     )
   )
 
-  expect_false("Date" %in% desc::desc(file.path(path1, "DESCRIPTION"))$fields())
-
-  expect_true(
-    length(list.files(file.path(path1, "vignettes"))) == 1
+  expect_false(
+    all(
+      c("Date", "DataVersion") %in% desc::desc(file.path(path1, "DESCRIPTION"))$fields()
+    )
   )
 
   expect_true(
-    basename(list.files(file.path(path1, "vignettes"))) == "welcome.Rmd"
+    all(
+      "welcome.Rmd" == basename(list.files(file.path(path1, "inst/doc")))
+    )
   )
 
   expect_true(
