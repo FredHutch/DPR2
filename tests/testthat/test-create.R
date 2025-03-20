@@ -41,13 +41,36 @@ test_that("check DESCRIPTION file has populated fields", {
 
 })
 
-test_that("check datapackager.yml", {
+test_that("check datapackager.yml and ignores", {
 
   pkgn = "testing"
   dpr_create(
     tdir,
     yaml=dpr_yaml_init(process_directory = "data-raw"),
     desc=dpr_description_init(Package = pkgn)
+  )
+
+  rIgnore <- c(
+    "^data/.+\\.r$",
+    "^data/.+\\.(tab|txt|csv)$",
+    "^inst/extdata/"
+  )
+
+  gIgnore <- c(
+    "inst/extdata/",
+    "inst/doc/"
+  )
+
+  expect_true(
+    all(
+      rIgnore %in% readLines(file.path(tdir, pkgn, ".Rbuildignore"))
+    )
+  )
+
+  expect_true(
+    all(
+      gIgnore %in% readLines(file.path(tdir, pkgn, ".gitignore"))
+    )
   )
 
   ## yml names manually set but have the manual values, other values unchanged

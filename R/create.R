@@ -1,3 +1,31 @@
+#' Private. Updates .Rbuildignore and .gitignore to use DPR2 practices.
+#'
+#' @title dpr_update_ignores
+#' @param path the package path
+#' @noRd
+dpr_update_ignores <- function(path){
+  rig <- file.path(path, ".Rbuildignore")
+  gig <- file.path(path, ".gitignore")
+  for(ig in c(rig, gig))
+    if(!file.exists(ig))
+      file.create(ig)
+  cat(
+    "^data/.+\\.r$",
+    "^data/.+\\.(tab|txt|csv)$",
+    "^inst/extdata/",
+    file = rig,
+    sep = "\n",
+    append = TRUE
+  )
+  cat(
+    "inst/extdata/",
+    "inst/doc/",
+    file = gig,
+    sep = "\n",
+    append = TRUE
+  )
+}
+
 #' A private function that returns a full path of file from installed templates
 #' directory.
 #'
@@ -149,6 +177,8 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
         load = FALSE,
         restart = FALSE
       )
+
+    dpr_update_ignores(pkgp)
 
   },
   error = function(e){
