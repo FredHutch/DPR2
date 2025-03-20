@@ -96,10 +96,10 @@ clean_docs <- function(process, path, subpath){
 #' @noRd
 dpr1_clean <- function(path){
 
-  ## to remove the "Date" value in the DESCRIPTION file
-  desc <- readLines(file.path(path, "DESCRIPTION"))
-  writeLines(desc[!grepl("^Date:.+", desc)], file.path(path, "DESCRIPTION"))
-  pkgn <- gsub("Package: ", "", desc[[1]])
+  desc <- desc::desc(file = file.path(path, "DESCRIPTION"))
+  desc$del("DataVersion")
+  desc$del("Date")
+  desc$write()
 
   unlink(file.path(path, "R", paste0(pkgn, ".R")))
   unlink(file.path(path, "DATADIGEST"))
