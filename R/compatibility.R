@@ -48,6 +48,7 @@ dpr1_yaml_convert <- function(path="."){
 }
 
 #' Private. Replaces a DataPackageR data digest with a DPR2 data digest.
+#' Must be run after the new `data_digest` directory is established by `dpr_init`.
 #'
 #' @title dpr1_data_digest_convert
 #' @param path The relative path to the data package. The default is the
@@ -57,13 +58,24 @@ dpr1_yaml_convert <- function(path="."){
 dpr1_data_digest_convert <- function(path="."){
 
   dig <- dpr1_data_digest_load(path)
+  rda <- gsub("\\.rda", "", basename(dpr_list_rda(path)), ignore.case=TRUE)
 
   # to check if the objects in dpr digest are the same names as the files in data
-  found <- names(dig) %in% gsub("\\.rda", "", basename(dpr_list_rda(path)), ignore.case=TRUE)
+  found <- names(dig) %in% rda
   if(!all(found))
     warning(
       "Items in DataPackageR `DATADIGEST` are not found in the data directory by RDA file name. Those not found will not be included in the DPR2 `data_digest` directory."
     )
+
+  for(dat in rda){
+    cks <- dpr_checksum_files(file.path(path, "data", paste0(dat, ".rda")))
+    if(!dat %in% names(dig)){
+      warning(sprintf("Object `%s` in data directory is not found in DATADIGEST.", dat))
+    } else if(cks != dig[[dat]]) {
+      warning(sprintf("Object `%s` in data directory does not match md5 not found in DATADIGEST.", dat))
+    }
+    dig[[dat]] <- dpr_checksum_files(file.path(path, "data", paste0(dat, ".rda")))
+  }
 
   # to write the new data digest files
   dig_dir <- dpr_yaml_load(path)$data_digest_directory

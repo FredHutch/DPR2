@@ -9,6 +9,5 @@ configuration:
   objects:
   - mtcars_mod
   - iris
-  - trees  
   render_root:
     tmp: '48066'

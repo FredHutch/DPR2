@@ -29,7 +29,25 @@ testthat::test_that("checking DataPackageR compatibility functions", {
     "not detected as DataPackageR package"
   )
 
-  dpr_convert(path1)
+  expect_length(
+    readLines(file.path(path1, "DATADIGEST")), 3
+  )
+
+  warns <- capture_warnings(
+    dpr_convert(path1)
+  )
+
+  expect_true(
+    "Object `trees` in data directory is not found in DATADIGEST." %in% warns
+  )
+
+  expect_true(
+    "Object `mtcars_mod` in data directory does not match md5 not found in DATADIGEST." %in% warns
+  )
+
+  expect_length(
+    list.files(file.path(path1, "inst/data_digest")), 3
+  )
 
   yml <- yaml::read_yaml(file.path(path1, "datapackager.yml"))
   expect_true(
@@ -78,10 +96,6 @@ testthat::test_that("checking DataPackageR compatibility functions", {
 
   expect_true(
     length(list.files(path1, "NEWS.md")) == 0
-  )
-
-  expect_true(
-    length(list.files(file.path(path1, yml$data_digest_directory))) == 3
   )
 
   dpr_build(path1)
