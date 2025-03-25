@@ -113,6 +113,10 @@ dpr1_clean <- function(path){
   desc$del("Date")
   desc$write()
 
+  for(process in list.files(file.path(path, "data-raw"), full.names=TRUE)){
+    clean_docs(process, path, "inst/doc")
+  }
+
   for(process in list.files(file.path(path, "inst/extdata/Logfiles"), full.names=TRUE)){
     clean_docs(process, path, "inst/doc")
   }
