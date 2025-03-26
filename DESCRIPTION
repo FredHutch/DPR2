@@ -20,6 +20,7 @@ Imports:
     pkgbuild,
     renv,
     rmarkdown,
+    roxygen2,
     rprojroot,
     utils,
     yaml

@@ -203,6 +203,7 @@ dpr_render <- function(path=".", ...){
   if(yml$write_docs){
     if(!data_is_empty(path=path)){
       generate_all_docs(path=path)
+      roxygen2::roxygenize(path)
     }
   }
 }
