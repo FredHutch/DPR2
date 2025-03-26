@@ -37,6 +37,8 @@ testthat::test_that("checking DataPackageR compatibility functions", {
     dpr_convert(path1)
   )
 
+  expect_length(warns, 2)
+
   expect_true(
     "Object `trees` in data directory is not found in DATADIGEST." %in% warns
   )
