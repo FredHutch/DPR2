@@ -69,12 +69,10 @@ dpr1_data_digest_convert <- function(path="."){
 
   for(dat in rda){
     cks <- dpr_checksum_files(file.path(path, "data", paste0(dat, ".rda")))
-    if(!dat %in% names(dig)){
-      warning(sprintf("Object `%s` in data directory is not found in DATADIGEST.", dat))
-    } else if(cks != dig[[dat]]) {
+    if(dat %in% names(dig) && cks != dig[[dat]]) {
       warning(sprintf("Object `%s` in data directory does not match md5 not found in DATADIGEST.", dat))
     }
-    dig[[dat]] <- dpr_checksum_files(file.path(path, "data", paste0(dat, ".rda")))
+    dig[[dat]] <- cks
   }
 
   # to write the new data digest files
@@ -96,7 +94,7 @@ clean_docs <- function(process, path, subpath){
   pro_name <- tools::file_path_sans_ext(basename(process))
   for(sub in list.files(file.path(path, subpath), full.names=TRUE)){
     sub_name <- tools::file_path_sans_ext(basename(sub))
-    if(pro_name == sub_name) unlink(sub)
+    if(pro_name == sub_name) unlink(sub, recursive = TRUE)
   }
 }
 
