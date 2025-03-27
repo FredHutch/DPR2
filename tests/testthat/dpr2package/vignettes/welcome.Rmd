@@ -1,0 +1,10 @@
+---
+title: welcome
+author: jmtaylor
+vignette: >
+  %\VignetteIndexEntry{mtcars.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Welcome to DPR2!

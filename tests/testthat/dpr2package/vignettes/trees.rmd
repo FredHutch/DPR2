@@ -1,0 +1,42 @@
+---
+title: trees.Rmd
+vignette: |
+  %\VignetteIndexEntry{trees.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+---
+title: trees.Rmd
+vignette: |
+  %\VignetteIndexEntry{trees.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+---
+title: trees.Rmd
+vignette: |
+  %\VignetteIndexEntry{trees.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+---
+title: trees.Rmd
+vignette: |
+  %\VignetteIndexEntry{trees.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+---
+title: trees.Rmd
+vignette: |
+  %\VignetteIndexEntry{trees.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+    library(DPR2)
+    data(trees, envir=environment())
+    plot(trees)
+
+![](/tmp/RtmpWYM9Rd/filec8c2264a1e75/trees_files/figure-markdown_strict/unnamed-chunk-1-1.png)
+
+    dpr_save("trees")
