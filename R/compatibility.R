@@ -124,13 +124,14 @@ dpr1_clean <- function(path){
     "DATADIGEST",
     "NEWS.md",
     "Read-and-delete-me",
-    "R/documentation.R"
+    "R/documentation.R",
+    "data-raw/documentation.R"
   )
 
   for(f in to_delete)
     unlink(file.path(path, f))
 
-  unlink("inst/extdata/Logfiles", recursive = TRUE)
+  unlink(file.path(path, "inst/extdata/Logfiles/"), recursive = TRUE)
 
 }
 
