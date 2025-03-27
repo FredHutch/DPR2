@@ -29,6 +29,11 @@ testthat::test_that("checking DataPackageR compatibility functions", {
     "not detected as DataPackageR package"
   )
 
+  expect_error(
+    dpr_convert("notAPath"),
+    "Package path not found."
+  )
+
   expect_length(
     readLines(file.path(path1, "DATADIGEST")), 3
   )

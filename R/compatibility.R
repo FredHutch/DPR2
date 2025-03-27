@@ -169,6 +169,7 @@ dpr_convert <- function(path = "."){
 #' @author jmtaylor
 #' @noRd
 dpr_is_dpr1 <- function(path="."){
+  if(!dir.exists(path)) stop("Package path not found.")
   if(file.exists(file.path(path, "datapackager.yml"))){
     yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
     # this check is based on the DataPackageR check in processData.R
