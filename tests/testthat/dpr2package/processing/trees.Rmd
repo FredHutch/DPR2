@@ -1,0 +1,11 @@
+---
+title: trees.Rmd
+---
+
+```{r}
+library(DPR2)
+data(trees, envir=environment())
+plot(trees)
+dpr_save("trees")
+```
+
