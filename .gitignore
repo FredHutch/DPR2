@@ -7,3 +7,5 @@ test_dpr-exported.html
 .DS_Store
 .quarto
 inst/doc
+/doc/
+/Meta/

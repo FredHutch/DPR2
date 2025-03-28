@@ -42,12 +42,14 @@ DPR2 was designed so that any package building behavior configurations can be st
 
 ```{r}
 library(DPR2)
-dpr_init()
+dpr_init(yaml = dpr_yaml_init(process_on_build = 'my_process.Rmd'))
 ```
 
-There are two ways one can initialize a new DPR2 package: using `dpr_init` or `dpr_create`. `dpr_init` is simply a wrapper of `dpr_create`, where `dpr_init` will create a new DPR2 package at the current working directory, and `dpr_create` will create a new DPR2 package at a specified path. When the package is initialized, DPR2 will check if any nessessary files it needs are already present and create those if they are missing. This functionality is handy when a package already exists and a user would like to maintain that package using DPR2.
+There are two ways one can initialize a new DPR2 package: using `dpr_init` or `dpr_create`. `dpr_init` is simply a wrapper of `dpr_create`, where `dpr_init` will create a new DPR2 package at the current working directory, and `dpr_create` will create a new DPR2 package at a specified path. When the package is initialized, DPR2 will check if any necessary files it needs are already present and create those if they are missing. This functionality is handy when a package already exists and a user would like to maintain that package using DPR2.
 
-By default, DPR2 is initialized using renv for dependancy version control. DPR2 can help tackle problems of unstable and non-reproducible environments by setting `renv_init = TRUE` when initializing a DPR2 package. Once the data package is initialized with renv, renv will make sure once a dependency is installed by a user, it will use the same version of that dependency when building the data package in the future, and will inform users whether they need to install a particular version of a package dependency. For more details on `renv`, refer to the [renv documentation](https://docs.posit.co/ide/user/ide/guide/environments/r/renv.html).
+The DPR2 package `datapackager.yml` and `DESCRIPTION` files can be initialized with specific values using the `yaml` and `desc` arguments. The arguments are passed lists that are generated using `dpr_yaml_init()` and `dpr_description_init()` function calls. The arguments to these calls are simply key value pairs that are added to the appropriate configuration file, whereas these functions also add the necessary key value pairs that are required but not enumerated. For a list of default values for each of these, see `?dpr_yaml_defaults` and `?dpr_description_defaults`.
+
+By default, DPR2 is initialized using renv for dependency version control. DPR2 can help tackle problems of unstable and non-reproducible environments by using renv after initializing a DPR2 package, using `renv::init()`. Once the data package is initialized with renv, renv will make sure when a dependency is installed by a user, it will use the same version of that dependency when building the data package in the future, and will inform users whether they need to install a particular version of a package dependency. For more details on `renv`, refer to the [renv documentation](https://docs.posit.co/ide/user/ide/guide/environments/r/renv.html).
 
 ## Building a DPR2 package
 
@@ -83,7 +85,7 @@ cat(
 
 `dpr_path()` is used to refer to other paths within processing scripts and `dpr_save()` to save objects to the `data` directory. Objects are saved this way are saved as `rda` files. DPR2 requires all data objects be saved as single object RDA files.
 
-DPR2 maintains the DataPackageR functions `project_path`,`project_data_path` and `project_extdata_path` to ensure compatibility with scripts written for DataPackageR, but they are not recommended to use for new scripts as these funcutions may be removed from future versions of DPR2.
+DPR2 maintains the DataPackageR functions `project_path`,`project_data_path` and `project_extdata_path` to ensure compatibility with scripts written for DataPackageR, but they are not recommended to use for new scripts as these functions may be removed from future versions of DPR2.
 
 ### dpr_build and dpr_render
 
@@ -97,7 +99,7 @@ DPR2 maintains the DataPackageR functions `project_path`,`project_data_path` and
 `dpr_render` can be used before `dpr_build` if the user doesn't immediately want to build the package, but instead is interested if the package can be built successfully or if the associated vignettes are rendered correctly.
 
 ```{r render}
-dpr_render(process_on_build = 'my_process.Rmd')
+dpr_render()
 ```
 
 In the above example, this call to `dpr_render` makes use of the ellipsis operator, temporarily overriding the value for `process_on_build` in the `datapackager.yml` file.
