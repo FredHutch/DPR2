@@ -12,7 +12,7 @@ dpr_update_ignores <- function(path){
   writeLines(
     c(
       readLines(rig),
-      "^data/.+\\.(r|tab|txt|csv)$",
+      "^data/.+\\.(r|tab|txt|csv|tsv|rds)$",
       "^inst/extdata/"
     ),
     rig
