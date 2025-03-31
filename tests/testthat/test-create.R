@@ -51,13 +51,11 @@ test_that("check datapackager.yml and ignores", {
   )
 
   rIgnore <- c(
-    "^data/.+\\.r$",
-    "^data/.+\\.(tab|txt|csv)$",
+    "^data/.+\\.(r|tab|txt|csv)$",
     "^inst/extdata/"
   )
 
   gIgnore <- c(
-    "inst/extdata/",
     "inst/doc/"
   )
 

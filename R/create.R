@@ -9,20 +9,20 @@ dpr_update_ignores <- function(path){
   for(ig in c(rig, gig))
     if(!file.exists(ig))
       file.create(ig)
-  cat(
-    "^data/.+\\.r$",
-    "^data/.+\\.(tab|txt|csv)$",
-    "^inst/extdata/",
-    file = rig,
-    sep = "\n",
-    append = TRUE
+  writeLines(
+    c(
+      readLines(rig),
+      "^data/.+\\.(r|tab|txt|csv)$",
+      "^inst/extdata/"
+    ),
+    rig
   )
-  cat(
-    "inst/extdata/",
-    "inst/doc/",
-    file = gig,
-    sep = "\n",
-    append = TRUE
+  writeLines(
+    c(
+      readLines(gig),
+      "inst/doc/"
+    ),
+    gig
   )
 }
 
