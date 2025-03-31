@@ -5,10 +5,9 @@ configuration:
     iris.R:
       enabled: yes
     trees.Rmd:
-      enabled: yes
+      enabled: no
   objects:
   - mtcars_mod
   - iris
-  - trees  
   render_root:
     tmp: '48066'

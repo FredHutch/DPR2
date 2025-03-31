@@ -24,25 +24,6 @@ dpr_update_data_digest <- function(path=".", yml){
 
 }
 
-#' Private. Standard way of listing rda files available in data for use across
-#' all functions.
-#'
-#' @title dpr_list_rda
-#' @param path path to data package
-#' @return a character vector of rda files in the data directory
-#' @author jmtaylor
-#' @noRd
-dpr_list_rda <- function(path){
-  sort(
-    list.files(
-      file.path(path, "data"),
-      "\\.rda$",
-      full.names = TRUE,
-      ignore.case = TRUE
-    )
-  )
-}
-
 #' Private. Verifies if necessary conditions are met for accessing Git features
 #'
 #' @title dpr_check_git

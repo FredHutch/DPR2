@@ -1,3 +1,22 @@
+#' Private. Standard way of listing rda files available in data for use across
+#' all functions.
+#'
+#' @title dpr_list_rda
+#' @param path path to data package
+#' @return a character vector of rda files in the data directory
+#' @author jmtaylor
+#' @noRd
+dpr_list_rda <- function(path){
+  sort(
+    list.files(
+      file.path(path, "data"),
+      "\\.rda$",
+      full.names = TRUE,
+      ignore.case = TRUE
+    )
+  )
+}
+
 #' Private. Verifies whether a specified path is a DataPackageR or DPR2
 #' package.
 #'
@@ -20,7 +39,7 @@ dpr_is <- function(path){
 #' @noRd
 dpr_yaml_load <- function(path="."){
   if( dpr_is_dpr1(path) )
-    return( dpr_dpr1_yaml_load(path) )
+    stop( "Attemping to load a yaml of a DataPackageR package. Must convert to DPR2 first. See `?dpr_convert." )
   if( dpr_is_dpr2(path) )
     return( yaml::read_yaml(file.path(path, "datapackager.yml")) )
   stop("`datapackager.yml` is invalid or missing.")
