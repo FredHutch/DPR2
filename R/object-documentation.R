@@ -1,7 +1,8 @@
 #' Private. Generate Documentation Files for All .Rda Data Objects
 #'
-#' Finds all `.rda` data objects in the data folder, generates documentation using `template_doc_block`,
-#' and writes documentation to `.R` files using `write_doc_file`.
+#' Finds all `.rda` data objects in the data folder, generates
+#' documentation using `template_doc_block`, and writes documentation
+#' to `.R` files using `write_doc_file`.
 #'
 #' @param path Path to data package.
 #' @return Creates `.R` files with documentation for each `.rda` data object.

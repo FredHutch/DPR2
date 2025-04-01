@@ -12,7 +12,8 @@ working directory.}
 
 \item{...}{datapakager.yml value overrides. When arguments are
 specified, those arguments are used as the YAML key value pairs
-instead of what is specified by the \code{datapackager.yml}.}
+instead of what is specified by the \code{datapackager.yml}. See
+\code{?dpr_description_defaults} for the default values that can be set.}
 }
 \value{
 nothing

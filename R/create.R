@@ -38,10 +38,28 @@ dpr_get_template <- function(regex){
   list.files(system.file("templates", package="DPR2"), regex, full.names = TRUE)
 }
 
-#' This function returns default key:value pairs for the data package
-#' datapackager.yml
+#' This function returns default key value pairs for a DPR2 datapackager.yml
+#' file. These defaults are the same for each package and are read from the the
+#' DPR2 installation directory. 
 #'
-#' Definitions of yaml key:value pairs
+#' The keys returned here are required for all DPR2 data packages but the users
+#' may set valid value to them by using `dpr_yaml_set(...)` or simply editing
+#' the `datapackager.yml` file manually. Below is a list of the keys, their
+#' default values, and any other valid values when applicable.
+#' 
+#' * source_data_directory : inst/extdata, the location where source data for processing scripts     
+#' * purge_data_directory  : TRUE, whether to delete all contents of the `data` directory when the package is rendered
+#' * process_directory     : processing, where to find the processing scripts to render      
+#' * process_on_build      : NULL, which processing scripts to run from the `process_directory` location when the package is rendered
+#' * render_on_build       : TRUE, whether to render the processing scripts when the package is built or not  
+#' * render_env_mode       : isolate, valid values are "isolate" or "share" which determine if each processing script is run in its own R session (isolate) or the same R session (share). No option allows processing scripts to be run in the current session.   
+#' * write_to_vignettes    : TRUE, if vignettes should be generated when rendering
+#' * write_docs            : TRUE, if data documentation should be generated when whendering
+#' * data_digest_directory : inst/data_digest, the location of the `data_digest` folder. 
+#' * build_tarball         : FALSE, if a package tarball should be built when the package is built
+#' * install_on_build      : FALSE, if the package should be installed when the package is built
+#' * build_output          : ../, where the package should be save if the tarball is built
+#'
 #' @title dpr_yaml_defaults
 #' @return a list containing default yaml key-value pairs from datapackager.yml
 #' @author jmtaylor
@@ -96,13 +114,14 @@ dpr_yaml_init_set <- function(yml, pkgp){
 #' A function that provides a convenient way to initialize a YAML configuration
 #' by merging default settings with user specific values to the
 #' datapackager.yml file's key:value pairs. If no  arguments are provided, it
-#' will return the datapackager.yml default values. see `dpr_yaml_defaults()`
+#' will return the `datapackager.yml` file  default values. see `?dpr_yaml_defaults`
 #' for a list of default values, or call this function with no arguments.
 #'
 #' @title dpr_yaml_init
-#' @param ... Arguments are treated as key value pairs for the datapackager.yml
+#' @param ... Arguments are treated as key value pairs for the
+#'   datapackager.yml file.
+#' @return A list of key:value pairs for generating a datapackager.yml
 #'   file.
-#' @return A list of key:value pairs for generating a datapackager.yml file.
 #' @author jmtaylor
 #' @export
 dpr_yaml_init <- function(...){

@@ -10,11 +10,29 @@ dpr_yaml_defaults()
 a list containing default yaml key-value pairs from datapackager.yml
 }
 \description{
-This function returns default key:value pairs for the data package
-datapackager.yml
+This function returns default key value pairs for a DPR2 datapackager.yml
+file. These defaults are the same for each package and are read from the the
+DPR2 installation directory.
 }
 \details{
-Definitions of yaml key:value pairs
+The keys returned here are required for all DPR2 data packages but the users
+may set valid value to them by using \code{dpr_yaml_set(...)} or simply editing
+the \code{datapackager.yml} file manually. Below is a list of the keys, their
+default values, and any other valid values when applicable.
+\itemize{
+\item source_data_directory : inst/extdata, the location where source data for processing scripts
+\item purge_data_directory  : TRUE, whether to delete all contents of the \code{data} directory when the package is rendered
+\item process_directory     : processing, where to find the processing scripts to render
+\item process_on_build      : NULL, which processing scripts to run from the \code{process_directory} location when the package is rendered
+\item render_on_build       : TRUE, whether to render the processing scripts when the package is built or not
+\item render_env_mode       : isolate, valid values are "isolate" or "share" which determine if each processing script is run in its own R session (isolate) or the same R session (share). No option allows processing scripts to be run in the current session.
+\item write_to_vignettes    : TRUE, if vignettes should be generated when rendering
+\item write_docs            : TRUE, if data documentation should be generated when whendering
+\item data_digest_directory : inst/data_digest, the location of the \code{data_digest} folder.
+\item build_tarball         : FALSE, if a package tarball should be built when the package is built
+\item install_on_build      : FALSE, if the package should be installed when the package is built
+\item build_output          : ../, where the package should be save if the tarball is built
+}
 }
 \author{
 jmtaylor
