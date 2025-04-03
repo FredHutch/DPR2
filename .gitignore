@@ -9,3 +9,5 @@ test_dpr-exported.html
 inst/doc
 /doc/
 /Meta/
+vignettes/*.html
+vignettes/*.R
