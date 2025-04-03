@@ -32,7 +32,7 @@ This vignette demonstrates the DPR2 workflow for building data packages. We will
 6. Add your processing scripts to the folder `processing`
 7. Build the data package with `dpr_build()`
 
-In this workflow, processing script are written to transform source data into analysis data. Static vignettes and documentation are rendered from those script and any data that is generated can be saved to the package use `dpr_save()`.
+In this workflow, processing scripts are written to transform source data into analysis data. Static vignettes and documentation are rendered from those script and any data that is generated can be saved to the package use `dpr_save()`.
 
 ## The DPR2 YAML and API
 
@@ -47,9 +47,7 @@ dpr_init(yaml = dpr_yaml_init(process_on_build = 'my_process.Rmd'))
 
 There are two ways one can initialize a new DPR2 package: using `dpr_init` or `dpr_create`. `dpr_init` is simply a wrapper of `dpr_create`, where `dpr_init` will create a new DPR2 package at the current working directory, and `dpr_create` will create a new DPR2 package at a specified path. When the package is initialized, DPR2 will check if any necessary files it needs are already present and create those if they are missing. This functionality is handy when a package already exists and a user would like to maintain that package using DPR2.
 
-The DPR2 package `datapackager.yml` and `DESCRIPTION` files can be initialized with specific values using the `yaml` and `desc` arguments. The arguments are passed lists that are generated using `dpr_yaml_init()` and `dpr_description_init()` function calls. The arguments to these calls are simply key value pairs that are added to the appropriate configuration file, whereas these functions also add the necessary key value pairs that are required but not enumerated. For a list of default values for each of these, see `?dpr_yaml_defaults` and `?dpr_description_defaults`.
-
-By default, DPR2 is initialized using renv for dependency version control. DPR2 can help tackle problems of unstable and non-reproducible environments by using renv after initializing a DPR2 package, using `renv::init()`. Once the data package is initialized with renv, renv will make sure when a dependency is installed by a user, it will use the same version of that dependency when building the data package in the future, and will inform users whether they need to install a particular version of a package dependency. For more details on `renv`, refer to the [renv documentation](https://docs.posit.co/ide/user/ide/guide/environments/r/renv.html).
+The DPR2 package `datapackager.yml` and `DESCRIPTION` files can be initialized with specific values using the `yaml` and `desc` arguments. The arguments passed are named lists that are generated using the `dpr_yaml_init()` and `dpr_description_init()` function calls, which are used to generate each  configuration file respectively. These functions will add any necessary key value pairs that are required but not enumerated by the user to ensure the resulting files are valid. For a list of default values for each of these, see `?dpr_yaml_defaults` and `?dpr_description_defaults`.
 
 ## Building a DPR2 package
 
@@ -83,13 +81,13 @@ cat(
 )
 ```
 
-`dpr_path()` is used to refer to other paths within processing scripts and `dpr_save()` to save objects to the `data` directory. Objects are saved this way are saved as `rda` files. DPR2 requires all data objects be saved as single object RDA files.
+`dpr_path()` is used to refer to other paths within processing scripts and `dpr_save()` to save objects to the `data` directory. Objects are saved this way are saved as single object `rda` files, a requirement for DPR2.
 
-DPR2 maintains the DataPackageR functions `project_path`,`project_data_path` and `project_extdata_path` to ensure compatibility with scripts written for DataPackageR, but they are not recommended to use for new scripts as these functions may be removed from future versions of DPR2.
+DPR2 maintains the DataPackageR functions `project_path`, `project_data_path` and `project_extdata_path` to ensure compatibility with scripts written for DataPackageR, but they are not recommended to use for new scripts as these functions may be removed from future versions of DPR2.
 
-### dpr_build and dpr_render
+### `dpr_build` and `dpr_render`
 
-`dpr_build` and `dpr_render` are the function used for building a data package from processing scripts. `dpr_build` wraps `dpr_render` but in addition may do the following:
+`dpr_build` and `dpr_render` are the functions used for building a data package from processing scripts. `dpr_build` wraps `dpr_render` but in addition may do the following:
 
 * save the rendered processing scripts to vignettes in the data package source
 * update the data digest with new checksums
@@ -99,7 +97,7 @@ DPR2 maintains the DataPackageR functions `project_path`,`project_data_path` and
 `dpr_render` can be used before `dpr_build` if the user doesn't immediately want to build the package, but instead is interested if the package can be built successfully or if the associated vignettes are rendered correctly.
 
 ```{r render}
-dpr_render()
+dpr_render(process_on_build = "my_process.Rmd")
 ```
 
 In the above example, this call to `dpr_render` makes use of the ellipsis operator, temporarily overriding the value for `process_on_build` in the `datapackager.yml` file.
@@ -117,10 +115,10 @@ list.files("data")
 
 ### Examine the data digest
 
-As mentioned in \link{introduction}, the data digest is formatted as a directory of files. Each of these files contains the md5 checksum of the objects loaded from data in memory. This manner of hashing is consistent with the original DataPackageR. The digest can be viewed at any time as a single file using `DPR2::dpr_data_digest()`
+As mentioned in \link{introduction}, the data digest is formatted as a directory of files. Each of these files contains the md5 checksum of the objects loaded from data in memory. This manner of hashing is consistent with the original DataPackageR. The digest can be viewed at any time as a single file using `dpr_data_digest()`
 
 ```{r examine-data-digest}
-DPR2::dpr_data_digest()
+dpr_data_digest()
 ```
 
 ### Examine the saved data object
@@ -131,3 +129,12 @@ Once a package is built it can be installed and its packaged data and vignettes 
 data('my_df')
 vignette(package="my_data_package")
 ```
+
+# Using Git
+
+It is highly recommended that git is used along side of DPR2. Git version control allows users to store versions of data and processing scripts in a fashion that is easy revert and recall from. DPR2 was built to allow parallel version of an analysis to be merge together reconciling differences using git. DPR2 offers a handful of tools to simplify recalling different versions of a dataset which is explained in the \link{version} vignette. To learn about how to use git in general see the free book [Pro Git](https://git-scm.com/book/en/v2).
+
+# Using Renv
+
+DPR2 may be initialized with renv for dependency version control, and is recommended to do so. DPR2 can help tackle problems of unstable and non-reproducible environments by using renv after initializing a DPR2 package. Once the data package is initialized with renv, renv will make sure when a dependency is installed by a user, it will use the same version of that dependency when building the data package in the future, and will inform users whether they need to install a particular version of a package dependency. For more details on renv, refer to the [renv documentation](https://docs.posit.co/ide/user/ide/guide/environments/r/renv.html).
+
