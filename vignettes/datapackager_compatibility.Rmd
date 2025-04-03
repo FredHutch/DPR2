@@ -22,7 +22,7 @@ knitr::opts_knit$set(root.dir = twd)
 
 ## Converting a DPR1 Datapackage to DPR2
 
-Sometimes users may encounter datapackages created by DataPackagR and still want to use DPR2 functionalities. DPR2 has the function `dpr_convert` which converts a DataPackageR package into a DPR2 package.
+Sometimes users may encounter datapackages created by DataPackageR. DPR2 has the function `dpr_convert` which converts a DataPackageR package into a DPR2 package.
 
 ```{r}
 # existing DataPackageR project
@@ -31,28 +31,25 @@ library(DataPackageR)
 library(yaml)
 
 # setup an empty DataPackageR skeleton
-processing_code <-
-    system.file("extdata", "tests", "subsetCars.Rmd", package = "DataPackageR")
-
-# Create the package framework.
-DataPackageR::datapackage_skeleton(
-  name = "mtcars20",
-  code_files = processing_code,
-  r_object_names = "cars_over_20"
+dpr1tmp <- tempdir()
+file.copy(
+  "tests/testthat/dpr1package/",
+  dpr1tmp,
+  recursive = TRUE
 )
 
 # set working directory for this vignette to the newly created datapackage
-knitr::opts_knit$set(root.dir = file.path(getwd(), 'mtcars20'))
+knitr::opts_knit$set(root.dir = file.path(dpr1tmp, "dpr1package"))
 
 # create YML
-yml <- DataPackageR::construct_yml_config(code = "subsetCars.Rmd", data = "cars_over_20")
+yml <- DataPackageR::construct_yml_config(code = "mtcars.Rmd", data = "mtcars_mod")
 
 cat(yaml::as.yaml(yml))
 ```
 
-After using `dpr_convert`, loading it, and looking over the yaml settings, we see the yaml configuration for the DataPackageR package is converted to DPR2 compatible settings:
+After using `dpr_convert`, and looking over the yaml settings, we see the yaml configuration for the DataPackageR package is converted to DPR2 compatible settings:
 
 ```{r}
-DPR2::dpr_convert()
-DPR2::dpr_yaml_get()
+dpr_convert()
+dpr_yaml_get()
 ```
