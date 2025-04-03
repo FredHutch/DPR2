@@ -1,8 +1,8 @@
 ---
-title: "Typical DPR2 Workflow"
+title: "The DPR2 Workflow"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Typical DPR2 Workflow}
+  %\VignetteIndexEntry{The DPR2 Workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

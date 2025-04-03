@@ -1,8 +1,8 @@
 ---
-title: "compatibility"
+title: "DataPackageR Compatibility"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{compatibility}
+  %\VignetteIndexEntry{DataPackageR Compatibility}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
