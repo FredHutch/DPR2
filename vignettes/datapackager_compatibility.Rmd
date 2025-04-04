@@ -12,12 +12,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-
-# Temporary working directory for example data package
-
-twd <- tempfile('vpkg')
-dir.create(twd)
-knitr::opts_knit$set(root.dir = twd)
 ```
 
 ## Converting a DPR1 Datapackage to DPR2
@@ -33,7 +27,7 @@ library(yaml)
 # setup an empty DataPackageR skeleton
 dpr1tmp <- tempdir()
 file.copy(
-  "tests/testthat/dpr1package/",
+  "../tests/testthat/dpr1package/",
   dpr1tmp,
   recursive = TRUE
 )

@@ -1,5 +1,5 @@
 ---
-title: "Tracking data versions with DPR2"
+title: "Data Versioning"
 author: "Jason Taylor"
 date: "2025-03-26"
 output: rmarkdown::html_vignette
@@ -14,7 +14,7 @@ DPR2 offers features to facilitate tracking data versioning throughout a project
 ```{r echo = F}
 
 library(DPR2)
-dpr2 <- "tests/testthat/dpr2package/"
+dpr2 <- "../tests/testthat/dpr2package"
 path <- file.path(tempdir(), "dpr2package")
 file.copy(dpr2, tempdir(), recursive = TRUE)
 
