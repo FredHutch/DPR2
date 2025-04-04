@@ -14,36 +14,63 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Converting a DPR1 Datapackage to DPR2
+## Converting a DataPackageR data package to use DPR2
 
-Sometimes users may encounter datapackages created by DataPackageR. DPR2 has the function `dpr_convert` which converts a DataPackageR package into a DPR2 package.
+Sometimes users may encounter datapackages created by DataPackageR. DPR2 has the function `dpr_convert` which converts a DataPackageR package into a DPR2 package. In this example we will copy out DataPackageR test package to a temp directory to demonstrate the DPR2 conversion function.
 
-```{r}
-# existing DataPackageR project
-library(DPR2)
-library(DataPackageR)
-library(yaml)
-
-# setup an empty DataPackageR skeleton
-dpr1tmp <- tempdir()
+```{r echo = T}
 file.copy(
   "../tests/testthat/dpr1package/",
-  dpr1tmp,
+  tempdir(),
+  recursive = TRUE
+)
+```
+
+To convert a DataPackageR package to use DPR2 simply run `dpr_convert(path)`, setting the path to the DataPackageR package, whereas the default path is the current working directory.
+
+```{r}
+## copy test package to temp directory
+file.copy(
+  "../tests/testthat/dpr1package/",
+  tempdir(),
   recursive = TRUE
 )
 
-# set working directory for this vignette to the newly created datapackage
-knitr::opts_knit$set(root.dir = file.path(dpr1tmp, "dpr1package"))
+dpr1_path <- file.path(tempdir(), "dpr1package")
 
-# create YML
-yml <- DataPackageR::construct_yml_config(code = "mtcars.Rmd", data = "mtcars_mod")
+## load DPR2 
+library(DPR2)
 
-cat(yaml::as.yaml(yml))
+## convert test DataPackageR test package to the DPR2 format 
+dpr_convert(dpr1_path)
 ```
 
-After using `dpr_convert`, and looking over the yaml settings, we see the yaml configuration for the DataPackageR package is converted to DPR2 compatible settings:
+Notice that the above conversion does do a bit of digest validation, where in the above example on of the tracked files has a different checksum than what is reported in the digest. 
 
-```{r}
-dpr_convert()
-dpr_yaml_get()
+Converting a package using `dpr_convert()` deletes several files created by DataPackageR that DPR2 does not use. 
+
+* `DATADIGEST`
+* `NEWS.md`
+* `Read-and-delete-me`,
+* `R/documentation.R`
+* `data-raw/documentation.R`,
+* `inst/extdata/Logfiles`, 
+* any file in `inst/doc` with the same name as an `R` or `Rmd` file found in the `data-raw` or`Logfiles`
+
+`dpr_convert()`  also modifies the package `DESCRIPTION`, removeing its `Date`, and `DataVersion` fields.
+
+Although the `DATADIGEST` file is deleted, DPR2 does maintain that information, but uses a directory found in `inst` to do so, and DPR2 provides the `dpr_data_digest` function for assembling the contents of the new data digest format into a tablular object. See \link{data_versioning} for more information regarding how to use the new data digest format.
+
+```r
+## view the new data digest
+dpr_data_digest(dpr1_path)
 ```
+
+`dpr_convert` also translates the orginal `DataPackageR` yaml file into a DPR2 compatible format. Examining the `datapackager.yml` file, we see the yaml configuration for the DataPackageR package is converted to DPR2 compatible settings.
+
+```r
+## view the new yaml file
+dpr_yaml_get(dpr1_path)
+```
+
+DataPackageR used the `data-raw` directory to store data processing scripts. DPR2 uses a new `processing` directory to store those, however this is configurable in the DPR2 `datapackager.yml` file, and thus converted data packages has this set to the default DataPackageR `data-raw` path.,

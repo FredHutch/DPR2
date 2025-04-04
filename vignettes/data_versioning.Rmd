@@ -11,7 +11,7 @@ vignette: >
 
 DPR2 offers features to facilitate tracking data versioning throughout a project's lifecycle. This vignette will cover the those features.
 
-```{r echo = F}
+```{r echo = FALSE, results = 'hide'}
 
 library(DPR2)
 dpr2 <- "../tests/testthat/dpr2package"
@@ -67,28 +67,28 @@ git2r::commit(repo = path, message="Trees subsetting")
 
 ```
 
-Printing the data object history from a data package under version control and comparing those to the current version of the data pacakge.
+Printing the data object history from a data package under version control and comparing those to the current version of the data package. Here we use the `dpr_data_history` function to get a listing of `rda` files and when they were created, get their git SHA-1 hashes, then fetch those versions using `dpr_recall_data_versions`.
 
 ```{r}
 
 history <- dpr_data_history(path=path, include_checksums=TRUE)
 print(history)
 
-firstIrisHash <- history[history$name == "irisArea.rda",
-                     ][1,
-                       ]$blob_git_sha1
-print(firstIrisHash)
-firstIris <- dpr_recall_data_versions(firstIrisHash, path)
+irisAreas <- history[history$name == "irisArea.rda",]
+firstIrisHash <- irisAreas[irisAreas$when == min(irisAreas$when), "blob_git_sha1"]
+lastIrisHash <- irisAreas[irisAreas$when == max(irisAreas$when), "blob_git_sha1"]
 
-lastIrisHash <- history[history$name == "irisArea.rda",
-                    ][nrow(history[history$name == "irisArea.rda",]),
-                      ]$blob_git_sha1
-print(lastIrisHash)
+firstIris <- dpr_recall_data_versions(firstIrisHash, path)
 lastIris <- dpr_recall_data_versions(lastIrisHash, path)
+
+```
+
+We can then compare the first object check sums between the first and last objects created, and those with the current data_digest. 
+
+```{r}
 
 digest::digest(firstIris[[1]][[1]])
 digest::digest(lastIris[[1]][[1]])
-
 dpr_data_digest(path)
 
 ```
@@ -115,7 +115,6 @@ And once there may have been changes, we can compare datasets.
 ```{r}
 
 dpr_render(path)
-
 dpr_compare_data_digest(path)
 
 ```
