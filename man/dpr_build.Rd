@@ -7,19 +7,32 @@
 dpr_build(path = ".", ...)
 }
 \arguments{
-\item{path}{The relative path to the data package. The default is the
-working directory.}
+\item{path}{The relative path to the data package. The default is the working
+directory.}
 
-\item{...}{datapackager.yml value overrides. When arguments are specified,
-those arguments are used as the YAML key value pairs instead of what is
-specified by the \code{datapackager.yml}.}
+\item{...}{\code{datapakager.yml} value overrides. When arguments are
+specified, those arguments are used as the YAML key value pairs instead of
+what is specified by the \code{datapackager.yml} file. For a list of those
+key value pairs and their purposes, see \code{?dpr_yaml_defaults}.}
 }
 \value{
-does not return any value. It performs rendering, building and
-installing the package based on the configuration file
+does not return anything but performs rendering, processing and
+data-saving operations as defined in datapackager.yml`
 }
 \description{
-Process, render and build data package.
+Build the data package. This includes processing and rendering all processing
+scripts defined in the \code{datapackager.yml} configuration file and
+additionally will build and install the data package if configured to do so
+in the \code{datapackager.yml}.
+}
+\details{
+\code{dpr_build} wraps many DPR2 processes in a single call: renders
+processing scripts, updates data digest, builds package to an installable
+tarball, and installs the tarball. Each of these processes can be
+controlled from the \code{datapackager.yml} file. Only th processing script
+rendering function is exported to users. See \code{dpr_render} for more
+information regarding rendering. For more information regarding
+configuration options, see \code{?dpr_yaml_defaults}.
 }
 \author{
 jmtaylor

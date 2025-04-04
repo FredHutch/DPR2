@@ -7,18 +7,20 @@
 dpr_yaml_set(path = ".", ...)
 }
 \arguments{
-\item{path}{The full path to the data package. The default is the
-working directory.}
+\item{path}{The full path to the data package. The default is the working
+directory.}
 
-\item{...}{datapakager.yml value overrides. When arguments are
-specified, those arguments are used as the YAML key value pairs
-instead of what is specified by the \code{datapackager.yml}.}
+\item{...}{\code{datapakager.yml} value overrides. When arguments are specified,
+those arguments are used as the YAML key value pairs instead of what is
+specified by the \code{datapackager.yml}. Note, any values can be set here, but
+only those returned by \code{dpr_yaml_defaults()} are used by DPR2. See
+\code{?dpr_yaml_defaults} for information on those values.}
 }
 \value{
 nothing
 }
 \description{
-Write new datapackager.yml with new or modified key:value pairs.
+Write new \code{datapackager.yml} with new or modified key:value pairs.
 }
 \author{
 jmtaylor
