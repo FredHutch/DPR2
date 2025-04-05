@@ -1,7 +1,5 @@
 ---
 title: "Data Versioning"
-author: "Jason Taylor"
-date: "2025-03-26"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Data Versioning}

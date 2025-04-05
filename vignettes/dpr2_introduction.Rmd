@@ -1,7 +1,5 @@
 ---
 title: Introduction to DPR2
-author: "Jason Taylor"
-date: "2025-03-07"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to DPR2}
