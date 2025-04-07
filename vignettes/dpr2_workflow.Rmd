@@ -115,7 +115,7 @@ list.files("data")
 
 ### Examine the data digest
 
-As mentioned in \link{introduction}, the data digest is formatted as a directory of files. Each of these files contains the md5 checksum of the objects loaded from data in memory. This manner of hashing is consistent with the original DataPackageR. The digest can be viewed at any time as a single file using `dpr_data_digest()`
+As mentioned in [Introduction to DPR2](dpr2_introduction.html), the data digest is formatted as a directory of files. Each of these files contains the md5 checksum of the objects loaded from data in memory. This manner of hashing is consistent with the original DataPackageR. The digest can be viewed at any time as a single file using `dpr_data_digest()`
 
 ```{r examine-data-digest}
 dpr_data_digest()
@@ -132,7 +132,7 @@ vignette(package="my_data_package")
 
 # Using Git
 
-It is highly recommended that git is used along side of DPR2. Git version control allows users to store versions of data and processing scripts in a fashion that is easy revert and recall from. DPR2 was built to allow parallel version of an analysis to be merge together reconciling differences using git. DPR2 offers a handful of tools to simplify recalling different versions of a dataset which is explained in the \link{version} vignette. To learn about how to use git in general see the free book [Pro Git](https://git-scm.com/book/en/v2).
+It is highly recommended that git is used along side of DPR2. Git version control allows users to store versions of data and processing scripts in a fashion that is easy revert and recall from. DPR2 was built to allow parallel version of an analysis to be merge together reconciling differences using git. DPR2 offers a handful of tools to simplify recalling different versions of a dataset which is explained in the [Data Versioning](data_versioning.html) vignette. To learn about how to use git in general see the free book [Pro Git](https://git-scm.com/book/en/v2).
 
 # Using Renv
 
