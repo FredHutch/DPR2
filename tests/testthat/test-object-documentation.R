@@ -10,7 +10,7 @@ test_that("check that R object documentation is written as expected", {
   tdir <- getPkgDir()
   pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn, list(renv_init = FALSE))
+  createPkg(tdir, pkgn)
   dpr_build(path, process_on_build = "01.R", objects = "objYml1")
   # check that .R file exists
   expect_true(file.exists(file.path(path, "R", "objYml1.R")))
@@ -70,7 +70,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
   tdir <- getPkgDir()
   pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn, list(renv_init = FALSE))
+  createPkg(tdir, pkgn)
   writeLines(
     c(
       "library(DPR2)",

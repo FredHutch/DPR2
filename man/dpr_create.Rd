@@ -4,12 +4,7 @@
 \alias{dpr_create}
 \title{dpr_create}
 \usage{
-dpr_create(
-  path = ".",
-  yaml = dpr_yaml_init(),
-  desc = dpr_description_init(),
-  renv_init = TRUE
-)
+dpr_create(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init())
 }
 \arguments{
 \item{path}{A path to the data package.}
@@ -17,8 +12,6 @@ dpr_create(
 \item{yaml}{A returned list for \code{\link[=dpr_yaml_init]{dpr_yaml_init()}}}
 
 \item{desc}{A returned list for \code{\link[=dpr_description_init]{dpr_description_init()}}}
-
-\item{renv_init}{Logical; whether to initiate renv (default TRUE)}
 }
 \description{
 Initialize a data package by creating a structured directory skeleton for a

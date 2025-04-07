@@ -7,8 +7,7 @@
 dpr_init(
   path = ".",
   yaml = dpr_yaml_init(),
-  desc = dpr_description_init(Package = basename(path)),
-  renv_init = TRUE
+  desc = dpr_description_init(Package = basename(path))
 )
 }
 \arguments{
@@ -20,8 +19,6 @@ the current working directory is used.}
 \item{desc}{A returned list from \code{\link[=dpr_description_init]{dpr_description_init()}}. The default
 argument sets the package name to the name of the directory containing the
 data package.}
-
-\item{renv_init}{Logical; whether to initiate renv (default TRUE)}
 }
 \description{
 A wrapper for dpr_create that uses the parent directory as the location to

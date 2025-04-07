@@ -22,7 +22,7 @@ testthat::test_that("checking DataPackageR compatibility functions", {
 
   pkgn <- "testPkg"
   path2 <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn, list(renv_init = FALSE))
+  createPkg(tdir, pkgn)
 
   expect_error(
     dpr_convert(path2),

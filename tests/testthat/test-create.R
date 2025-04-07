@@ -88,21 +88,6 @@ test_that("check datapackager.yml and ignores", {
   unlink(file.path(tdir, pkgn), recursive = TRUE)
 })
 
-test_that("check renv", {
-
-  pkgn <- "testPkg"
-  path <- file.path(tdir, pkgn)
-
-  createPkg(tdir, pkgn, list(renv_init=TRUE))
-  expect_true(dir.exists(file.path(path, "renv")))
-  unlink(path, recursive = TRUE)
-
-  createPkg(tdir, pkgn, list(renv_init=FALSE))
-  expect_true(!dir.exists(file.path(path, "renv")))
-  unlink(path, recursive = TRUE)
-
-})
-
 test_that("init populates exisiting directory", {
 
   pkgn <- "initExist"
@@ -143,7 +128,7 @@ test_that("no dpr_(description_)_init warning about default package name", {
   twd <- tempfile()
   dir.create(twd)
   setwd(twd)
-  expect_no_warning(dpr_init(renv_init = FALSE))
+  expect_no_warning(dpr_init())
 })
 
 cleanup(tdir)
