@@ -139,10 +139,9 @@ dpr_description_init <- function(...){
 #' @param path A path to the data package.
 #' @param yaml A returned list for [dpr_yaml_init()]
 #' @param desc A returned list for [dpr_description_init()]
-#' @param renv_init Logical; whether to initiate renv (default TRUE)
 #' @author jmtaylor
 #' @export
-dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
+dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init()){
   pkgp <- file.path(path, desc$Package)
 
   if(!dir.exists(path))
@@ -169,15 +168,6 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
           dpr_yaml_init_set(yaml, pkgp)
       }
 
-    ## init renv
-    if(renv_init && !file.exists(file.path(pkgp, "renv.lock")))
-      renv::init(
-        pkgp,
-        settings = list(snapshot.type = "implicit"),
-        load = FALSE,
-        restart = FALSE
-      )
-
     dpr_update_ignores(pkgp)
 
   },
@@ -200,19 +190,16 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
 #' @param desc A returned list from [dpr_description_init()]. The default
 #'   argument sets the package name to the name of the directory containing the
 #'   data package.
-#' @param renv_init Logical; whether to initiate renv (default TRUE)
 #' @export
 dpr_init <- function(
     path = ".",
     yaml = dpr_yaml_init(),
-    desc = dpr_description_init(Package = basename(path)),
-    renv_init = TRUE)
+    desc = dpr_description_init(Package = basename(path)))
 {
   path <- normalizePath(path)
   dpr_create(
     dirname(path),
     yaml = yaml,
-    desc = desc,
-    renv_init = renv_init
+    desc = desc
   )
 }

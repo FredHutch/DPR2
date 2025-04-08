@@ -7,7 +7,7 @@ pkgn <- "testPkg"
 testthat::test_that("checking package build", {
 
   path <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn, list(renv_init = FALSE))
+  createPkg(tdir, pkgn)
 
   rda_to_restore <- file.path(path, 'data', 'restore_me.rda')
   file.create(rda_to_restore)

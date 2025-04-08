@@ -150,9 +150,8 @@ dpr1_clean <- function(path){
 dpr_convert <- function(path = "."){
   if( !dpr_is_dpr1(path) )
     stop("Data package at path argument is not detected as DataPackageR package.")
-  # renv should not be initialized, defaulting to the repo's current renv configuration, whatever that may be
   suppressWarnings(
-    dpr_init(path, dpr_yaml_init(process_directory = "data-raw", purge_data_directory = FALSE), renv_init=FALSE)
+    dpr_init(path, dpr_yaml_init(process_directory = "data-raw", purge_data_directory = FALSE))
   )
   dpr1_yaml_convert(path)
   dpr1_data_digest_convert(path)
