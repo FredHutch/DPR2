@@ -150,12 +150,26 @@ dpr1_clean <- function(path){
 dpr_convert <- function(path = "."){
   if( !dpr_is_dpr1(path) )
     stop("Data package at path argument is not detected as DataPackageR package.")
+
+  on.exit(options(dpr2_is_converting = NULL))
+  options(dpr2_is_converting = TRUE)
+
   suppressWarnings(
     dpr_init(path, dpr_yaml_init(process_directory = "data-raw", purge_data_directory = FALSE))
   )
   dpr1_yaml_convert(path)
   dpr1_data_digest_convert(path)
   dpr1_clean(path)
+}
+
+#' Private. Produce consistent error when passing invalid package path.
+#'
+#' @title dpr_is_path
+#' @param path The relative path to the data package. The default is the
+#'   working directory.
+#' @noRd
+dpr_check_path <- function(path){
+    if(!dir.exists(path)) stop("Package path not found.")
 }
 
 #' Private. A function to verify whether a specified directory contains a
@@ -166,10 +180,9 @@ dpr_convert <- function(path = "."){
 #'   working directory.
 #' @return a boolean value indicating whether the specified directory contains
 #'   a DataPackageR package or not
-#' @author jmtaylor
 #' @noRd
 dpr_is_dpr1 <- function(path="."){
-  if(!dir.exists(path)) stop("Package path not found.")
+  dpr_check_path(path)
   if(file.exists(file.path(path, "datapackager.yml"))){
     yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
     # this check is based on the DataPackageR check in processData.R

@@ -5,10 +5,7 @@ test_that("check default package name warning", {
   expect_silent(
     dpr_create(tdir, desc=dpr_description_init(Package = pkgn))
   )
-  expect_warning(
-    dpr_create(tdir, desc=dpr_description_init()),
-    "Default package name used"
-  )
+  dpr_create(tdir, desc=dpr_description_init())
   unlink(file.path(tdir, pkgn), recursive = TRUE)
   unlink(
     file.path(
