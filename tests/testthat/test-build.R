@@ -84,11 +84,6 @@ testthat::test_that("checking package build", {
 
   ## check for valid package
   expect_error(
-      dpr_build(path, data_digest_directory="/notapath"),
-      "Data digest directory does not exist"
-  )
-
-  expect_error(
     dpr_build(tempdir()),
     "`path` argument is not a DataPackageR or DPR2 package"
   )

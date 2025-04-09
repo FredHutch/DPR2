@@ -10,8 +10,7 @@ dpr_update_data_digest <- function(path=".", yml){
   rda <- dpr_list_rda(path)
   dig <- file.path(path, yml$data_digest_directory)
 
-  if(!dir.exists(dig))
-    stop(sprintf("Data digest directory does not exist: %s", dig))
+  if (!dir.exists(dig)) dir.create(dig)
 
   unlink(list.files(dig, full.names = T))
 
@@ -178,7 +177,7 @@ dpr_envs_to_checksums <- function(envs){
 
 #' Private. From a vector of hashes load the data and generate the
 #' checksum for the objects in memory.
-#' Return md5 hash of R file loaded into memory from the path provided. 
+#' Return md5 hash of R file loaded into memory from the path provided.
 #'
 #' @title dpr_hashes_to_checksums
 #' @param hashes a character vector of full sha1 hashes
@@ -193,7 +192,7 @@ dpr_hashes_to_checksums <- function(hashes, path){
 }
 
 #' This function will return an md5 checksum of an in-memory R object.
-#' 
+#'
 #' @title dpr_checksum_files
 #' @param paths path of RDA files to hash
 #' @return a character string of the md5 hashes of a files loaded into memory.
@@ -206,7 +205,7 @@ dpr_checksum_files <- function(paths){
   return(
     vapply(paths, function(path) {
       load_env <- new.env()
-      load(path, envir = load_env)      
+      load(path, envir = load_env)
       return( dpr_envs_to_checksums(list(load_env)) )
     }, "", USE.NAMES = FALSE)
   )
