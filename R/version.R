@@ -10,7 +10,7 @@ dpr_update_data_digest <- function(path=".", yml){
   rda <- dpr_list_rda(path)
   dig <- file.path(path, yml$data_digest_directory)
 
-  if (!dir.exists(dig)) dir.create(dig)
+  if (! dir.exists(dig)) dir.create(dig, recursive = TRUE)
 
   unlink(list.files(dig, full.names = T))
 
