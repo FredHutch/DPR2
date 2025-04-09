@@ -17,21 +17,6 @@ dpr_check_dpr <- function(path){
   }
 }
 
-#' Private. Checks call stack for a `dpr_convert` call to determine if a `dpr_init`
-#' or `dpr_create` call was called by `dpr_convert` or the user.
-#'
-#' @title dpr_is_convert
-#' @param level The level that the convert call is expected from this calling
-#'   scope.
-#' @return Logical, if a `dpr_convert` call was found at the specified call level.
-#' @noRd
-dpr_is_convert <- function(level){
-  calls <- sys.calls()
-  return(
-    grepl("^dpr_convert", calls[sys.nframe() - level])
-  )
-}
-
 #' Private. Updates .Rbuildignore and .gitignore to use DPR2 practices.
 #'
 #' @title dpr_update_ignores
@@ -179,7 +164,7 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
   if(!dir.exists(path))
     stop("`path` argument does not point to an existing directory.")
 
-  if(!dpr_is_convert(5)){
+  if(is.null(getOption('dpr2_is_converting'))){
     # need to check both paths in-case the user calls this from inside an exisiting data package
     dpr_check_dpr(pkgp)
     dpr_check_dpr(path)
