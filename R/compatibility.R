@@ -158,6 +158,16 @@ dpr_convert <- function(path = "."){
   dpr1_clean(path)
 }
 
+#' Private. Produce consistent error when passing invalid package path.
+#'
+#' @title dpr_is_path
+#' @param path The relative path to the data package. The default is the
+#'   working directory.
+#' @noRd
+dpr_check_path <- function(path){
+    if(!dir.exists(path)) stop("Package path not found.")
+}
+
 #' Private. A function to verify whether a specified directory contains a
 #' DataPackageR package.
 #'
@@ -166,10 +176,9 @@ dpr_convert <- function(path = "."){
 #'   working directory.
 #' @return a boolean value indicating whether the specified directory contains
 #'   a DataPackageR package or not
-#' @author jmtaylor
 #' @noRd
 dpr_is_dpr1 <- function(path="."){
-  if(!dir.exists(path)) stop("Package path not found.")
+  dpr_check_path(path)
   if(file.exists(file.path(path, "datapackager.yml"))){
     yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
     # this check is based on the DataPackageR check in processData.R

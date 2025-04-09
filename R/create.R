@@ -1,3 +1,37 @@
+#' Private. Throws error if the package path is already a dpr package, a check
+#' for dpr_create or dpr_init.
+#'
+#' @title dpr_check_dpr
+#' @param path A path to check if the source is a DataPackageR or DPR2 package.
+#' @noRd
+dpr_check_dpr <- function(path){
+  if(dir.exists(path)){
+    if(dpr_is(path)){
+      if(dpr_is_dpr2(path)){
+        stop("This source is already a DPR2 package.")
+      }
+      if(dpr_is_dpr1(path)){
+        stop("This is a DataPackageR package. Please convert the package to DPR2 using `dpr_convert` instead of using `dpr_create` or `dpr_init`.")
+      }
+    }
+  }
+}
+
+#' Private. Checks call stack for a `dpr_convert` call to determine if a `dpr_init`
+#' or `dpr_create` call was called by `dpr_convert` or the user.
+#'
+#' @title dpr_is_convert
+#' @param level The level that the convert call is expected from this calling
+#'   scope.
+#' @return Logical, if a `dpr_convert` call was found at the specified call level.
+#' @noRd
+dpr_is_convert <- function(level){
+  calls <- sys.calls()
+  return(
+    grepl("^dpr_convert", calls[sys.nframe() - level])
+  )
+}
+
 #' Private. Updates .Rbuildignore and .gitignore to use DPR2 practices.
 #'
 #' @title dpr_update_ignores
@@ -124,8 +158,6 @@ dpr_yaml_init <- function(...){
 dpr_description_init <- function(...){
   vals <- list(...)
   desc <- dpr_description_defaults()
-  if(!"Package" %in% names(vals))
-    warning("Default package name used: ", desc$Package)
   ## override defaults and add options with arguments
   utils::modifyList(desc, vals, keep.null = TRUE)
 }
@@ -146,6 +178,12 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
 
   if(!dir.exists(path))
     stop("`path` argument does not point to an existing directory.")
+
+  if(!dpr_is_convert(5)){
+    # need to check both paths in-case the user calls this from inside an exisiting data package
+    dpr_check_dpr(pkgp)
+    dpr_check_dpr(path)
+  }
 
   tryCatch(
   {
