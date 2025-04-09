@@ -151,8 +151,7 @@ dpr_convert <- function(path = "."){
   if( !dpr_is_dpr1(path) )
     stop("Data package at path argument is not detected as DataPackageR package.")
 
-  old_dpr2_is_converting <- getOption('dpr2_is_converting')
-  on.exit(options(dpr2_is_converting = old_dpr2_is_converting))
+  on.exit(options(dpr2_is_converting = NULL))
   options(dpr2_is_converting = TRUE)
 
   suppressWarnings(
