@@ -164,8 +164,9 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
   if(!dir.exists(path))
     stop("`path` argument does not point to an existing directory.")
 
-  if(is.null(getOption('dpr2_is_converting'))){
-    # need to check both paths in-case the user calls this from inside an existing data package
+  if(!dpr_is_convert(5)){
+    # need to check both paths in case the user calls init or create from inside
+    # an existing data package, where each call has different default paths
     dpr_check_dpr(pkgp) # dpr_create()
     dpr_check_dpr(path) # dpr_init()
   }
