@@ -33,11 +33,16 @@ generate_all_docs <- function(path = ".") {
     object_name <- ls(temp_env)
 
     if (length(object_name) == 1) {
-      # get object
-      obj <- get(object_name, envir = temp_env)
+      if (object_name != filename) {
+        warning(sprintf("'%s.rda' does not match data object name '%s'. Will skip writing documentation for it.", filename, object_name))
+      } else {
+        # get object
+        obj <- get(object_name, envir = temp_env)
 
-      # assign the object to the filename
-      data_env[[filename]] <- obj
+        # assign the object to the filename
+        data_env[[filename]] <- obj
+      }
+
     } else {
       warning(sprintf("'%s' contains multiple or no objects. Will skip writing documentation for it.", basename(file)))
     }
