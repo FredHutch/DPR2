@@ -18,7 +18,11 @@ testthat::test_that("checking package build", {
   expect_true(file.exists(rda_to_restore))
   unlink(rda_to_restore)
 
+  # auto-creates missing data_digest directory
+  ddp <- file.path(path, 'inst', 'data_digest')
+  unlink(ddp, recursive = TRUE)
   dpr_build(path, process_on_build = "01.Rmd")
+  expect_true(file.exists(ddp))
   vign <- list.files(file.path(path, "vignettes"), full.names = TRUE)
   expect_true(length(vign) == 1)
   vignette <- readLines(vign[1])
@@ -83,11 +87,6 @@ testthat::test_that("checking package build", {
   )
 
   ## check for valid package
-  expect_error(
-      dpr_build(path, data_digest_directory="/notapath"),
-      "Data digest directory does not exist"
-  )
-
   expect_error(
     dpr_build(tempdir()),
     "`path` argument is not a DataPackageR or DPR2 package"
