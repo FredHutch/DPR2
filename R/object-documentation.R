@@ -156,12 +156,12 @@ template_doc_block <- function(object, object_name) {
       var_type <- class(object[[var]])[1]
       doc_block <- c(doc_block, paste0("#'   \\item{", var, "}{", var_type, "}", "{}"))
     }
+    doc_block <- c(doc_block,  "#' }")
   }
 
   # end roxygen comment block
   doc_block <- c(
     doc_block,
-    "#' }",
     "#' @source Generated from script _________________",
     "#' @seealso",
     "#' \\link{}",
