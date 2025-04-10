@@ -122,16 +122,40 @@ template_doc_block <- function(object, object_name) {
     paste0("#' ", object_name),
     "#'",
     "#' A detailed description of the data",
-    "#'",
-    paste0("#' ", "@format A ", class(object)[1], " with ", nrow(object), " rows and ", ncol(object), " columns with the following fields:")
+    "#'"
   )
 
-  # add variable descriptions
-  doc_block <- c(doc_block, "#' \\describe{")
+  if (is.data.frame(object) || is.matrix(object)) {
+    object_format <- paste0("#' ", "@format A ", class(object)[1],
+                            " with ", nrow(object), " rows and ", ncol(object),
+                            " columns with the following fields:")
+    describe_fields <- names(object)
+  } else if (is.list(object)) {
+    object_format <- paste0("#' ", "@format A ", class(object)[1],
+                            " with ", length(object),
+                            " elements:")
+    describe_fields <- names(object)
+  } else if (is.atomic(object)) {
+    object_format <- paste0("#' ", "@format A ", class(object)[1],
+                            " vector of length ", length(object),
+                            ".")
+    describe_fields <- NULL
+  } else {
+    object_format <- paste0("#' ", "@format An object of class ", class(object)[1],
+                            ".")
+    describe_fields <- NULL
+  }
 
-  for (var in names(object)) {
-    var_type <- class(object[[var]])[1]
-    doc_block <- c(doc_block, paste0("#'   \\item{", var, "}{", var_type, "}", "{}"))
+  doc_block <- c(doc_block, object_format)
+
+  if(!is.null(describe_fields) && length(describe_fields > 0)) {
+    # add variable descriptions
+    doc_block <- c(doc_block, "#' \\describe{")
+
+    for (var in names(object)) {
+      var_type <- class(object[[var]])[1]
+      doc_block <- c(doc_block, paste0("#'   \\item{", var, "}{", var_type, "}", "{}"))
+    }
   }
 
   # end roxygen comment block
@@ -143,7 +167,6 @@ template_doc_block <- function(object, object_name) {
     "#' \\link{}",
     paste0('"', object_name, '"')
   )
-
 }
 
 #' Private. Delete unused R files from the "R" directory.
