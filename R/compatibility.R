@@ -11,12 +11,14 @@ dpr1_yaml_load <- function(path="."){
   yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
   pro <- yml$configuration$files
   obj <- yml$configuration$objects
+
   yml <-  dpr_yaml_init(
-      process_directory = "data-raw",
-      process_on_build = names(pro)[unlist(pro)],
-      purge_data_directory = FALSE,
-      objects = obj[unlist(pro)]
+    process_directory = "data-raw",
+    process_on_build = names(pro)[unlist(pro)],
+    purge_data_directory = FALSE,
+    objects = obj[unlist(pro)]
   )
+
   return(yml)
 }
 
@@ -43,8 +45,21 @@ dpr1_data_digest_load <- function(path="."){
 #' @author jmtaylor
 #' @noRd
 dpr1_yaml_convert <- function(path="."){
-  if( dpr_is_dpr1(path) )
-    yaml::write_yaml(dpr1_yaml_load(path), file.path(path, "datapackager.yml"))
+  if( dpr_is_dpr1(path) ){
+    yml <- dpr1_yaml_load(path)
+
+    pros <- yml$process_on_build
+    objs <- yml$objects
+
+    yml["process_on_build"] <- NULL
+    yml["objects"] <- NULL
+
+    yaml::write_yaml(yml, file.path(path, "datapackager.yml"))
+
+    dpr_track_processes(pros, path)
+    dpr_track_objects(objs, path)
+
+  }
 }
 
 #' Private. Replaces a DataPackageR data digest with a DPR2 data digest.
@@ -76,7 +91,7 @@ dpr1_data_digest_convert <- function(path="."){
   }
 
   # to write the new data digest files
-  dig_dir <- dpr_yaml_load(path)$data_digest_directory
+  dig_dir <- file.path(dpr_yaml_load(path)$tracking_directory, "data_digest")
   for(d in names(dig)){
     writeLines(dig[[d]], file.path(path, dig_dir, paste0(d, ".rda_")))
   }

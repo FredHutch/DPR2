@@ -40,8 +40,12 @@ dpr_is <- function(path){
 dpr_yaml_load <- function(path="."){
   if( dpr_is_dpr1(path) )
     stop( "Attemping to load a yaml of a DataPackageR package. Must convert to DPR2 first. See `?dpr_convert." )
-  if( dpr_is_dpr2(path) )
-    return( yaml::read_yaml(file.path(path, "datapackager.yml")) )
+  if( dpr_is_dpr2(path) ){
+    yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
+    yml$objects <- gsub("\\.rda_$", "",  list.files(file.path(path, yml$tracking_directory, "objects")), ignore.case=TRUE)
+    yml$process_on_build <- gsub("_$", "",  list.files(file.path(path, yml$tracking_directory, "processes")))
+    return( yml )
+  }
   stop("`datapackager.yml` is invalid or missing.")
 }
 
@@ -69,8 +73,6 @@ dpr_yaml_value_check <- function(yml){
 #' @noRd
 dpr_yaml_required_check <- function(yml){
   def <- dpr_yaml_defaults()
-  # data_digest_directory is not required from the default set
-  def["data_digest_directory"] <- NULL
   return( def[!(names(def) %in% names(yml))] )
 }
 
