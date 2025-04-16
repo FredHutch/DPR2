@@ -205,3 +205,164 @@ dpr_save <- function(objects, path = dpr_path(), envir = parent.frame()){
   }
   invisible(objects)
 }
+
+#' Private. Returns a table of tracked objects or processes.
+#'
+#' @title tracking
+#' @param path path to a DPR2 data package
+#' @param items_path the path for the items that are being tracked
+#' @param track_type the tracking type, either 'objects' or 'processes'
+#' @noRd
+tracking <- function(path, items_path, track_type){
+  items <- list.files(file.path(path, items_path))
+  tracked <- gsub("_$", "", list.files(file.path(path, dpr_yaml_load(path)$tracking_directory, track_type)))
+  missing <- tracked[!tracked %in% items]
+  if( length(missing) > 0 ){
+    warning("Items being tracked not found. Consider removing with `dpr_rm_%s`.", track_type)
+  }
+
+  out <- data.frame(is_tracked = items %in% tracked)
+  out[[track_type]] <- items
+  return(out)
+}
+
+#' Return a data frame of processes currently being tracked.
+#'
+#' The data frame returned by `dpr_processes` displays what processing scripts
+#' are found in the processing directory (see, ?dpr_yaml_get) and which of those
+#' will be rendered by calling `dpr_render` or `dpr_build`.
+#' @title dpr_processes
+#' @param path path to a DPR2 data package
+#' @return a data frame displaying process names in the processing directory,
+#'   and if they are tracked or not
+#' @export
+dpr_processes <- function(path = "."){
+  tracking(path, dpr_yaml_get(path)$process_directory, "processes")
+}
+
+#' Return a data frame of obejcts currently being tracked.
+#'
+#' The data frame returned by `dpr_objects displays what objects will be saved
+#' from the processing environments to the `data` directory and reports what
+#' objects are tracked by DPR2. Objects are added to this list by using
+#' `dpr_track_objects`. `dpr_track_objects` is mostly provided for backwards
+#' compatibility with DataPackageR. It is recommended to use `dpr_save` in the
+#' processing scripts directly to save files to the data directory rather than
+#' using `dpr_track_objects`.
+#' @title dpr_objects
+#' @param path path to a DPR2 data package
+#' @return a data frame displaying object names in the data directory, and if
+#'   they are tracked or not
+#' @export
+dpr_objects <- function(path = "."){
+  tracking(path, "data", "objects")
+}
+
+#' Private. Computes serialized hash for a tracked file and writes it to the
+#' input tracking folder.
+#'
+#' @title update_tracking_hash
+#' @param tracked_file the path of the file to hash and add to tracking
+#' @param track_type the tracking type, either 'objects' or 'processes'
+#' @param path path to a DPR2 data package
+#' @noRd
+update_tracking_hash <- function(tracked_file, track_type, path = "."){
+  sha1 <- ifelse(
+    file.exists(tracked_file),
+    digest::digest(file = tracked_file, algo = "sha1", serialize = TRUE),
+    ""
+  )
+  writeLines(
+    sha1, file.path(path, dpr_yaml_get(path)$tracking_directory, track_type, paste0(basename(tracked_file), "_"))
+  )
+}
+
+#' Add processing scripts to list of scripts rendered when a package is
+#' rendered or built.
+#'
+#' This function will add new processing scripts to be rendered. To remove
+#' processing scripts, see `?dpr_rm_processes`. To generate a table of processes
+#' currently being tracked, see `?dpr_processing`.
+#' @title dpr_track_processes
+#' @param processes the names of the processes in the processing directory
+#'   described in the datapackager.yml to be built when running `dpr_build`.
+#'   processes currently being tracked.
+#' @param path path to a data package
+#' @export
+dpr_track_processes <- function(processes, path = "."){
+  yml <- dpr_yaml_load(path)
+  process_files <- list.files(file.path(path, yml$process_directory))
+  for( pro in processes ) {
+    if( !pro %in% process_files )
+      stop(sprintf("`%s` not found in the process directory described in `datapackage.yml`. ", pro))
+    update_tracking_hash(file.path(path, yml$process_directory, pro), "processes", path)
+  }
+}
+
+#' Add objects to be tracked by DPR2.
+#'
+#' `dpr_track_objects` is mostly provided for backwards compatibility with
+#' DataPackageR. It is recommended to use `dpr_save` in the processing scripts
+#' directly to save files to the data directory rather than using
+#' `dpr_track_objects`.
+#' @title dpr_track_objects
+#' @param objects the names of instatiated objects defined in tracked processing
+#'   scripts.
+#' @param path path to a DPR2 data package
+#' @export
+dpr_track_objects <- function(objects, path = "."){
+  object_files <- list.files( file.path(path, "data") )
+  tracked_files <- grepl( paste(objects, collapse = "|"), object_files )
+  for( obj in object_files[tracked_files] )
+    update_tracking_hash(file.path(path, "data", obj), "objects", path)
+}
+
+#' Private. A function for removing tracked items, processes or objects, from
+#' DPR2 tracking.
+#'
+#' @title dpr_rm_tracked
+#' @param items the items to find in the tracking directory
+#' @param track_type the tracking type, either 'objects' or 'processes'
+#' @param path path to a DPR2 data package
+#' @noRd
+rm_tracked <- function(items, track_type, path){
+  tracking <- file.path(path, dpr_yaml_get(path)$tracking_directory, track_type)
+  tracks <- list.files(tracking)
+  for( item in items ) {
+    idx <- which(grepl(item, tracks))
+    if( length(idx) == 0  )
+      stop(sprintf("`%s` not found in `%s/%s`.", item, dpr_yaml_get(path)$tracking_directory, track_type))
+    unlink(file.path(tracking, tracks[idx]))
+  }
+}
+
+#' Remove processing scripts from list of scripts rendered when a package is
+#' rendered or built.
+#'
+#' This function will remove processing scripts from those that will be
+#' rendered. To add processing scripts, see `?dpr_track_processes`. To generate
+#' a table of processes currently being tracked, see `?dpr_processing`.
+#' @title dpr_rm_processes
+#' @param processes names of processes, found in the processing_directory set in
+#'   the `datapackager.yml` file, to be removed from tracking and no long run
+#'   when a script is rendered.
+#' @param path path to a DPR2 data package
+#' @export
+dpr_rm_processes <- function(processes, path = "."){
+  rm_tracked(processes, "processes", path)
+}
+
+#' Remove objects to be tracked by DPR2.
+#'
+#' `dpr_track_objects` is mostly provided for backwards compatibility with
+#' DataPackageR. It is recommended to use `dpr_save` in the processing scripts
+#' directly to save files to the data directory rather than using
+#' `dpr_track_objects`.
+#' @title dpr_rm_objects
+#' @param objects a character vector of object names to be tracked, addign them
+#'   to the data directory after a processing script is rendered.
+#' @param path path to a DPR2 data package
+#' @export
+dpr_rm_objects <- function(objects, path = "."){
+  rm_tracked(objects, "objects", path)
+}
