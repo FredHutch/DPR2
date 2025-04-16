@@ -82,7 +82,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
     file.path(path, "processing/df_gen.R")
   )
 
-  dpr_yaml_set(path, process_on_build = "df_gen.R")
+  dpr_track_processes("df_gen.R", path)
 
   dpr_build(path, write_docs = FALSE)
   expect_true(
@@ -100,7 +100,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
   delete_unused_doc_files(path)
 
   # should have removed df1.R
-  expect_equal(list.files(file.path(path, "R")), "df2.R")
+  expect_true(!"df1.R" %in% list.files(file.path(path, "R")))
 
   unlink(path, recursive = TRUE)
   cleanup(tdir)

@@ -59,7 +59,7 @@ testthat::test_that("checking DataPackageR compatibility functions", {
   )
 
   expect_length(
-    list.files(file.path(path1, "inst/data_digest")), 3
+    list.files(file.path(path1, "inst/tracking/data_digest")), 3
   )
 
   yml <- yaml::read_yaml(file.path(path1, "datapackager.yml"))
