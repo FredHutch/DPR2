@@ -260,22 +260,18 @@ dpr_objects <- function(path = "."){
   tracking(path, "data", "objects")
 }
 
-#' Private. Computes serialized hash for a tracked file and writes it to the
-#' input tracking folder.
+#' Private. Writes tracking file and computes serialized hash for a tracked file
+#' and writes it to the input tracking folder.
 #'
-#' @title update_tracking_hash
+#' @title write_tracking_file
 #' @param tracked_file the path of the file to hash and add to tracking
 #' @param track_type the tracking type, either 'objects' or 'processes'
 #' @param path path to a DPR2 data package
 #' @noRd
-update_tracking_hash <- function(tracked_file, track_type, path = "."){
-  sha1 <- ifelse(
-    file.exists(tracked_file),
-    digest::digest(file = tracked_file, algo = "sha1", serialize = TRUE),
-    ""
-  )
+write_tracking_file <- function(tracked_file, track_type, path = "."){
   writeLines(
-    sha1, file.path(path, dpr_yaml_get(path)$tracking_directory, track_type, paste0(basename(tracked_file), "_"))
+    "",
+    file.path(path, dpr_yaml_get(path)$tracking_directory, track_type, paste0(basename(tracked_file), "_"))
   )
 }
 
@@ -297,7 +293,7 @@ dpr_track_processes <- function(processes, path = "."){
   for( pro in processes ) {
     if( !pro %in% process_files )
       stop(sprintf("`%s` not found in the process directory described in `datapackage.yml`. ", pro))
-    update_tracking_hash(file.path(path, yml$process_directory, pro), "processes", path)
+    write_tracking_file(file.path(path, yml$process_directory, pro), "processes", path)
   }
 }
 
@@ -316,7 +312,7 @@ dpr_track_objects <- function(objects, path = "."){
   object_files <- list.files( file.path(path, "data") )
   tracked_files <- grepl( paste(objects, collapse = "|"), object_files )
   for( obj in object_files[tracked_files] )
-    update_tracking_hash(file.path(path, "data", obj), "objects", path)
+    write_tracking_file(file.path(path, "data", obj), "objects", path)
 }
 
 #' Private. A function for removing tracked items, processes or objects, from
