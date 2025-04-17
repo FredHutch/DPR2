@@ -158,7 +158,6 @@ dpr_yaml_get <- function(path=".", ...){
 #'   only those returned by `dpr_yaml_defaults()` are used by DPR2. See
 #'   `?dpr_yaml_defaults` for information on those values.
 #' @return nothing
-#' @author jmtaylor
 #' @export
 dpr_yaml_set <- function(path=".", ...){
   yml <- dpr_yaml_get(path)
@@ -169,14 +168,13 @@ dpr_yaml_set <- function(path=".", ...){
 #' Write new DESCRIPTION file with new or modified key:value pairs.
 #'
 #' @title dpr_description_set
-#' @param path The full path to the data package. The default is the
-#'   working directory.
-#' @param ... datapakager.yml value overrides. When arguments are
-#'   specified, those arguments are used as the YAML key value pairs
-#'   instead of what is specified by the `datapackager.yml`. See
-#'   `?dpr_description_defaults` for the default values that can be set.
+#' @param path The full path to the data package. The default is the working
+#'   directory.
+#' @param ... datapakager.yml value overrides. When arguments are specified,
+#'   those arguments are used as the YAML key value pairs instead of what is
+#'   specified by the `datapackager.yml`. See `?dpr_description_defaults` for
+#'   the default values that can be set.
 #' @return nothing
-#' @author jmtaylor
 #' @export
 dpr_description_set <- function(path=".", ...){
   dpr_is(path)
@@ -204,7 +202,6 @@ dpr_description_set <- function(path=".", ...){
 #' @param envir The environment to search for objects to save. Defaults to
 #'   calling environment.
 #' @returns The original `objects` argument, invisibly.
-#' @author jmtaylor
 #' @export
 dpr_save <- function(objects, path = dpr_path(), envir = parent.frame()){
   if(!is.character(objects))
