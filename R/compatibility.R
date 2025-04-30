@@ -10,13 +10,12 @@
 dpr1_yaml_load <- function(path="."){
   yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
   pro <- yml$configuration$files
-  obj <- yml$configuration$objects
 
   yml <-  dpr_yaml_init(
     process_directory = "data-raw",
     process_on_build = names(pro)[unlist(pro)],
     purge_data_directory = FALSE,
-    objects = obj[unlist(pro)]
+    objects = yml$configuration$objects
   )
 
   return(yml)
