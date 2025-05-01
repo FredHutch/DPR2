@@ -22,7 +22,7 @@ testthat::test_that("checking DataPackageR compatibility functions", {
 
   pkgn <- "testPkg"
   path2 <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn, list(renv_init = FALSE))
+  createPkg(tdir, pkgn)
 
   expect_error(
     dpr_convert(path2),
@@ -38,11 +38,22 @@ testthat::test_that("checking DataPackageR compatibility functions", {
     readLines(file.path(path1, "DATADIGEST")), 3
   )
 
+  expect_error(
+    dpr_create(path1),
+    "This is a DataPackageR package. Please convert the package"
+  )
+
+  expect_error(
+    dpr_init(path1),
+    "This is a DataPackageR package. Please convert the package"
+  )
+
   warns <- capture_warnings(
     dpr_convert(path1)
   )
 
   expect_length(warns, 1)
+  expect_length(list.files(file.path(path1, "inst/to_build/objects")), 2)
 
   expect_true(
     "Object `mtcars_mod` in data directory does not match md5 not found in DATADIGEST." %in% warns
@@ -99,6 +110,16 @@ testthat::test_that("checking DataPackageR compatibility functions", {
 
   expect_true(
     length(list.files(path1, "NEWS.md")) == 0
+  )
+
+  expect_error(
+    dpr_create(path1),
+    "This source is already a DPR2 package."
+  )
+
+  expect_error(
+    dpr_init(path1),
+    "This source is already a DPR2 package."
   )
 
   dpr_build(path1)

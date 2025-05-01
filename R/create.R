@@ -1,3 +1,22 @@
+#' Private. Throws error if the package path is already a dpr package, a check
+#' for dpr_create or dpr_init.
+#'
+#' @title dpr_check_dpr
+#' @param path A path to check if the source is a DataPackageR or DPR2 package.
+#' @noRd
+dpr_check_dpr <- function(path){
+  if(dir.exists(path)){
+    if(dpr_is(path)){
+      if(dpr_is_dpr2(path)){
+        stop("This source is already a DPR2 package.")
+      }
+      if(dpr_is_dpr1(path)){
+        stop("This is a DataPackageR package. Please convert the package to DPR2 using `dpr_convert` instead of using `dpr_create` or `dpr_init`.")
+      }
+    }
+  }
+}
+
 #' Private. Updates .Rbuildignore and .gitignore to use DPR2 practices.
 #'
 #' @title dpr_update_ignores
@@ -137,8 +156,6 @@ dpr_yaml_init <- function(...){
 dpr_description_init <- function(...){
   vals <- list(...)
   desc <- dpr_description_defaults()
-  if(!"Package" %in% names(vals))
-    warning("Default package name used: ", desc$Package)
   ## override defaults and add options with arguments
   utils::modifyList(desc, vals, keep.null = TRUE)
 }
@@ -152,20 +169,29 @@ dpr_description_init <- function(...){
 #' @param path A path to the data package.
 #' @param yaml A returned list for [dpr_yaml_init()]
 #' @param desc A returned list for [dpr_description_init()]
-#' @param renv_init Logical; whether to initiate renv (default TRUE)
 #' @export
-dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init(), renv_init = TRUE){
+dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init()){
   pkgp <- file.path(path, desc$Package)
 
   if(!dir.exists(path))
     stop("`path` argument does not point to an existing directory.")
 
+  if(is.null(getOption('dpr2_is_converting'))){
+    # need to check both paths in case the user calls init or create from inside
+    # an existing data package, where each call has different default paths
+    dpr_check_dpr(pkgp) # dpr_create()
+    dpr_check_dpr(path) # dpr_init()
+  }
+
   tryCatch(
   {
 
     ## create package skeleton
-    dirs <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
-    dir.create(pkgp, showWarnings = FALSE)
+    dirs <- c(
+      "data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$to_build_directory, "inst/data_digest",
+      vapply(c("scripts", "objects"), function(f) file.path(yaml$to_build_directory, f), "")
+    )
+    dir.create(pkgp, showWarnings = FALSE, recursive = TRUE)
 
     for( dir in dirs )
       if(!dir.create(file.path(pkgp, dir), showWarnings = FALSE))
@@ -180,15 +206,6 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
         if( fil == "datapackager.yml" )
           dpr_yaml_init_set(yaml, pkgp)
       }
-
-    ## init renv
-    if(renv_init && !file.exists(file.path(pkgp, "renv.lock")))
-      renv::init(
-        pkgp,
-        settings = list(snapshot.type = "implicit"),
-        load = FALSE,
-        restart = FALSE
-      )
 
     dpr_update_ignores(pkgp)
 
@@ -212,19 +229,16 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
 #' @param desc A returned list from [dpr_description_init()]. The default
 #'   argument sets the package name to the name of the directory containing the
 #'   data package.
-#' @param renv_init Logical; whether to initiate renv (default TRUE)
 #' @export
 dpr_init <- function(
     path = ".",
     yaml = dpr_yaml_init(),
-    desc = dpr_description_init(Package = basename(path)),
-    renv_init = TRUE)
+    desc = dpr_description_init(Package = basename(path)))
 {
   path <- normalizePath(path)
   dpr_create(
     dirname(path),
     yaml = yaml,
-    desc = desc,
-    renv_init = renv_init
+    desc = desc
   )
 }

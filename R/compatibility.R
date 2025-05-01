@@ -10,13 +10,14 @@
 dpr1_yaml_load <- function(path="."){
   yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
   pro <- yml$configuration$files
-  obj <- yml$configuration$objects
+
   yml <-  dpr_yaml_init(
-      process_directory = "data-raw",
-      process_on_build = names(pro)[unlist(pro)],
-      purge_data_directory = FALSE,
-      objects = obj[unlist(pro)]
+    process_directory = "data-raw",
+    process_on_build = names(pro)[unlist(pro)],
+    purge_data_directory = FALSE,
+    objects = yml$configuration$objects
   )
+
   return(yml)
 }
 
@@ -43,8 +44,21 @@ dpr1_data_digest_load <- function(path="."){
 #' @author jmtaylor
 #' @noRd
 dpr1_yaml_convert <- function(path="."){
-  if( dpr_is_dpr1(path) )
-    yaml::write_yaml(dpr1_yaml_load(path), file.path(path, "datapackager.yml"))
+  if( dpr_is_dpr1(path) ){
+    yml <- dpr1_yaml_load(path)
+
+    pros <- yml$process_on_build
+    objs <- yml$objects
+
+    yml["process_on_build"] <- NULL
+    yml["objects"] <- NULL
+
+    yaml::write_yaml(yml, file.path(path, "datapackager.yml"))
+
+    dpr_add_scripts(pros, path)
+    dpr_add_objects(objs, path)
+
+  }
 }
 
 #' Private. Replaces a DataPackageR data digest with a DPR2 data digest.
@@ -76,7 +90,7 @@ dpr1_data_digest_convert <- function(path="."){
   }
 
   # to write the new data digest files
-  dig_dir <- dpr_yaml_load(path)$data_digest_directory
+  dig_dir <- file.path("inst", "data_digest")
   for(d in names(dig)){
     writeLines(dig[[d]], file.path(path, dig_dir, paste0(d, ".rda_")))
   }
@@ -155,13 +169,26 @@ dpr1_clean <- function(path){
 dpr_convert <- function(path = "."){
   if( !dpr_is_dpr1(path) )
     stop("Data package at path argument is not detected as DataPackageR package.")
-  # renv should not be initialized, defaulting to the repo's current renv configuration, whatever that may be
+
+  on.exit(options(dpr2_is_converting = NULL))
+  options(dpr2_is_converting = TRUE)
+
   suppressWarnings(
-    dpr_init(path, dpr_yaml_init(process_directory = "data-raw", purge_data_directory = FALSE), renv_init=FALSE)
+    dpr_init(path, dpr_yaml_init(process_directory = "data-raw", purge_data_directory = FALSE))
   )
   dpr1_yaml_convert(path)
   dpr1_data_digest_convert(path)
   dpr1_clean(path)
+}
+
+#' Private. Produce consistent error when passing invalid package path.
+#'
+#' @title dpr_is_path
+#' @param path The relative path to the data package. The default is the
+#'   working directory.
+#' @noRd
+dpr_check_path <- function(path){
+    if(!dir.exists(path)) stop("Package path not found.")
 }
 
 #' Private. A function to verify whether a specified directory contains a
@@ -174,7 +201,7 @@ dpr_convert <- function(path = "."){
 #'   DataPackageR package or not
 #' @noRd
 dpr_is_dpr1 <- function(path="."){
-  if(!dir.exists(path)) stop("Package path not found.")
+  dpr_check_path(path)
   if(file.exists(file.path(path, "datapackager.yml"))){
     yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
     # this check is based on the DataPackageR check in processData.R

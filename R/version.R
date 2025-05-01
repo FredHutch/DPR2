@@ -8,10 +8,9 @@
 #' @noRd
 dpr_update_data_digest <- function(path=".", yml){
   rda <- dpr_list_rda(path)
-  dig <- file.path(path, yml$data_digest_directory)
+  dig <- file.path(path, "inst", "data_digest")
 
-  if(!dir.exists(dig))
-    stop(sprintf("Data digest directory does not exist: %s", dig))
+  if (! dir.exists(dig)) dir.create(dig, recursive = TRUE)
 
   unlink(list.files(dig, full.names = T))
 
@@ -53,7 +52,7 @@ dpr_check_git <- function(path){
 #' @noRd
 dpr_validate_data_digest_source <- function(path){
   data_digest <- list.files(
-    file.path(path, dpr_yaml_get(path)$data_digest_directory),
+    file.path(path, file.path("inst", "data_digest")),
     full.names = TRUE
   )
   if(length(data_digest) == 0)
@@ -186,7 +185,7 @@ dpr_hashes_to_checksums <- function(hashes, path){
 }
 
 #' This function will return an md5 checksum of an in-memory R object.
-#' 
+#'
 #' @title dpr_checksum_files
 #' @param paths path of RDA files to hash
 #' @return a character string of the md5 hashes of a files loaded into memory.
@@ -199,7 +198,7 @@ dpr_checksum_files <- function(paths){
   return(
     vapply(paths, function(path) {
       load_env <- new.env()
-      load(path, envir = load_env)      
+      load(path, envir = load_env)
       return( dpr_envs_to_checksums(list(load_env)) )
     }, "", USE.NAMES = FALSE)
   )

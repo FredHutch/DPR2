@@ -18,7 +18,6 @@ Imports:
     desc,
     digest,
     pkgbuild,
-    renv,
     rmarkdown,
     rprojroot,
     utils,
