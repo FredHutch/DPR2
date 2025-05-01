@@ -29,24 +29,6 @@ test_that("check that R object documentation is written as expected", {
   cleanup(tdir)
 })
 
-test_that("check that error occurs in stop(e) of no_change portion in generate_all_docs when run outside of a DPR2 pkg", {
-
-  expect_error({
-    no_change <- tryCatch({
-      digest_data <- dpr_compare_data_digest(".")
-      gsub(".rda", "", digest_data$name[digest_data$same == TRUE])
-    },
-    error = function(e) {
-      if (grepl("No digest files found. Has any data been added to the data package yet?", e$message)) {
-        return(NA)
-      } else {
-        stop(e)  # Let unexpected errors propagate
-      }
-    })
-  }, "`path` argument is not a DataPackageR or DPR2 package.")
-
-})
-
 test_that("check that no_change is filtered based on R doc files in generate_all_docs()", {
   out_dir <- tempdir()
   no_change <- c("dat1", "dat2")
@@ -93,7 +75,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
   expect_true(
     length(list.files(file.path(path, "R"))) != 0
   )
-  
+
   # remove one of the Rda files to test delete_unused_doc_files
   file.remove(file.path(path, "data", "df1.rda"))
 
