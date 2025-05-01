@@ -228,7 +228,7 @@ tracking <- function(path, items_path, track_type){
   return(out)
 }
 
-#' Return a data frame of scripts currently being tracked.
+#' Return a data frame of scripts currently set to build.
 #'
 #' The data frame returned by `dpr_scripts` displays what processing scripts
 #' are found in the processing directory (see, ?dpr_yaml_get) and which of those
@@ -242,11 +242,11 @@ dpr_scripts <- function(path = "."){
   tracking(path, dpr_yaml_get(path)$process_directory, "scripts")
 }
 
-#' Return a data frame of obejcts currently being tracked.
+#' Return a data frame of obejcts currently set to build.
 #'
-#' The data frame returned by `dpr_objects displays what objects will be saved
+#' The data frame returned by `dpr_objects` displays what objects will be saved
 #' from the processing environments to the `data` directory and reports what
-#' objects are tracked by DPR2. Objects are added to this list by using
+#' objects are set to be built by DPR2. Objects are added to this list by using
 #' `dpr_add_objects`. `dpr_add_objects` is mostly provided for backwards
 #' compatibility with DataPackageR. It is recommended to use `dpr_save` in the
 #' processing scripts directly to save files to the data directory rather than
@@ -254,7 +254,7 @@ dpr_scripts <- function(path = "."){
 #' @title dpr_objects
 #' @param path path to a DPR2 data package
 #' @return a data frame displaying object names in the data directory, and if
-#'   they are tracked or not
+#'   they are set to build or not
 #' @export
 dpr_objects <- function(path = "."){
   tracking(path, "data", "objects")
@@ -284,7 +284,7 @@ write_tracking_file <- function(tracked_file, track_type, path = "."){
 #' @title dpr_add_scripts
 #' @param scripts the names of the scripts in the processing directory
 #'   described in the datapackager.yml to be built when running `dpr_build`.
-#'   scripts currently being tracked.
+#'   scripts currently set to build.
 #' @param path path to a data package
 #' @export
 dpr_add_scripts <- function(scripts, path = "."){
@@ -297,15 +297,15 @@ dpr_add_scripts <- function(scripts, path = "."){
   }
 }
 
-#' Add objects to be tracked by DPR2.
+#' Add objects to be built by DPR2.
 #'
 #' `dpr_add_objects` is mostly provided for backwards compatibility with
 #' DataPackageR. It is recommended to use `dpr_save` in the processing scripts
 #' directly to save files to the data directory rather than using
 #' `dpr_add_objects`.
 #' @title dpr_add_objects
-#' @param objects the names of instatiated objects defined in tracked processing
-#'   scripts.
+#' @param objects the names of objects defined in processing scripts set to
+#'   build.
 #' @param path path to a DPR2 data package
 #' @export
 dpr_add_objects <- function(objects, path = "."){
@@ -319,7 +319,7 @@ dpr_add_objects <- function(objects, path = "."){
 #' DPR2 tracking.
 #'
 #' @title dpr_rm_tracked
-#' @param items the items to find in the tracking directory
+#' @param items the items to find in the to_build directory
 #' @param track_type the tracking type, either 'objects' or 'scripts'
 #' @param path path to a DPR2 data package
 #' @noRd
@@ -350,14 +350,14 @@ dpr_rm_scripts <- function(scripts, path = "."){
   rm_tracked(scripts, "scripts", path)
 }
 
-#' Remove objects to be tracked by DPR2.
+#' Remove objects set to be built by DPR2.
 #'
 #' `dpr_add_objects` is mostly provided for backwards compatibility with
 #' DataPackageR. It is recommended to use `dpr_save` in the processing scripts
 #' directly to save files to the data directory rather than using
 #' `dpr_add_objects`.
 #' @title dpr_rm_objects
-#' @param objects a character vector of object names to be tracked, addign them
+#' @param objects a character vector of object names to be built, adding them
 #'   to the data directory after a processing script is rendered.
 #' @param path path to a DPR2 data package
 #' @export

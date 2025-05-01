@@ -7,13 +7,13 @@
 dpr_add_objects(objects, path = ".")
 }
 \arguments{
-\item{objects}{the names of instatiated objects defined in tracked processing
-scripts.}
+\item{objects}{the names of objects defined in processing scripts set to
+build.}
 
 \item{path}{path to a DPR2 data package}
 }
 \description{
-Add objects to be tracked by DPR2.
+Add objects to be built by DPR2.
 }
 \details{
 \code{dpr_add_objects} is mostly provided for backwards compatibility with

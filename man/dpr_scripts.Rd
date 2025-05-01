@@ -14,7 +14,7 @@ a data frame displaying script names in the processing directory,
 and if they are set to build or not
 }
 \description{
-Return a data frame of scripts currently being tracked.
+Return a data frame of scripts currently set to build.
 }
 \details{
 The data frame returned by \code{dpr_scripts} displays what processing scripts

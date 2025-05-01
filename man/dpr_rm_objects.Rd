@@ -7,13 +7,13 @@
 dpr_rm_objects(objects, path = ".")
 }
 \arguments{
-\item{objects}{a character vector of object names to be tracked, addign them
+\item{objects}{a character vector of object names to be built, adding them
 to the data directory after a processing script is rendered.}
 
 \item{path}{path to a DPR2 data package}
 }
 \description{
-Remove objects to be tracked by DPR2.
+Remove objects set to be built by DPR2.
 }
 \details{
 \code{dpr_add_objects} is mostly provided for backwards compatibility with

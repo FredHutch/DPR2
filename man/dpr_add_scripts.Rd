@@ -9,7 +9,7 @@ dpr_add_scripts(scripts, path = ".")
 \arguments{
 \item{scripts}{the names of the scripts in the processing directory
 described in the datapackager.yml to be built when running \code{dpr_build}.
-scripts currently being tracked.}
+scripts currently set to build.}
 
 \item{path}{path to a data package}
 }

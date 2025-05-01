@@ -11,11 +11,17 @@ dpr_objects(path = ".")
 }
 \value{
 a data frame displaying object names in the data directory, and if
-they are tracked or not
+they are set to build or not
 }
 \description{
-Return a data frame of obejcts currently being tracked.
+Return a data frame of obejcts currently set to build.
 }
 \details{
-The data frame returned by \verb{dpr_objects displays what objects will be saved from the processing environments to the }data\verb{directory and reports what objects are tracked by DPR2. Objects are added to this list by using}dpr_add_objects\code{. }dpr_add_objects\verb{is mostly provided for backwards compatibility with DataPackageR. It is recommended to use}dpr_save\verb{in the processing scripts directly to save files to the data directory rather than using}dpr_add_objects`.
+The data frame returned by \code{dpr_objects} displays what objects will be saved
+from the processing environments to the \code{data} directory and reports what
+objects are set to be built by DPR2. Objects are added to this list by using
+\code{dpr_add_objects}. \code{dpr_add_objects} is mostly provided for backwards
+compatibility with DataPackageR. It is recommended to use \code{dpr_save} in the
+processing scripts directly to save files to the data directory rather than
+using \code{dpr_add_objects}.
 }
