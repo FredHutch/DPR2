@@ -20,7 +20,7 @@ testthat::test_that("checking package build", {
   unlink(rda_to_restore)
 
   # auto-creates missing data_digest directory
-  ddp <- file.path(path, 'inst', 'tracking/data_digest')
+  ddp <- file.path(path, 'inst', 'data_digest')
   unlink(ddp, recursive = TRUE)
   dpr_build(path, process_on_build = "01.Rmd")
   expect_true(file.exists(ddp))
@@ -67,7 +67,7 @@ testthat::test_that("checking package build", {
   expect_equal(
     sum(dpr_objects(path)$is_tracked), 1
   )
-  
+
   dpr_build(path, purge_data_directory = TRUE)
   datn <- list.files(file.path(path, "data"))
   expect_false(
@@ -120,7 +120,7 @@ testthat::test_that("checking package build", {
 
   dpr_rm_objects("objYml2", path)
   dpr_build(path, render_env_mode = "share", process_on_build = c("02.R", "S1.R"))
-  
+
   ## check NULL process_on_build on existing packages
   expect_error(
     dpr_build(path, process_on_build = NULL),

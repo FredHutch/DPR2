@@ -90,7 +90,7 @@ dpr1_data_digest_convert <- function(path="."){
   }
 
   # to write the new data digest files
-  dig_dir <- file.path(dpr_yaml_load(path)$tracking_directory, "data_digest")
+  dig_dir <- file.path("inst", "data_digest")
   for(d in names(dig)){
     writeLines(dig[[d]], file.path(path, dig_dir, paste0(d, ".rda_")))
   }

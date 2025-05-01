@@ -8,7 +8,7 @@
 #' @noRd
 dpr_update_data_digest <- function(path=".", yml){
   rda <- dpr_list_rda(path)
-  dig <- file.path(path, file.path(yml$tracking_directory, "data_digest"))
+  dig <- file.path(path, "inst", "data_digest")
 
   if (! dir.exists(dig)) dir.create(dig, recursive = TRUE)
 
@@ -53,7 +53,7 @@ dpr_check_git <- function(path){
 #' @noRd
 dpr_validate_data_digest_source <- function(path){
   data_digest <- list.files(
-    file.path(path, file.path(dpr_yaml_get(path)$tracking_directory, "data_digest")),
+    file.path(path, file.path("inst", "data_digest")),
     full.names = TRUE
   )
   if(length(data_digest) == 0)
