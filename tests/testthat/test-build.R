@@ -115,7 +115,7 @@ testthat::test_that("checking package build", {
 
   expect_warning(
     dpr_build(path, render_env_mode = "share", process_on_build = c("02.R", "S1.R")),
-    "Tracked objects not found in processing evaluation environment "
+    "Objects to build not found in processing evaluation environment "
   )
 
   dpr_rm_objects("objYml2", path)

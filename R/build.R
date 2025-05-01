@@ -195,7 +195,7 @@ dpr_render <- function(path=".", ...){
   if(length(missed_objects) != 0)
     warning(
       sprintf(
-        "Tracked objects not found in processing evaluation environment to save to data directory: %s",
+        "Objects to build not found in processing evaluation environment to save to data directory: %s",
         paste(missed_objects, collapse = ", ")
       )
     )
