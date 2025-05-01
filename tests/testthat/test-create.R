@@ -1,4 +1,5 @@
 tdir <- getPkgDir()
+on.exit(cleanup(tdir))
 
 test_that("check default package name warning", {
   pkgn <- "testPackage"
@@ -73,7 +74,7 @@ test_that("check datapackager.yml and ignores", {
   ymlInit <- dpr_yaml_init()
 
   expect_true(yml$process_directory == "data-raw")
-  expect_true(yml$data_digest_directory == ymlInit$data_digest_directory)
+  expect_true(yml$to_build_directory == ymlInit$to_build_directory)
 
   ## all names in init must be in package yaml
   expect_true(
@@ -127,5 +128,3 @@ test_that("no dpr_(description_)_init warning about default package name", {
   setwd(twd)
   expect_no_warning(dpr_init())
 })
-
-cleanup(tdir)

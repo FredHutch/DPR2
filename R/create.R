@@ -175,8 +175,11 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
   {
 
     ## create package skeleton
-    dirs <- c("data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$data_digest)
-    dir.create(pkgp, showWarnings = FALSE)
+    dirs <- c(
+      "data", "inst", yaml$process_directory, yaml$source_data_directory, yaml$to_build_directory, "inst/data_digest",
+      vapply(c("scripts", "objects"), function(f) file.path(yaml$to_build_directory, f), "")
+    )
+    dir.create(pkgp, showWarnings = FALSE, recursive = TRUE)
 
     for( dir in dirs )
       if(!dir.create(file.path(pkgp, dir), showWarnings = FALSE))

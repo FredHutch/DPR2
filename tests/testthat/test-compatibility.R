@@ -53,6 +53,7 @@ testthat::test_that("checking DataPackageR compatibility functions", {
   )
 
   expect_length(warns, 1)
+  expect_length(list.files(file.path(path1, "inst/to_build/objects")), 2)
 
   expect_true(
     "Object `mtcars_mod` in data directory does not match md5 not found in DATADIGEST." %in% warns

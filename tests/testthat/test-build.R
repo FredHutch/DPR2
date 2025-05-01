@@ -3,6 +3,7 @@ attached_before_test_builds <- names(sessionInfo()$otherPkgs)
 
 tdir <- getPkgDir()
 pkgn <- "testPkg"
+on.exit(cleanup(tdir))
 
 testthat::test_that("checking package build", {
 
@@ -57,15 +58,25 @@ testthat::test_that("checking package build", {
   )
 
   ## looking for both objects when set in the yaml and not passed as build arguments
-  dpr_yaml_set(path, process_on_build = "01.R", objects = c("objYml1", "objYml2"))
-  dpr_build(path)
+  dpr_rm_scripts("01.Rmd", path)
+  dpr_add_objects( c("objYml1", "objYml2"), path )
+  dpr_rm_objects("objYml1", path)
+  expect_equal(
+    sum(dpr_scripts(path)$is_added), 2
+  )
+  expect_equal(
+    sum(dpr_objects(path)$is_added), 1
+  )
+
+  dpr_build(path, purge_data_directory = TRUE)
   datn <- list.files(file.path(path, "data"))
-  expect_true(
+  expect_false(
     all(
-      datn %in% c("mydataframe.rda", "myyaml.rda", "objYml1.rda", "objYml2.rda")
+      c("objYml1.rda", "objYml2.rda") %in% datn
     )
   )
-  dpr_yaml_set(path, process_on_build = "01.R", objects = c())
+
+  dpr_add_scripts("01.R", path)
 
   ## warn when typo in object name
   expect_warning(
@@ -73,7 +84,7 @@ testthat::test_that("checking package build", {
   )
   datn <- list.files(file.path(path, "data"))
   expect_true(
-    all(datn %in% c("mydataframe.rda", "myyaml.rda"))
+    all( c("mydataframe.rda", "myyaml.rda") %in% datn )
   )
 
   ## check that tarball is built
@@ -82,8 +93,7 @@ testthat::test_that("checking package build", {
     list.files(
       file.path(path,".."),
       "testPkg.*\\.tar\\.gz"
-    ),
-    1L
+    ), 1L
   )
 
   ## check for valid package
@@ -103,6 +113,12 @@ testthat::test_that("checking package build", {
     dpr_build(path, render_env_mode = "isolate", process_on_build = c("01.R", "S1.R"))
   )
 
+  expect_warning(
+    dpr_build(path, render_env_mode = "share", process_on_build = c("02.R", "S1.R")),
+    "Objects to build not found in processing evaluation environment "
+  )
+
+  dpr_rm_objects("objYml2", path)
   dpr_build(path, render_env_mode = "share", process_on_build = c("02.R", "S1.R"))
 
   ## check NULL process_on_build on existing packages
@@ -161,8 +177,6 @@ testthat::test_that("checking package render",{
   ## check that working env contains render generated var names
 
 })
-
-cleanup(tdir)
 
 # Keep this test last in test-build.R file
 testthat::test_that("R/Rmd library() calls not attached to main R process",{

@@ -5,11 +5,9 @@ testthat::test_that("checking package data hashes report", {
   tdir <- getPkgDir()
   pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
+  on.exit(cleanup(tdir))
 
-  createPkg(
-    tdir,
-    pkgn
-  )
+  createPkg( tdir, pkgn )
 
   dpr_build(path)
 
@@ -172,6 +170,5 @@ testthat::test_that("checking package data history with git", {
   )
 
   unlink(path, recursive = TRUE)
-  cleanup(tdir)
 
 })
