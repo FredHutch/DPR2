@@ -58,11 +58,11 @@ testthat::test_that("checking package build", {
   )
 
   ## looking for both objects when set in the yaml and not passed as build arguments
-  dpr_rm_processes("01.Rmd", path)
-  dpr_track_objects( c("objYml1", "objYml2"), path )
+  dpr_rm_scripts("01.Rmd", path)
+  dpr_add_objects( c("objYml1", "objYml2"), path )
   dpr_rm_objects("objYml1", path)
   expect_equal(
-    sum(dpr_processes(path)$is_tracked), 2
+    sum(dpr_scripts(path)$is_tracked), 2
   )
   expect_equal(
     sum(dpr_objects(path)$is_tracked), 1
@@ -76,7 +76,7 @@ testthat::test_that("checking package build", {
     )
   )
 
-  dpr_track_processes("01.R", path)
+  dpr_add_scripts("01.R", path)
 
   ## warn when typo in object name
   expect_warning(

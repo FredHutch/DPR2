@@ -55,8 +55,8 @@ dpr1_yaml_convert <- function(path="."){
 
     yaml::write_yaml(yml, file.path(path, "datapackager.yml"))
 
-    dpr_track_processes(pros, path)
-    dpr_track_objects(objs, path)
+    dpr_add_scripts(pros, path)
+    dpr_add_objects(objs, path)
 
   }
 }

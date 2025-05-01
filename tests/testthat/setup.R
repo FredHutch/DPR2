@@ -110,6 +110,6 @@ createPkg <- function(temp_dir, package_name, more_args = list()){
     file.path(path, "processing/nolib.R")
   )
 
-  dpr_track_processes(c("01.R", "02.R", "01.Rmd"), file.path(args$path, package_name))
+  dpr_add_scripts(c("01.R", "02.R", "01.Rmd"), file.path(args$path, package_name))
 
 }

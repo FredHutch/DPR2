@@ -74,7 +74,7 @@ test_that("check datapackager.yml and ignores", {
   ymlInit <- dpr_yaml_init()
 
   expect_true(yml$process_directory == "data-raw")
-  expect_true(yml$tracking_directory == ymlInit$tracking_directory)
+  expect_true(yml$to_build_directory == ymlInit$to_build_directory)
 
   ## all names in init must be in package yaml
   expect_true(

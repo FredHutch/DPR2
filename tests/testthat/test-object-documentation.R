@@ -64,7 +64,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
     file.path(path, "processing/df_gen.R")
   )
 
-  dpr_track_processes("df_gen.R", path)
+  dpr_add_scripts("df_gen.R", path)
 
   dpr_build(path, write_docs = FALSE)
   expect_true(

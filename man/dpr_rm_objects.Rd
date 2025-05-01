@@ -16,8 +16,8 @@ to the data directory after a processing script is rendered.}
 Remove objects to be tracked by DPR2.
 }
 \details{
-\code{dpr_track_objects} is mostly provided for backwards compatibility with
+\code{dpr_add_objects} is mostly provided for backwards compatibility with
 DataPackageR. It is recommended to use \code{dpr_save} in the processing scripts
 directly to save files to the data directory rather than using
-\code{dpr_track_objects}.
+\code{dpr_add_objects}.
 }
