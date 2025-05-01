@@ -62,10 +62,10 @@ testthat::test_that("checking package build", {
   dpr_add_objects( c("objYml1", "objYml2"), path )
   dpr_rm_objects("objYml1", path)
   expect_equal(
-    sum(dpr_scripts(path)$is_tracked), 2
+    sum(dpr_scripts(path)$is_added), 2
   )
   expect_equal(
-    sum(dpr_objects(path)$is_tracked), 1
+    sum(dpr_objects(path)$is_added), 1
   )
 
   dpr_build(path, purge_data_directory = TRUE)

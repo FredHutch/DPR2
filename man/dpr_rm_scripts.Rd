@@ -20,5 +20,5 @@ rendered or built.
 \details{
 This function will remove processing scripts from those that will be
 rendered. To add processing scripts, see \code{?dpr_add_scripts}. To generate
-a table of scripts currently being tracked, see \code{?dpr_scripts}.
+a table of scripts currently being added, see \code{?dpr_scripts}.
 }

@@ -208,23 +208,23 @@ dpr_save <- function(objects, path = dpr_path(), envir = parent.frame()){
   invisible(objects)
 }
 
-#' Private. Returns a table of tracked objects or scripts.
+#' Private. Returns a table of added objects or scripts.
 #'
-#' @title tracking
+#' @title added
 #' @param path path to a DPR2 data package
-#' @param items_path the path for the items that are being tracked
-#' @param track_type the tracking type, either 'objects' or 'scripts'
+#' @param items_path the path for the items that are being added
+#' @param add_type the added type, either 'objects' or 'scripts'
 #' @noRd
-tracking <- function(path, items_path, track_type){
+dpr_added <- function(path, items_path, add_type){
   items <- list.files(file.path(path, items_path))
-  tracked <- gsub("_$", "", list.files(file.path(path, dpr_yaml_load(path)$to_build_directory, track_type)))
-  missing <- tracked[!tracked %in% items]
+  added <- gsub("_$", "", list.files(file.path(path, dpr_yaml_load(path)$to_build_directory, add_type)))
+  missing <- added[!added %in% items]
   if( length(missing) > 0 ){
-    warning("Items being tracked not found. Consider removing with `dpr_rm_%s`.", track_type)
+    warning("Items being added not found. Consider removing with `dpr_rm_%s`.", add_type)
   }
 
-  out <- data.frame(is_tracked = items %in% tracked)
-  out[[track_type]] <- items
+  out <- data.frame(is_added = items %in% added)
+  out[[add_type]] <- items
   return(out)
 }
 
@@ -239,7 +239,7 @@ tracking <- function(path, items_path, track_type){
 #'   and if they are set to build or not
 #' @export
 dpr_scripts <- function(path = "."){
-  tracking(path, dpr_yaml_get(path)$process_directory, "scripts")
+  dpr_added(path, dpr_yaml_get(path)$process_directory, "scripts")
 }
 
 #' Return a data frame of obejcts currently set to build.
@@ -257,21 +257,20 @@ dpr_scripts <- function(path = "."){
 #'   they are set to build or not
 #' @export
 dpr_objects <- function(path = "."){
-  tracking(path, "data", "objects")
+  dpr_added(path, "data", "objects")
 }
 
-#' Private. Writes tracking file and computes serialized hash for a tracked file
-#' and writes it to the input tracking folder.
+#' Private. Writes added file
 #'
-#' @title write_tracking_file
-#' @param tracked_file the path of the file to hash and add to tracking
-#' @param track_type the tracking type, either 'objects' or 'scripts'
+#' @title write_added_file
+#' @param added_file the path of the file to hash and add to added
+#' @param added_type the added type, either 'objects' or 'scripts'
 #' @param path path to a DPR2 data package
 #' @noRd
-write_tracking_file <- function(tracked_file, track_type, path = "."){
-  writeLines(
-    "",
-    file.path(path, dpr_yaml_get(path)$to_build_directory, track_type, paste0(basename(tracked_file), "_"))
+write_added_file <- function(added_file, added_type, path = "."){
+  writeBin(
+    raw(),
+    file.path(path, dpr_yaml_get(path)$to_build_directory, added_type, paste0(basename(added_file), "_"))
   )
 }
 
@@ -293,7 +292,7 @@ dpr_add_scripts <- function(scripts, path = "."){
   for( pro in scripts ) {
     if( !pro %in% process_files )
       stop(sprintf("`%s` not found in the process directory described in `datapackage.yml`. ", pro))
-    write_tracking_file(file.path(path, yml$process_directory, pro), "scripts", path)
+    write_added_file(file.path(path, yml$process_directory, pro), "scripts", path)
   }
 }
 
@@ -310,27 +309,27 @@ dpr_add_scripts <- function(scripts, path = "."){
 #' @export
 dpr_add_objects <- function(objects, path = "."){
   object_files <- list.files( file.path(path, "data") )
-  tracked_files <- grepl( paste(objects, collapse = "|"), object_files )
-  for( obj in object_files[tracked_files] )
-    write_tracking_file(file.path(path, "data", obj), "objects", path)
+  added_files <- grepl( paste(objects, collapse = "|"), object_files )
+  for( obj in object_files[added_files] )
+    write_added_file(file.path(path, "data", obj), "objects", path)
 }
 
-#' Private. A function for removing tracked items, scripts or objects, from
-#' DPR2 tracking.
+#' Private. A function for removing added items, scripts or objects, from
+#' the DPR2 package.
 #'
-#' @title dpr_rm_tracked
+#' @title dpr_rm_added
 #' @param items the items to find in the to_build directory
-#' @param track_type the tracking type, either 'objects' or 'scripts'
+#' @param added_type the added type, either 'objects' or 'scripts'
 #' @param path path to a DPR2 data package
 #' @noRd
-rm_tracked <- function(items, track_type, path){
-  tracking <- file.path(path, dpr_yaml_get(path)$to_build_directory, track_type)
-  tracks <- list.files(tracking)
+dpr_rm_added <- function(items, added_type, path){
+  adding <- file.path(path, dpr_yaml_get(path)$to_build_directory, added_type)
+  adds <- list.files(adding)
   for( item in items ) {
-    idx <- which(grepl(item, tracks))
+    idx <- which(grepl(item, adds))
     if( length(idx) == 0  )
-      stop(sprintf("`%s` not found in `%s/%s`.", item, dpr_yaml_get(path)$to_build_directory, track_type))
-    unlink(file.path(tracking, tracks[idx]))
+      stop(sprintf("`%s` not found in `%s/%s`.", item, dpr_yaml_get(path)$to_build_directory, added_type))
+    unlink(file.path(adding, adds[idx]))
   }
 }
 
@@ -339,7 +338,7 @@ rm_tracked <- function(items, track_type, path){
 #'
 #' This function will remove processing scripts from those that will be
 #' rendered. To add processing scripts, see `?dpr_add_scripts`. To generate
-#' a table of scripts currently being tracked, see `?dpr_scripts`.
+#' a table of scripts currently being added, see `?dpr_scripts`.
 #' @title dpr_rm_scripts
 #' @param scripts names of scripts, found in the processing_directory set in
 #'   the `datapackager.yml` file, to be removed from to_build and no long run
@@ -347,7 +346,7 @@ rm_tracked <- function(items, track_type, path){
 #' @param path path to a DPR2 data package
 #' @export
 dpr_rm_scripts <- function(scripts, path = "."){
-  rm_tracked(scripts, "scripts", path)
+  dpr_rm_added(scripts, "scripts", path)
 }
 
 #' Remove objects set to be built by DPR2.
@@ -362,5 +361,5 @@ dpr_rm_scripts <- function(scripts, path = "."){
 #' @param path path to a DPR2 data package
 #' @export
 dpr_rm_objects <- function(objects, path = "."){
-  rm_tracked(objects, "objects", path)
+  dpr_rm_added(objects, "objects", path)
 }
