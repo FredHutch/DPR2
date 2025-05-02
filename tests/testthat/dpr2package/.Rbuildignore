@@ -1,3 +1,2 @@
-^data/.+\.r$
-^data/.+\.(tab|txt|csv)$
+^data/.+\.(r|tab|txt|csv|tsv|rds)$
 ^inst/extdata/
