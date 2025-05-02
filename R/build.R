@@ -164,7 +164,7 @@ dpr_render <- function(path=".", ...){
 
   # Prepare to render
   if(is.null(yml$process_on_build) | length(yml$process_on_build) == 0){
-    stop("No files specified to process in `to_build/scripts`. See datapackager.yml file.")
+    stop("No files specified to process in `to_build/scripts`. See `?dpr_add_scripts`.")
   }
 
   vignette_tempdir <- tempfile()
