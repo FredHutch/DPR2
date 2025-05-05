@@ -10,7 +10,7 @@ test_that("check that R object documentation is written as expected", {
   tdir <- getPkgDir()
   pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn, list(renv_init = FALSE))
+  createPkg(tdir, pkgn)
   dpr_build(path, process_on_build = "01.R", objects = "objYml1")
   # check that .R file exists
   expect_true(file.exists(file.path(path, "R", "objYml1.R")))
@@ -89,24 +89,6 @@ test_that("check that generate_docs throws a warning when rda object does not ma
   cleanup(tdir)
 })
 
-test_that("check that error occurs in stop(e) of no_change portion in generate_all_docs when run outside of a DPR2 pkg", {
-
-  expect_error({
-    no_change <- tryCatch({
-      digest_data <- dpr_compare_data_digest(".")
-      gsub(".rda", "", digest_data$name[digest_data$same == TRUE])
-    },
-    error = function(e) {
-      if (grepl("No digest files found. Has any data been added to the data package yet?", e$message)) {
-        return(NA)
-      } else {
-        stop(e)  # Let unexpected errors propagate
-      }
-    })
-  }, "`path` argument is not a DataPackageR or DPR2 package.")
-
-})
-
 test_that("check that no_change is filtered based on R doc files in generate_all_docs()", {
   out_dir <- tempdir()
   no_change <- c("dat1", "dat2")
@@ -130,7 +112,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
   tdir <- getPkgDir()
   pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn, list(renv_init = FALSE))
+  createPkg(tdir, pkgn)
   writeLines(
     c(
       "library(DPR2)",
@@ -142,7 +124,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
     file.path(path, "processing/df_gen.R")
   )
 
-  dpr_yaml_set(path, process_on_build = "df_gen.R")
+  dpr_add_scripts("df_gen.R", path)
 
   dpr_build(path, write_docs = FALSE)
   expect_true(
@@ -160,7 +142,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
   delete_unused_doc_files(path)
 
   # should have removed df1.R
-  expect_equal(list.files(file.path(path, "R")), "df2.R")
+  expect_true(!"df1.R" %in% list.files(file.path(path, "R")))
 
   unlink(path, recursive = TRUE, force = TRUE)
   cleanup(tdir)

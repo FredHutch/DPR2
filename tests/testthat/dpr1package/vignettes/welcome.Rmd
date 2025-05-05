@@ -1,0 +1,11 @@
+---
+title: welcome
+author: jmtaylor
+vignette: >
+  %\VignetteIndexEntry{mtcars.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Another vignette that is user created and not automatically created by DataPackageR.
+

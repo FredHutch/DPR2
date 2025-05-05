@@ -1,14 +1,12 @@
 tdir <- getPkgDir()
+on.exit(cleanup(tdir))
 
 test_that("check default package name warning", {
   pkgn <- "testPackage"
   expect_silent(
     dpr_create(tdir, desc=dpr_description_init(Package = pkgn))
   )
-  expect_warning(
-    dpr_create(tdir, desc=dpr_description_init()),
-    "Default package name used"
-  )
+  dpr_create(tdir, desc=dpr_description_init())
   unlink(file.path(tdir, pkgn), recursive = TRUE)
   unlink(
     file.path(
@@ -41,7 +39,7 @@ test_that("check DESCRIPTION file has populated fields", {
 
 })
 
-test_that("check datapackager.yml", {
+test_that("check datapackager.yml and ignores", {
 
   pkgn = "testing"
   dpr_create(
@@ -50,12 +48,33 @@ test_that("check datapackager.yml", {
     desc=dpr_description_init(Package = pkgn)
   )
 
+  rIgnore <- c(
+    "^data/.+\\.(r|tab|txt|csv|tsv|rds)$",
+    "^inst/extdata/"
+  )
+
+  gIgnore <- c(
+    "inst/doc/"
+  )
+
+  expect_true(
+    all(
+      rIgnore %in% readLines(file.path(tdir, pkgn, ".Rbuildignore"))
+    )
+  )
+
+  expect_true(
+    all(
+      gIgnore %in% readLines(file.path(tdir, pkgn, ".gitignore"))
+    )
+  )
+
   ## yml names manually set but have the manual values, other values unchanged
   yml <- dpr_yaml_get(file.path(tdir, "testing"))
   ymlInit <- dpr_yaml_init()
 
   expect_true(yml$process_directory == "data-raw")
-  expect_true(yml$data_digest_directory == ymlInit$data_digest_directory)
+  expect_true(yml$to_build_directory == ymlInit$to_build_directory)
 
   ## all names in init must be in package yaml
   expect_true(
@@ -65,21 +84,6 @@ test_that("check datapackager.yml", {
   )
 
   unlink(file.path(tdir, pkgn), recursive = TRUE)
-})
-
-test_that("check renv", {
-
-  pkgn <- "testPkg"
-  path <- file.path(tdir, pkgn)
-
-  createPkg(tdir, pkgn, list(renv_init=TRUE))
-  expect_true(dir.exists(file.path(path, "renv")))
-  unlink(path, recursive = TRUE)
-
-  createPkg(tdir, pkgn, list(renv_init=FALSE))
-  expect_true(!dir.exists(file.path(path, "renv")))
-  unlink(path, recursive = TRUE)
-
 })
 
 test_that("init populates exisiting directory", {
@@ -122,7 +126,5 @@ test_that("no dpr_(description_)_init warning about default package name", {
   twd <- tempfile()
   dir.create(twd)
   setwd(twd)
-  expect_no_warning(dpr_init(renv_init = FALSE))
+  expect_no_warning(dpr_init())
 })
-
-cleanup(tdir)

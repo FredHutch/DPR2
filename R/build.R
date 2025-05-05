@@ -138,7 +138,7 @@ callr_render <- function(files_to_process, render_args, render_mode){
 #' @export
 dpr_render <- function(path=".", ...){
   if( dpr_is_dpr1(path) )
-    warning("Rendering a data package using DPR2 when the yaml is from DataPackageR. See docs for list of side effects.")
+    stop("Rendering a data package using DPR2 when the yaml is from DataPackageR. Must use `dpr_convert()` first. See `?dpr_convert`.")
 
   yml <- dpr_yaml_get(path, ...)
 
@@ -154,8 +154,8 @@ dpr_render <- function(path=".", ...){
   }
 
   # Prepare to render
-  if(is.null(yml$process_on_build)){
-    stop("No files specified to process_on_build. See datapackager.yml file.")
+  if(is.null(yml$process_on_build) | length(yml$process_on_build) == 0){
+    stop("No files specified to process in `to_build/scripts`. See datapackager.yml file.")
   }
 
   vignette_tempdir <- tempfile()
@@ -195,7 +195,7 @@ dpr_render <- function(path=".", ...){
   if(length(missed_objects) != 0)
     warning(
       sprintf(
-        "Objects listed in yaml not found in processing scripts to save to data directory: %s",
+        "Objects to build not found in processing evaluation environment to save to data directory: %s",
         paste(missed_objects, collapse = ", ")
       )
     )
@@ -226,14 +226,15 @@ dpr_render <- function(path=".", ...){
 #' @export
 dpr_build <- function(path=".", ...){
   quiet <- identical(Sys.getenv("TESTTHAT"), "true")
+  if( dpr_is_dpr1(path) )
+    stop("Rendering a data package using DPR2 when the yaml is from DataPackageR. Must use `dpr_convert()` first. See `?dpr_convert`.")
+
   yml <- dpr_yaml_get(path, ...)
 
   if(yml$render_on_build)
     dpr_render(path, ...)
 
-  if("data_digest_directory" %in% names(yml))
-    dpr_update_data_digest(path, yml)
-
+  dpr_update_data_digest(path, yml)
   if(yml$build_tarball)
     pkgp <- pkgbuild::build(
       path = path,
