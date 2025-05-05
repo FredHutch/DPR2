@@ -15,10 +15,7 @@ dpr_create(path = ".", yaml = dpr_yaml_init(), desc = dpr_description_init())
 }
 \description{
 Initialize a data package by creating a structured directory skeleton for a
-new R package. Sets up essential directories, initializes package metadata
-in datapackager.yml and DESCRIPTION files as described by \code{\link[=dpr_yaml_init]{dpr_yaml_init()}}
-and \code{\link[=dpr_description_init]{dpr_description_init()}} function calls.
-}
-\author{
-jmtaylor
+new R package. Sets up essential directories, initializes package metadata in
+datapackager.yml and DESCRIPTION files as described by \code{\link[=dpr_yaml_init]{dpr_yaml_init()}} and
+\code{\link[=dpr_description_init]{dpr_description_init()}} function calls.
 }

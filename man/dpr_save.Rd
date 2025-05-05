@@ -28,6 +28,3 @@ directory when the package is built. All objects are saved as single object
 A convenience function for writing data objects to the package data
 directory.
 }
-\author{
-jmtaylor
-}

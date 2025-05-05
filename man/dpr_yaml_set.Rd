@@ -22,6 +22,3 @@ nothing
 \description{
 Write new \code{datapackager.yml} with new or modified key:value pairs.
 }
-\author{
-jmtaylor
-}

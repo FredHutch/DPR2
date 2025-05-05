@@ -34,6 +34,3 @@ default values, and any other valid values when applicable.
 \item build_output          : ../, where the package should be save if the tarball is built
 }
 }
-\author{
-jmtaylor
-}

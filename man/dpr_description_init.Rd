@@ -15,10 +15,10 @@ A list of key:value pairs for generating a DESCRIPTION file.
 }
 \description{
 A function that provides a convenient way to initialize a package's
-DESCRIPTION file by merging default settings with user specific values to
-the DESCRIPTION file's key:value pairs. If no  arguments are provided, it
-will return the default values. See \code{dpr_description_defaults()} for a list
-of default values, or call this function with no arguments.
+DESCRIPTION file by merging default settings with user specific values to the
+DESCRIPTION file's key:value pairs. If no arguments are provided, it will
+return the default values. See \code{dpr_description_defaults()} for a list of
+default values, or call this function with no arguments.
 }
 \author{
 jmtaylor
