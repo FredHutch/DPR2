@@ -19,6 +19,7 @@ Imports:
     digest,
     pkgbuild,
     rmarkdown,
+    roxygen2,
     rprojroot,
     utils,
     yaml

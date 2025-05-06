@@ -184,6 +184,6 @@ testthat::test_that("R/Rmd library() calls not attached to main R process",{
   pkgs_to_check <- setdiff(attached_in_scripts, attached_before_test_builds)
   skip_if(length(pkgs_to_check) == 0L, 'pkgs already attached before testing')
   expect_false(
-    any(pkgs_to_check %in% names(sessionInfo()$otherPkgs))
+    any(pkgs_to_check %in% sub("^package:", "", grep("^package:", search(), value = TRUE)))
   )
 })

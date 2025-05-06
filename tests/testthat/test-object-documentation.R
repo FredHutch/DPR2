@@ -23,9 +23,72 @@ test_that("check that R object documentation is written as expected", {
 
   #expect a message when there are no changes to object or no new object is created
   expect_message(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")),
-                 "No new data objects have been created, and no existing objects have been modified. There are no objects to document.")
+                 "No new data object documentation created, as no objects")
 
-  unlink(path, recursive = TRUE)
+  unlink(path, recursive = TRUE, force = TRUE)
+  cleanup(tdir)
+})
+
+test_that("check that roxygenize on build generates .Rd files", {
+  tdir <- getPkgDir()
+  pkgn <- "testPkgRD"
+  path <- file.path(tdir, pkgn)
+  createPkg(tdir, pkgn)
+  writeLines(
+    c(
+      "library(yaml)",
+      "library(DPR2)",
+      "df1 <- data.frame(x = 1:11, y = LETTERS[1:11])",
+      "df2 <- data.frame(y = 1:5, y = letters[1:5])",
+      "df_list <- list(a = 'x', b = 'y', c = 'z')",
+      "yml <- as.yaml(df2)",
+      "descript <- desc::desc()",
+      "dpr_save('df1')",
+      "dpr_save('df2')",
+      "dpr_save('df_list')",
+      "dpr_save('yml')",
+      "dpr_save('descript')" # check that other class type can generate documentation
+    ),
+    file.path(path, "processing/df_gen.R")
+  )
+
+  dpr_add_scripts("df_gen.R", path)
+  dpr_build(path)
+
+  expect_true(file.exists(file.path(path, "man", "df1.Rd")))
+  expect_true(file.exists(file.path(path, "man", "df_list.Rd")))
+  expect_true(file.exists(file.path(path, "man", "yml.Rd")))
+  expect_true(file.exists(file.path(path, "man", "descript.Rd")))
+
+  unlink(path, recursive = TRUE, force = TRUE)
+  cleanup(tdir)
+})
+
+test_that("check that generate_docs throws a warning when rda object does not match filename", {
+
+  tdir <- getPkgDir()
+  pkgn <- "testPkg"
+  path <- file.path(tdir, pkgn)
+  createPkg(tdir, pkgn)
+  writeLines(
+    c(
+      "library(DPR2)",
+      "df1 <- data.frame(x = 1:11, y = LETTERS[1:11])",
+      "df2 <- data.frame(y = 1:5, y = letters[1:5])",
+      "save(df1, file=dpr_path('data', 'wrong_name.rda'))",
+      "dpr_save('df2')"
+    ),
+    file.path(path, "processing/df_gen.R")
+  )
+
+  dpr_add_scripts("df_gen.R", path)
+
+  expect_warning(
+    dpr_build(path),
+    "'wrong_name.rda' does not match data object name 'df1'. Will skip writing documentation for it."
+  )
+
+  unlink(path, recursive = TRUE, force = TRUE)
   cleanup(tdir)
 })
 
@@ -84,7 +147,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
   # should have removed df1.R
   expect_true(!"df1.R" %in% list.files(file.path(path, "R")))
 
-  unlink(path, recursive = TRUE)
+  unlink(path, recursive = TRUE, force = TRUE)
   cleanup(tdir)
 })
 
@@ -105,7 +168,7 @@ test_that("check that write_doc_file writes documentation files correctly", {
   content <- readLines(file_path)
   expect_equal(content, doc_block)
 
-  unlink(temp_dir, recursive = TRUE)
+  unlink(temp_dir, recursive = TRUE, force = TRUE)
 })
 
 test_that("check that template_doc_block generates documentation correctly", {
