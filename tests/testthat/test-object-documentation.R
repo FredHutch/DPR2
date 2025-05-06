@@ -23,7 +23,7 @@ test_that("check that R object documentation is written as expected", {
 
   #expect a message when there are no changes to object or no new object is created
   expect_message(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")),
-                 "No new data objects have been created, and no existing objects have been modified. There are no objects to document.")
+                 "No new data object documentation created, as no objects")
 
   unlink(path, recursive = TRUE, force = TRUE)
   cleanup(tdir)
@@ -42,10 +42,12 @@ test_that("check that roxygenize on build generates .Rd files", {
       "df2 <- data.frame(y = 1:5, y = letters[1:5])",
       "df_list <- list(a = 'x', b = 'y', c = 'z')",
       "yml <- as.yaml(df2)",
+      "descript <- desc::desc()",
       "dpr_save('df1')",
       "dpr_save('df2')",
       "dpr_save('df_list')",
-      "dpr_save('yml')"
+      "dpr_save('yml')",
+      "dpr_save('descript')" # check that other class type can generate documentation
     ),
     file.path(path, "processing/df_gen.R")
   )
@@ -56,6 +58,7 @@ test_that("check that roxygenize on build generates .Rd files", {
   expect_true(file.exists(file.path(path, "man", "df1.Rd")))
   expect_true(file.exists(file.path(path, "man", "df_list.Rd")))
   expect_true(file.exists(file.path(path, "man", "yml.Rd")))
+  expect_true(file.exists(file.path(path, "man", "descript.Rd")))
 
   unlink(path, recursive = TRUE, force = TRUE)
   cleanup(tdir)
