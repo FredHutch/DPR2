@@ -257,7 +257,7 @@ dpr_scripts <- function(path = "."){
   dpr_added(path, dpr_yaml_get(path)$process_directory, "scripts")
 }
 
-#' Return a data frame of obejcts currently set to build.
+#' Return a data frame of objects currently set to build.
 #'
 #' The data frame returned by `dpr_objects` displays what objects will be saved
 #' from the processing environments to the `data` directory and reports what
