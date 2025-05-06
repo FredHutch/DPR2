@@ -21,7 +21,10 @@ git2r::add(repo = path, path = ".")
 Sys.sleep(1) # odb_blobs appears to be ordered by when, and the smallest unit is 1 sec, adding pauses to get correct sorting
 git2r::commit(repo = path, message="init commit")
 
-dpr_build(path)
+suppressMessages(
+  dpr_build(path)
+)
+
 git2r::add(repo = path, path = ".")
 git2r::commit(repo = path, message="Our first build")
 
@@ -76,8 +79,7 @@ irisAreas <- history[history$name == "irisArea.rda",]
 firstIrisHash <- irisAreas[irisAreas$when == min(irisAreas$when), "blob_git_sha1"]
 lastIrisHash <- irisAreas[irisAreas$when == max(irisAreas$when), "blob_git_sha1"]
 
-firstIris <- dpr_recall_data_versions(firstIrisHash, path)
-lastIris <- dpr_recall_data_versions(lastIrisHash, path)
+dataversions <- dpr_recall_data_versions(c(firstIrisHash, lastIrisHash), path)
 
 ```
 
@@ -85,8 +87,8 @@ We can then compare the first object check sums between the first and last objec
 
 ```{r}
 
-digest::digest(firstIris[[1]][[1]])
-digest::digest(lastIris[[1]][[1]])
+digest::digest(dataversions[[1]][[1]])
+digest::digest(dataversions[[2]][[1]])
 dpr_data_digest(path)
 
 ```
