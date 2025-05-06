@@ -43,11 +43,11 @@ createPkg <- function(temp_dir, package_name, more_args = list()){
       "library(DPR2)",
       "date('2024-01-01')", # test function masking of `date()`
       "mydataframe <- data.frame(x=1:10, y=LETTERS[1:10])",
-      "yml <- as.yaml(mydataframe)",
+      "myyaml <- as.yaml(mydataframe)",
       "objYml1 <- 'test objects values 1'",
       "objYml2 <- 'test objects values 2'",
       "dpr_save('mydataframe')",
-      "save(yml, file=dpr_path('data', 'myyaml.rda'))"
+      "save(myyaml, file=dpr_path('data', 'myyaml.rda'))"
     ),
     file.path(path, "processing/01.R")
   )
@@ -61,10 +61,10 @@ createPkg <- function(temp_dir, package_name, more_args = list()){
       "```{r}",
       "library(DPR2)",
       "library(yaml)",
-      "df  <- data.frame(x=1:10, y=LETTERS[1:10])",
-      "yml <- as.yaml(df)",
-      "save(df,  file=dpr_path('data', 'mydataframe_rmd.rda'))",
-      "save(yml, file=dpr_path('data', 'myyaml_rmd.rda'))",
+      "mydataframe_rmd  <- data.frame(x=1:10, y=LETTERS[1:10])",
+      "myyaml_rmd <- as.yaml(mydataframe_rmd)",
+      "save(mydataframe_rmd,  file=dpr_path('data', 'mydataframe_rmd.rda'))",
+      "save(myyaml_rmd, file=dpr_path('data', 'myyaml_rmd.rda'))",
       "```"
     ),
     file.path(path, "processing/01.Rmd")
@@ -83,9 +83,9 @@ createPkg <- function(temp_dir, package_name, more_args = list()){
   writeLines(
     c(
       "library(DPR2)",
-      "dat <- as.list(LETTERS)",
+      "letters <- as.list(LETTERS)",
       "ourLetters <- c('d', 'p', 'r')",
-      "save(dat, file=dpr_path('data', 'letters.rda'))",
+      "save(letters, file=dpr_path('data', 'letters.rda'))",
       "dpr_save('ourLetters')"
     ),
     file.path(path, "processing/A1.R")
