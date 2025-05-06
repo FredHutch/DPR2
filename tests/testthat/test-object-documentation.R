@@ -33,7 +33,7 @@ test_that("check that roxygenize on build generates .Rd files", {
   tdir <- getPkgDir()
   pkgn <- "testPkgRD"
   path <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn, list(renv_init = FALSE))
+  createPkg(tdir, pkgn)
   writeLines(
     c(
       "library(yaml)",
@@ -50,7 +50,7 @@ test_that("check that roxygenize on build generates .Rd files", {
     file.path(path, "processing/df_gen.R")
   )
 
-  dpr_yaml_set(path, process_on_build = "df_gen.R")
+  dpr_add_scripts("df_gen.R", path)
   dpr_build(path)
 
   expect_true(file.exists(file.path(path, "man", "df1.Rd")))
@@ -66,7 +66,7 @@ test_that("check that generate_docs throws a warning when rda object does not ma
   tdir <- getPkgDir()
   pkgn <- "testPkg"
   path <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn, list(renv_init = FALSE))
+  createPkg(tdir, pkgn)
   writeLines(
     c(
       "library(DPR2)",
@@ -78,7 +78,7 @@ test_that("check that generate_docs throws a warning when rda object does not ma
     file.path(path, "processing/df_gen.R")
   )
 
-  dpr_yaml_set(path, process_on_build = "df_gen.R")
+  dpr_add_scripts("df_gen.R", path)
 
   expect_warning(
     dpr_build(path),
