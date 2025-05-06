@@ -74,7 +74,7 @@ generate_all_docs <- function(path = ".") {
   objects <- setdiff(all_objects, no_change)
 
   if (length(objects) == 0) {
-    message("No new data objects have been created, and no existing objects have been modified. There are no objects to document.")
+    message("No new data object documentation created, as no objects have been modified and all objects are documented in `.R`.")
   }
 
   for (object_name in objects) {
