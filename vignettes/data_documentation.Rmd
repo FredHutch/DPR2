@@ -7,9 +7,249 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+Clear documentation of data objects allows users to quickly understand the structure, variables, and intended purpose of each dataset without having to inspect the raw contents. This is especially important in packages where data evolves over time or supports multiple analysis pipelines. Well-documented data reduces onboarding time, minimizes errors, and promotes consistent use and interpretation across workflows.
+
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+# knitr::opts_chunk$set(
+#   collapse = TRUE,
+#   comment = "#>"
+# )
+
+
+```
+
+DPR2 offers features that automatically generate documentation for `.rda` data objects stored in a package’s `data/` folder. This includes creating `.R` files for each object under `R/`, as well as `.Rd` help files in `man/` using `roxygen2`. Descriptive details are added based on the object’s structure. For example, the number of rows and columns are shown for data frames or matrices, and the length is shown for vectors and lists.
+
+Below, we explain how this works, demonstrate its behavior on example objects, and cover important edge cases. Let's begin by showing a directory skeleton of an example DPR2 package `TestPKG` prior to rendering to showcase the absence of the `man/` and `R/` folders.
+
+```{r, include=FALSE}
+
+library(DPR2)
+
+temp_dir <- file.path(tempdir(), "examplepackages")
+dir.create(temp_dir)
+dpr_create(path = temp_dir, desc=dpr_description_init(Package= "TestPKG"))
+path <- file.path(temp_dir, "TestPKG")
+
+code_block <- c(
+      "library(DPR2)",
+      "",
+      "data('mtcars')",
+      "mtcars_df <- mtcars",
+      "mtcars_df$efficiency <- mtcars$mpg / mtcars$hp", 
+      "",
+      "mtcars_list <- list(
+  raw_data = mtcars,
+  summary = summary(mtcars),
+  column_classes = sapply(mtcars, class),
+  correlation_matrix = cor(mtcars)
+)",
+      "dpr_save('mtcars_df')",
+      "dpr_save('mtcars_list')"
+    )
+
+writeLines(
+    code_block,
+    file.path(path, "processing/mtcars.R")
+  )
+
+suppressWarnings(try(source(file.path(path, "processing/mtcars.R")), silent = T))
+
+dpr_add_scripts("mtcars.R", path)
+
+```
+
+
+```{r, echo=FALSE}
+
+tree_output <- system(paste("tree", "-n",  "--noreport", shQuote(path)), intern = TRUE)
+tree_output[1] <- basename(path)
+cat(tree_output, sep = "\n")
+
+```
+
+We now walk through an example using the built-in `mtcars` dataset. This will show how DPR2 documents both a data frame and a structured list object.
+
+```{r, echo=FALSE}
+
+cat("```r\n", paste(code_block, collapse = "\n"), "\n```", sep = "")
+
+```
+In the above script, we define and save two objects: an `mtcars_df` data frame that has an added `efficiency` column, and a `mtcars_list` list containing the raw data, summary statistics, column classes, and a correlation matrix. These are saved to the `data/` folder using `dpr_save()`.
+
+```{r, comment="#>", collapse=TRUE}
+str(mtcars_df)
+
+```
+
+
+```{r, comment="#>", collapse=TRUE}
+str(mtcars_list)
+
+```
+
+After calling `dpr_render()`, DPR2 generates `.R` files under `R/` and `.Rd` files under `man/`.
+
+```{r, include=FALSE}
+
+dpr_render(path)
+
+```
+
+```{r, echo=FALSE}
+
+tree_output <- system(paste(
+  "tree",
+  "-L 2 -n",
+  "--matchdirs",
+  "-P", "'mtcars.R|mtcars_list.rda|mtcars_list.Rd|mtcars_list.R|mtcars_df.rda|mtcars_df.Rd|mtcars_df.R'",  "-I", "'inst|vignettes'",
+  "--noreport",
+  shQuote(path)
+), intern = TRUE)
+
+tree_output[1] <- basename(path)
+
+cat(tree_output, sep = "\n")
+
+```
+
+Below is the content for `mtcars_df.R` and `mtcars_list.R` files.
+
+```{r, echo=FALSE}
+
+readLines(file.path(path, "R", "mtcars_df.R"))
+
+```
+
+```{r, echo=FALSE}
+
+readLines(file.path(path, "R", "mtcars_list.R"))
+
+```
+
+Users can then modify the `.R` files and provide further details on their data objects and then render the `.Rd` files with the filled information. In the below example, we update the `@source` tag, as this is not populated automatically, and users are encouraged to update this manually to reference the processing script. We then display the updated `.Rd` help file for `mtcars_df`.
+
+```{r, message=FALSE}
+
+mtcars_block <- readLines(file.path(path, "R", "mtcars_df.R"))
+mtcars_block[grepl("@source", mtcars_block)] <- "#' @source Generated from script mtcars.R"
+writeLines(mtcars_block, file.path(path, "R", "mtcars_df.R"))
+
+roxygen2::roxygenize(path)
+
+```
+
+```{r, echo=FALSE}
+
+readLines(file.path(path, "man", "mtcars_df.Rd"))
+
+```
+
+
+DPR2 leverages `dpr_compare_data_digest()` to compare the checksums of objects in the `data/` directory with their recorded digests. This allows DPR2 to update `.R` documentation files only when changes are detected in the underlying data. If no new objects have been added and no existing objects have changed, DPR2 outputs a message indicating that no data documentation was generated. 
+
+Since existing documentation files are overwritten when a checksum change is detected, users are encouraged to save any custom edits such as descriptions, source references, or links so they can be copied into the updated version if needed.
+
+
+```{r, include=FALSE}
+
+code_block <- c(
+      "library(DPR2)",
+      "",
+      "data('mtcars')",
+      "mtcars_df <- mtcars",
+      "mtcars_df$efficiency <- mtcars$mpg / mtcars$hp", 
+      "",
+      "dpr_save('mtcars')"
+    )
+
+writeLines(
+    code_block,
+    file.path(path, "processing/mtcars.R")
+  )
+
+dpr_build(path)
+
+
+```
+
+```{r, warning=TRUE, comment="#>", collapse=TRUE}
+dpr_render(path)
+
+```
+
+
+During the rendering phase, DPR2 will also delete any `.R` documentation files if the corresponding data object no longer exists in the `data/` directory. In the example below, after removing `mtcars_df` from the processing script, DPR2 detects that the object is no longer present and deletes both `R/mtcars_df.R` and `man/mtcars_df.Rd` during rendering.
+
+```{r, echo=FALSE, warning=FALSE}
+
+code_block <- c(
+  "library(DPR2)",
+  "",
+  "data('mtcars')",
+  "mtcars_list <- list(
+  raw_data = mtcars,
+  summary = summary(mtcars),
+  column_classes = sapply(mtcars, class),
+  correlation_matrix = cor(mtcars)
+)",
+"dpr_save('mtcars_list')"
 )
+
+writeLines(
+    code_block,
+    file.path(path, "processing/mtcars.R")
+  )
+
+dpr_render(path)
+
+cat("```r\n", paste(code_block, collapse = "\n"), "\n```", sep = "")
+
+```
+
+
+```{r, echo=FALSE}
+tree_output <- system(paste(
+  "tree",
+  "-L 2 -n",
+  "--matchdirs",
+  "-P", "'mtcars.R|mtcars_list.rda|mtcars_list.Rd|mtcars_list.R|mtcars_df.rda|mtcars_df.Rd|mtcars_df.R'",  "-I", "'inst|vignettes'",
+  "--noreport",
+  shQuote(path)
+), intern = TRUE)
+
+tree_output[1] <- basename(path)
+
+cat(tree_output, sep = "\n")
+
+```
+
+Finally, it's important to note that DPR2 will ***not*** write data documentation for `.rda` files that have more than one object saved, or if the object in the `.rda` file does not match the `.rda` file name. This is due to the unclear mapping between the filename and object name. Warning messages will be outputted to alert the user of this.
+
+```{r, echo=FALSE}
+
+code_block <- c(
+      "library(DPR2)",
+      "",
+      "data('mtcars')",
+      "mtcars_df <- mtcars",
+      "mtcars_df$efficiency <- mtcars$mpg / mtcars$hp", 
+      "",
+      "save('mtcars_df', file=dpr_path('data', 'my_df.rda'))",
+      "dpr_save('mtcars')"
+    )
+
+writeLines(
+    code_block,
+    file.path(path, "processing/mtcars.R")
+  )
+
+cat("```r\n", paste(code_block, collapse = "\n"), "\n```", sep = "")
+
+```
+
+
+```{r, comment="#>", collapse=TRUE}
+dpr_render(path)
+
 ```
