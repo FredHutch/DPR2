@@ -9,15 +9,6 @@ vignette: >
 
 Clear documentation of data objects allows users to quickly understand the structure, variables, and intended purpose of each dataset without having to inspect the raw contents. This is especially important in packages where data evolves over time or supports multiple analysis pipelines. Well-documented data reduces onboarding time, minimizes errors, and promotes consistent use and interpretation across workflows.
 
-```{r, include = FALSE}
-# knitr::opts_chunk$set(
-#   collapse = TRUE,
-#   comment = "#>"
-# )
-
-
-```
-
 DPR2 offers features that automatically generate documentation for `.rda` data objects stored in a package’s `data/` folder. This includes creating `.R` files for each object under `R/`, as well as `.Rd` help files in `man/` using `roxygen2`. Descriptive details are added based on the object’s structure. For example, the number of rows and columns are shown for data frames or matrices, and the length is shown for vectors and lists.
 
 Below, we explain how this works, demonstrate its behavior on example objects, and cover important edge cases. Let's begin by showing a directory skeleton of an example DPR2 package `TestPKG` prior to rendering to showcase the absence of the `man/` and `R/` folders.
