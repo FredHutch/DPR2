@@ -34,11 +34,16 @@ generate_all_docs <- function(path = ".") {
     object_name <- ls(temp_env)
 
     if (length(object_name) == 1) {
-      # get object
-      obj <- get(object_name, envir = temp_env)
+      if (object_name != filename) {
+        warning(sprintf("'%s.rda' does not match data object name '%s'. Will skip writing documentation for it.", filename, object_name))
+      } else {
+        # get object
+        obj <- get(object_name, envir = temp_env)
 
-      # assign the object to the filename
-      data_env[[filename]] <- obj
+        # assign the object to the filename
+        data_env[[filename]] <- obj
+      }
+
     } else {
       warning(sprintf("'%s' contains multiple or no objects. Will skip writing documentation for it.", basename(file)))
     }
@@ -70,7 +75,7 @@ generate_all_docs <- function(path = ".") {
   objects <- setdiff(all_objects, no_change)
 
   if (length(objects) == 0) {
-    message("No new data objects have been created, and no existing objects have been modified. There are no objects to document.")
+    message("No new data object documentation created, as no objects have been modified and all objects are documented in `.R`.")
   }
 
   for (object_name in objects) {
@@ -123,28 +128,51 @@ template_doc_block <- function(object, object_name) {
     paste0("#' ", object_name),
     "#'",
     "#' A detailed description of the data",
-    "#'",
-    paste0("#' ", "@format A ", class(object)[1], " with ", nrow(object), " rows and ", ncol(object), " columns with the following fields:")
+    "#'"
   )
 
-  # add variable descriptions
-  doc_block <- c(doc_block, "#' \\describe{")
+  if (is.data.frame(object) || is.matrix(object)) {
+    object_format <- paste0("#' ", "@format A ", class(object)[1],
+                            " with ", nrow(object), " rows and ", ncol(object),
+                            " columns with the following fields:")
+    describe_fields <- names(object)
+  } else if (is.list(object)) {
+    object_format <- paste0("#' ", "@format A ", class(object)[1],
+                            " with ", length(object),
+                            " elements:")
+    describe_fields <- names(object)
+  } else if (is.atomic(object)) {
+    object_format <- paste0("#' ", "@format A ", class(object)[1],
+                            " vector of length ", length(object),
+                            ".")
+    describe_fields <- NULL
+  } else {
+    object_format <- paste0("#' ", "@format An object of class ", class(object)[1],
+                            ".")
+    describe_fields <- NULL
+  }
 
-  for (var in names(object)) {
-    var_type <- class(object[[var]])[1]
-    doc_block <- c(doc_block, paste0("#'   \\item{", var, "}{", var_type, "}", "{}"))
+  doc_block <- c(doc_block, object_format)
+
+  if(!is.null(describe_fields) && length(describe_fields > 0)) {
+    # add variable descriptions
+    doc_block <- c(doc_block, "#' \\describe{")
+
+    for (var in names(object)) {
+      var_type <- class(object[[var]])[1]
+      doc_block <- c(doc_block, paste0("#'   \\item{", var, "}{", var_type, "}", "{}"))
+    }
+    doc_block <- c(doc_block,  "#' }")
   }
 
   # end roxygen comment block
   doc_block <- c(
     doc_block,
-    "#' }",
     "#' @source Generated from script _________________",
     "#' @seealso",
     "#' \\link{}",
     paste0('"', object_name, '"')
   )
-
 }
 
 #' Private. Delete unused R files from the "R" directory.

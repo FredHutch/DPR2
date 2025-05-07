@@ -283,8 +283,7 @@ dpr_objects <- function(path = "."){
 #' @param path path to a DPR2 data package
 #' @noRd
 write_added_file <- function(added_file, added_type, path = "."){
-  writeBin(
-    raw(),
+  file.create(
     file.path(path, dpr_yaml_get(path)$to_build_directory, added_type, paste0(basename(added_file), "_"))
   )
 }
