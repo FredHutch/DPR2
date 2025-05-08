@@ -176,7 +176,7 @@ dpr_build(path)
 
 ```
 
-```{r, warning=TRUE, comment="#>", collapse=TRUE}
+```{r, warning=TRUE}
 dpr_render(path)
 
 ```
@@ -223,7 +223,6 @@ TestPKG
 ├── data
 │   └── mtcars_list.rda
 ├── man
-│   ├── mtcars_df.Rd
 │   └── mtcars_list.Rd
 └── processing
     └── mtcars.R
