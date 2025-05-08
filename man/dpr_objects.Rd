@@ -14,7 +14,7 @@ a data frame displaying object names in the data directory, and if
 they are set to build or not
 }
 \description{
-Return a data frame of obejcts currently set to build.
+Return a data frame of objects currently set to build.
 }
 \details{
 The data frame returned by \code{dpr_objects} displays what objects will be saved
