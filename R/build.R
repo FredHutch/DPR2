@@ -29,7 +29,7 @@ dpr_purge_data_directory <- function(path=".", yml){
   invisible(list.files(backup_dir, full.names = TRUE))
 }
 
-#' Private. A function for making vingette files from rendered processing scripts.
+#' Private. A function for making vignette files from rendered processing scripts.
 #'
 #' @param path the data package path to save the processed vignettes to.
 #' @param temp the temp location vignettes were saved to.
@@ -40,16 +40,23 @@ process_vignettes <- function(path, processing_dir, vignette_tempdir){
 
   srcs <- list.files( file.path(path, processing_dir), full.names = TRUE )
   mds  <- list.files( vignette_tempdir, full.names = TRUE )
-  vins <- file.path( path, "vignettes", gsub("\\.md$", ".rmd", basename(mds)) )
+  names(mds) <- file.path( path, "vignettes", gsub("\\.md$", ".rmd", basename(mds)) )
 
-  file.copy(mds, vins)
+  for(i in seq_along(mds)){
+    if(dir.exists(mds[[i]])){
+      file.copy(mds[[i]], file.path( path, "vignettes" ), recursive = TRUE)
+    } else {
+      file.copy(mds[[i]], names(mds)[[i]])
+    }
+  }
 
-  for(vin in vins){
-    lins <- readLines(vin)
+  mds <- mds[!dir.exists(mds)]
+  for(vig in names(mds)){
+    lins <- readLines(vig)
     vignette_yml <- "%%\\VignetteIndexEntry{%s}\n%%\\VignetteEngine{knitr::rmarkdown}\n%%\\VignetteEncoding{UTF-8}\n"
 
-    if (tolower(basename(vin)) %in% tolower(basename(srcs))) { # to check if the vinette was originally an rmd file and that it has a yaml header
-      src <- readLines(srcs[ tolower(basename(srcs)) %in% tolower(basename(vin)) ])
+    if (tolower(basename(vig)) %in% tolower(basename(srcs))) { # to check if the vignette was originally an rmd file and that it has a yaml header
+      src <- readLines(srcs[ tolower(basename(srcs)) %in% tolower(basename(vig)) ])
 
       yml_idx <- which(grepl("^---$", src))
       if(length(yml_idx)== 0)  yml_idx <- c(0, 0)
@@ -62,10 +69,10 @@ process_vignettes <- function(path, processing_dir, vignette_tempdir){
         )
 
     } else {
-      rmd_yml <- list(title = basename(vin), vignette = sprintf(vignette_yml, basename(vin)))
+      rmd_yml <- list(title = basename(vig), vignette = sprintf(vignette_yml, basename(vig)))
     }
     new_yml <- c("---", unlist(strsplit(yaml::as.yaml(rmd_yml), "\\n")), "---")
-    writeLines(c(new_yml, lins), vin)
+    writeLines(c(new_yml, lins), vig)
   }
 }
 
