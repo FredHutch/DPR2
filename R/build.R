@@ -46,9 +46,9 @@ process_vignettes <- function(path, processing_dir, vignette_tempdir){
   )
 
   md_files <- list.files(vignettes_dir, pattern = '\\.md$', full.names = TRUE)
-  file.rename(md_files, sub('\\.md$', '.rmd', md_files))
+  file.rename(md_files, sub('\\.md$', '.Rmd', md_files))
 
-  rmds <- list.files(vignettes_dir, pattern = '\\.rmd$', full.names = TRUE)
+  rmds <- list.files(vignettes_dir, pattern = '\\.Rmd$', full.names = TRUE)
   for(vig in rmds){
     lins <- readLines(vig)
     vignette_yml <- "%%\\VignetteIndexEntry{%s}\n%%\\VignetteEngine{knitr::rmarkdown}\n%%\\VignetteEncoding{UTF-8}\n"
