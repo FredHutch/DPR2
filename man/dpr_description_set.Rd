@@ -7,19 +7,17 @@
 dpr_description_set(path = ".", ...)
 }
 \arguments{
-\item{path}{The full path to the data package. The default is the
-working directory.}
+\item{path}{The full path to the data package. The default is the working
+directory.}
 
-\item{...}{datapakager.yml value overrides. When arguments are
-specified, those arguments are used as the YAML key value pairs
-instead of what is specified by the \code{datapackager.yml}.}
+\item{...}{datapakager.yml value overrides. When arguments are specified,
+those arguments are used as the YAML key value pairs instead of what is
+specified by the \code{datapackager.yml}. See \code{?dpr_description_defaults} for
+the default values that can be set.}
 }
 \value{
 nothing
 }
 \description{
 Write new DESCRIPTION file with new or modified key:value pairs.
-}
-\author{
-jmtaylor
 }

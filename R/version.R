@@ -1,10 +1,10 @@
 #' Private. A function for updating the data digest components by generating
 #' checksums for all .rda files in the specified directory
+#'
 #' @title dpr_update_data_digest
 #' @param path path to data package
 #' @param yml the yml list object used for the build
 #' @return nothing
-#' @author jmtaylor
 #' @noRd
 dpr_update_data_digest <- function(path=".", yml){
   rda <- dpr_list_rda(path)
@@ -28,7 +28,6 @@ dpr_update_data_digest <- function(path=".", yml){
 #' @title dpr_check_git
 #' @param path path to data package
 #' @return a logical value indicating if the conditions are satisfied
-#' @author jmtaylor
 #' @noRd
 dpr_check_git <- function(path){
   git <- c(TRUE, TRUE)
@@ -70,7 +69,6 @@ dpr_validate_data_digest_source <- function(path){
 #' @param path path to data package
 #' @return a data.frame with the names of the data files and the the
 #'   corresponding hash values extracted from the data digest
-#' @author jmtaylor
 #' @export
 dpr_data_digest <- function(path="."){
   data_digest <- dpr_validate_data_digest_source(path)
@@ -100,18 +98,17 @@ dpr_data_checksums <- function(path="."){
   )
 }
 
-#' A data digest comparison table, comparing the current data digest
-#' checksums with the current file checksums in the data directory.
+#' A data digest comparison table, comparing the current data digest checksums
+#' with the current file checksums in the data directory.
 #'
-#' Compare the current checksums for the data listed in the data
-#' directory with the checksums listed in the data digest. The data
-#' digest is only updated when the package is built, not when it is
-#' simply rendered using `dpr_render()`.
+#' Compare the current checksums for the data listed in the data directory with
+#' the checksums listed in the data digest. The data digest is only updated when
+#' the package is built, not when it is simply rendered using `dpr_render()`.
 #' @title dpr_compare_data_digest
 #' @param path path to data package
-#' @return a data.frame with the file name, corresponding data
-#'   in-memory checksum, existing data_digest checksum, and a boolean
-#'   value indicating if they are same or not
+#' @return a data.frame with the file name, corresponding data in-memory
+#'   checksum, existing data_digest checksum, and a boolean value indicating if
+#'   they are same or not
 #' @author jmtaylor
 #' @export
 dpr_compare_data_digest <- function(path="."){
@@ -134,7 +131,6 @@ dpr_compare_data_digest <- function(path="."){
 #' @title dpr_git_hashes_to_envs
 #' @param hashes a character vector of full sha1 hashes
 #' @param path a path to a data package
-#' @return list of envs containing objects loaded from git history
 #' @author jmtaylor
 #' @noRd
 dpr_hashes_to_envs <- function(hashes, path = ".") {
@@ -152,12 +148,10 @@ dpr_hashes_to_envs <- function(hashes, path = ".") {
   return(envs)
 }
 
-#' Private. Return a vector of md5 checksums from a list of
-#' environments.
+#' Private. Return a vector of md5 checksums from a list of environments.
 #'
 #' @title dpr_envs_to_checksums
 #' @param envs environments to extract checksums
-#' @return singleton character vector
 #' @author jmtaylor
 #' @noRd
 dpr_envs_to_checksums <- function(envs){
@@ -175,15 +169,14 @@ dpr_envs_to_checksums <- function(envs){
     }, "")
 }
 
-#' Private. From a vector of hashes load the data and generate the
-#' checksum for the objects in memory.
-#' Return md5 hash of R file loaded into memory from the path provided.
+#' Private. From a vector of hashes load the data and generate the checksum for
+#' the objects in memory.  Return md5 hash of R file loaded into memory from the
+#' path provided.
 #'
 #' @title dpr_hashes_to_checksums
 #' @param hashes a character vector of full sha1 hashes
 #' @param path a path to a data package
 #' @return a character vector of checksums
-#' @author jmtaylor
 #' @noRd
 dpr_hashes_to_checksums <- function(hashes, path){
   dpr_envs_to_checksums(
@@ -221,7 +214,6 @@ dpr_checksum_files <- function(paths){
 #'   performant
 #' @return a data.frame object with the git hash, file name, author name, time
 #'   of creation and md5 checksum of the file
-#' @author jmtaylor
 #' @export
 dpr_data_history <- function(path=".", include_checksums=FALSE){
   if( !dpr_is(path) )
@@ -250,16 +242,15 @@ dpr_data_history <- function(path=".", include_checksums=FALSE){
   return(odb)
 }
 
-#' Load a data version into memory by its hash. Only RDA files in the
-#' data directory will be recalled.
+#' Load a data version into memory by its hash. Only RDA files in the data
+#' directory will be recalled.
 #'
 #' @title dpr_recall_data_version
-#' @param hashes the git hashes of the data to recall; partial hashes
-#'   allowed from 1 to 40 hexadecimal digits
+#' @param hashes the git hashes of the data to recall; partial hashes allowed
+#'   from 1 to 40 hexadecimal digits
 #' @param path the path to the data package
-#' @return a list with names of corresponding .rda object and the
-#'   versions generated from the object
-#' @author jmtaylor
+#' @return a list with names of corresponding .rda object and the versions
+#'   generated from the object
 #' @export
 dpr_recall_data_versions <- function(hashes, path = "."){
   dpr_is(path)

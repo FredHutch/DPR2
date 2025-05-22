@@ -120,16 +120,18 @@ dpr_description_load <- function(path){
   desc::desc(file = path)
 }
 
-#' Get the current datapackager.yml key:value pairs and temporarily
+#' Get the current `datapackager.yml` key:value pairs and temporarily
 #' add to or modify those with with new values. All additions and
-#' modifications happen only in memory, not on disc.
+#' modifications happen only in memory, not on disc. To set on disc,
+#' see `?dpr_yaml_set`.
 #'
 #' @title dpr_yaml_get
 #' @param path The full path to the data package. The default is the
 #'   working directory.
-#' @param ... datapakager.yml value overrides. When arguments are
-#'   specified, those arguments are used as the YAML key:value
-#'   pairs instead of what is specified by the `datapackager.yml`.
+#' @param ... `datapakager.yml` value overrides. When arguments are
+#'   specified, those arguments are used as the YAML key value pairs instead of
+#'   what is specified by the `datapackager.yml` file. For a list of those
+#'   key value pairs and their purposes, see `?dpr_yaml_defaults`.
 #' @return list
 #' @author jmtaylor
 #' @export
@@ -147,16 +149,17 @@ dpr_yaml_get <- function(path=".", ...){
   stop("`path` argument is not a DataPackageR or DPR2 package.")
 }
 
-#' Write new datapackager.yml with new or modified key:value pairs.
+#' Write new `datapackager.yml` with new or modified key:value pairs.
 #'
 #' @title dpr_yaml_set
-#' @param path The full path to the data package. The default is the
-#'   working directory.
-#' @param ... datapakager.yml value overrides. When arguments are
-#'   specified, those arguments are used as the YAML key value pairs
-#'   instead of what is specified by the `datapackager.yml`.
+#' @param path The full path to the data package. The default is the working
+#'   directory.
+#' @param ... `datapakager.yml` value overrides. When arguments are specified,
+#'   those arguments are used as the YAML key value pairs instead of what is
+#'   specified by the `datapackager.yml`. Note, any values can be set here, but
+#'   only those returned by `dpr_yaml_defaults()` are used by DPR2. See
+#'   `?dpr_yaml_defaults` for information on those values.
 #' @return nothing
-#' @author jmtaylor
 #' @export
 dpr_yaml_set <- function(path=".", ...){
   yml <- dpr_yaml_get(path)
@@ -167,13 +170,13 @@ dpr_yaml_set <- function(path=".", ...){
 #' Write new DESCRIPTION file with new or modified key:value pairs.
 #'
 #' @title dpr_description_set
-#' @param path The full path to the data package. The default is the
-#'   working directory.
-#' @param ... datapakager.yml value overrides. When arguments are
-#'   specified, those arguments are used as the YAML key value pairs
-#'   instead of what is specified by the `datapackager.yml`.
+#' @param path The full path to the data package. The default is the working
+#'   directory.
+#' @param ... datapakager.yml value overrides. When arguments are specified,
+#'   those arguments are used as the YAML key value pairs instead of what is
+#'   specified by the `datapackager.yml`. See `?dpr_description_defaults` for
+#'   the default values that can be set.
 #' @return nothing
-#' @author jmtaylor
 #' @export
 dpr_description_set <- function(path=".", ...){
   dpr_is(path)
@@ -190,14 +193,17 @@ dpr_description_set <- function(path=".", ...){
 #' A convenience function for writing data objects to the package data
 #' directory.
 #'
+#' @description `dpr_save` is vecotorized so users may pass a character vector
+#'   of object names found in the calling environment to save to the `data`
+#'   directory when the package is built. All objects are saved as single object
+#'   `Rda` files by the object names that are passed.
 #' @title dpr_save
 #' @param objects Character vector of object names to be saved from the
-#'   environment specified in \code{envir}.
-#' @param path The path to the data package. Defaults to [dpr_path()].
+#'   environment specified in `envir`.
+#' @param path The path to the data package. Defaults to `dpr_path()`.
 #' @param envir The environment to search for objects to save. Defaults to
 #'   calling environment.
-#' @returns The original \code{objects} argument, invisibly.
-#' @author jmtaylor
+#' @returns The original `objects` argument, invisibly.
 #' @export
 dpr_save <- function(objects, path = dpr_path(), envir = parent.frame()){
   if(!is.character(objects))
@@ -207,6 +213,15 @@ dpr_save <- function(objects, path = dpr_path(), envir = parent.frame()){
   }
   invisible(objects)
 }
+
+#' Construct path from data package directory
+#'
+#' @param ... Trailing path components passed to `file.path()`. All arguments must
+#'   be the same length or length one.
+#' @return The normalized path with the additional path components appended.
+#'   Throws an error if no root is found.
+#' @export
+dpr_path <- function(...) rprojroot::find_package_root_file(...)
 
 #' Private. Returns a table of added objects or scripts.
 #'
@@ -242,7 +257,7 @@ dpr_scripts <- function(path = "."){
   dpr_added(path, dpr_yaml_get(path)$process_directory, "scripts")
 }
 
-#' Return a data frame of obejcts currently set to build.
+#' Return a data frame of objects currently set to build.
 #'
 #' The data frame returned by `dpr_objects` displays what objects will be saved
 #' from the processing environments to the `data` directory and reports what
