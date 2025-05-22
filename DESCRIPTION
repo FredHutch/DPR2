@@ -28,4 +28,6 @@ Suggests:
     DataPackageR,
     git2r (>= 0.33.0),
     testthat,
-    lubridate
+    lubridate,
+    knitr
+VignetteBuilder: knitr

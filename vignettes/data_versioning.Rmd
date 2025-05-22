@@ -1,0 +1,121 @@
+---
+title: "Data Versioning"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data Versioning}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+DPR2 offers features to facilitate tracking data versioning throughout a project's lifecycle. This vignette will cover the those features.
+
+```{r echo = FALSE, results = 'hide'}
+
+library(DPR2)
+dpr2 <- "../tests/testthat/dpr2package"
+path <- file.path(tempdir(), "dpr2package")
+file.copy(dpr2, tempdir(), recursive = TRUE)
+
+git2r::init(path = path, branch="main")
+git2r::add(repo = path, path = ".")
+Sys.sleep(1) # odb_blobs appears to be ordered by when, and the smallest unit is 1 sec, adding pauses to get correct sorting
+git2r::commit(repo = path, message="init commit")
+
+suppressMessages(
+  dpr_build(path)
+)
+
+git2r::add(repo = path, path = ".")
+git2r::commit(repo = path, message="Our first build")
+
+irisPath <- file.path(path, "processing/iris.R")
+irisScript <- readLines(irisPath)
+
+irisScript[
+  which(irisScript == "iris$Sepal.Area <- iris$Sepal.Length *  iris$Sepal.Width")
+]<-  "iris$Petal.Area <- iris$Petal.Length * iris$Petal.Width"
+
+writeLines(irisScript, irisPath)
+dpr_build(path)
+
+git2r::add(repo = path, path = ".")
+Sys.sleep(1)
+git2r::commit(repo = path, message="Change sepal area to petal area.")
+
+mtcarsPath <- file.path(path, "processing/mtcars.R")
+mtcarsScript <- readLines(mtcarsPath)
+mtcarsScript[which(mtcarsScript == "mazda <- mtcars[grep(\"Mazda\", row.names(mtcars)),]")] <- "mazda <- mtcars[grep(\"Mazda\", row.names(mtcars)),][1]"
+writeLines(mtcarsScript, mtcarsPath)
+dpr_build(path)
+
+git2r::add(repo = path, path = ".")
+Sys.sleep(1)
+git2r::commit(repo = path, message="Update to mazda cars.")
+
+treesPath <- file.path(path, "processing/trees.Rmd")
+treesScript <- readLines(treesPath)
+treesScript <- c(
+  treesScript[1:which(treesScript == "plot(trees)")],
+  "trees <- trees[1:3,]",
+  treesScript[(which(treesScript == "plot(trees)")+1):length(treesScript)]
+)
+writeLines(treesScript, treesPath)
+dpr_build(path)
+
+git2r::add(repo = path, path = ".")
+Sys.sleep(1)
+git2r::commit(repo = path, message="Trees subsetting")
+
+```
+
+Printing the data object history from a data package under version control and comparing those to the current version of the data package. Here we use the `dpr_data_history` function to get a listing of `rda` files and when they were created, get their git SHA-1 hashes, then fetch those versions using `dpr_recall_data_versions`.
+
+```{r}
+
+history <- dpr_data_history(path=path, include_checksums=TRUE)
+print(history)
+
+irisAreas <- history[history$name == "irisArea.rda",]
+firstIrisHash <- irisAreas[irisAreas$when == min(irisAreas$when), "blob_git_sha1"]
+lastIrisHash <- irisAreas[irisAreas$when == max(irisAreas$when), "blob_git_sha1"]
+
+dataversions <- dpr_recall_data_versions(c(firstIrisHash, lastIrisHash), path)
+
+```
+
+We can then compare the first object check sums between the first and last objects created, and those with the current data_digest. 
+
+```{r}
+
+digest::digest(dataversions[[1]][[1]])
+digest::digest(dataversions[[2]][[1]])
+dpr_data_digest(path)
+
+```
+
+Rendering a package before building it and comparing the object checksums between the refreshed object in the data directory and the the last recorded checksums in the data digest.
+
+```{r}
+
+irisPath <- file.path(path, "processing/iris.R")
+irisScript <- readLines(irisPath)
+
+irisScript <- c(
+  irisScript[1:which(irisScript == "iris$Petal.Area <- iris$Petal.Length * iris$Petal.Width")],
+  "iris$Sepal.Area <- iris$Sepal.Length * iris$Sepal.Width",
+  irisScript[(which(irisScript == "iris$Petal.Area <- iris$Petal.Length * iris$Petal.Width") + 1): length(irisScript)]
+)
+
+writeLines(irisScript, irisPath)
+
+```
+
+And once there may have been changes, we can compare datasets.
+
+```{r}
+
+dpr_render(path)
+dpr_compare_data_digest(path)
+
+```
+

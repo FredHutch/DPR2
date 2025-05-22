@@ -1,0 +1,36 @@
+---
+title: Introduction to DPR2
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to DPR2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# DPR2 - DataPackageR 2
+
+In R, packages are the most accessible way of extending the R language. To demonstrate the new features provided by a package, packages often ship with datasets. What we refer to as a "data package" is an R package where its primary purpose is to provide data, rather than code intended to extend the R language. Adding data to a package is as easy as putting data into the `data` directory of a package's source. Doing simply that however fails to inform users how those data were created, a critical component of reproducible research and information transparency.
+
+DPR2 - DataPackageR 2 - is a tool to help make data packages that are reproducible and transparent. It's a new implementation of the concepts and workflows found in DataPackageR, where DPR2 improves on DataPackageR with better integration with git, encourages the use of `renv`, improves data processing isolation, has a more detailed yaml configuration format, and a more flexible workflow and package source structure.
+
+# Data packaging with DPR2
+
+DPR2 is designed to streamline the entire data packaging process using succinct functions that wrap all the required steps to process data for versioning and sharing as a data package. Source data, processing scripts (both R and Rmd files), and processed data objects are all stored in a DPR2 package source. The entire process from initializing a new data package, to processing data, to building the data package for sharing has been wrapped in convenient functions with a streamlined but flexible workflow. DPR2 lets data packages be worked on by teams developing different datasets at the same time using git branching. To ensure that processing scripts are producing reproducible data, DPR2 by default runs each script in its own R process, but using a shared process is easily done using the DPR2 yaml configuration file.
+
+DPR2 is different enough from DataPackageR that it is not possible to use most DPR2 functions with a DataPackageR data package. When building packages that were initialized using DataPackageR, DPR2 comes with a convenience function that will safely convert the DataPackageR package to a DPR2 package.
+
+See [The DPR2 Workflow](the_dpr2_workflow.html) vignette for a complete guide to using the DPR2 API for building data packages from start to finish.
+
+# Data versioning
+
+Like DataPackageR, DPR2 presents a data digest, an object that tracks the md5 checksums of the data being generated and shared. DPR2 does this differently than DatapackageR to allow for better integration with git version control, where the version of each data object is tracked in a file system instead of a single file. To see data versions as a single table, there is a function call for showing that information.
+
+When using git with DPR2, DPR2 offers functions that allow users to recall data objects from the git history without needing to check-out specific commits first. This allows users to easily compare datasets that may have changed throughout the data package development process. 
+
+See [Data Versioning](data_versioning.html) for more information on how to track and recall data versions using DPR2. 
+
+# Data documentation
+
+When loading a dataset from a data package, users can access a help file for those data using the help operator `?` on the object name, e.g. `?mtcars`. Like DataPackageR, DPR2 offer a convenient way to generate the necessary files for making data documentation that can be accessed using the help operator after the package is built.
+
+See [Data Documentation](data_documentation.html) for more information on how DPR2 helps streamline producing data documentation.
