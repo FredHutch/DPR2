@@ -22,7 +22,7 @@ dpr1_yaml_load <- function(path="."){
 }
 
 #' Private. Converts a DataPackageR DATADIGEST file to a DPR2
-#' data_digest directory. Returns a named list of file and thier
+#' data_digest directory. Returns a named list of file and their
 #' digest values.
 #'
 #' @title dpr1_data_digest_load
@@ -160,7 +160,7 @@ dpr1_clean <- function(path){
 #' the folder `inst/extdata/Logfiles`, and any file in `inst/doc` with
 #' the same name as an `R` or `Rmd` file found in the `data-raw`
 #' or`Logfiles` folders. Modifications to the package `DESCRIPTION`
-#' file are also, made, removeing its `Date`, and `DataVersion`
+#' file are also, made, removing its `Date`, and `DataVersion`
 #' fields.
 #' @title dpr_convert
 #' @param path a path value to init at a specific path, when using the
@@ -183,7 +183,7 @@ dpr_convert <- function(path = "."){
 
 #' Private. Produce consistent error when passing invalid package path.
 #'
-#' @title dpr_is_path
+#' @title dpr_check_path
 #' @param path The relative path to the data package. The default is the
 #'   working directory.
 #' @noRd
