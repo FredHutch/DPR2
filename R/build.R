@@ -74,7 +74,7 @@ process_vignettes <- function(path, processing_dir, vignette_tempdir){
   }
 }
 
-#' Private. A function for fetch all global objects from a callr session.
+#' Private. A function to fetch all global objects from a callr session.
 #'
 #' @param session a callr session
 #' @return a list of objects
