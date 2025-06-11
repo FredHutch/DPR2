@@ -52,6 +52,12 @@ jobs:
         run: |
           sudo apt install -y libgit2-dev
 
+      - name: Install statsrv packages
+        if: ${{ matrix.config.r == '4.0.4' }}
+        run: |
+          R -q -e 'utils::install.packages("remotes")'
+          R -q -e 'remotes::install_version("gh", "1.4.1")'
+
       - uses: r-lib/actions/setup-tinytex@v2
 
       - uses: r-lib/actions/setup-r-dependencies@v2
