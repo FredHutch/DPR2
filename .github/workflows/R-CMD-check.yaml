@@ -47,11 +47,6 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install apt dependencies for all Linux runners
-        if: ${{ contains( matrix.config.os, 'ubuntu') }}
-        run: |
-          sudo apt install -y libgit2-dev
-
       - name: Install statsrv packages
         if: ${{ matrix.config.r == '4.0.4' }}
         run: |
