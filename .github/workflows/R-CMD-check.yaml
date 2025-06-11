@@ -55,6 +55,7 @@ jobs:
       - name: Install statsrv packages
         if: ${{ matrix.config.r == '4.0.4' }}
         run: |
+          sudo apt install -y libx11-dev libcurl4-openssl-dev libssl-dev libgit2-dev libssh2-1-dev libicu-dev libxml2-dev
           R -q -e 'utils::install.packages("remotes")'
           R -q -e 'remotes::install_version("gh", "1.4.1")'
 
