@@ -129,7 +129,7 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
 
   dpr_add_scripts("df_gen.R", path)
 
-  dpr_build(path, write_docs = FALSE)
+  dpr_build(path, write_data_docs = FALSE)
   expect_true(
     length(list.files(file.path(path, "R"))) == 0
   )
