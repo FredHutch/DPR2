@@ -57,7 +57,7 @@ dpr_get_template <- function(regex){
   list.files(system.file("templates", package="DPR2"), regex, full.names = TRUE)
 }
 
-#' This function returns default key value pairs for a DPR2 datapackager.yml
+#' This function returns default key value pairs for a DPR2 `datapackager.yml`
 #' file. These defaults are the same for each package and are read from the
 #' DPR2 installation directory.
 #'
@@ -80,7 +80,7 @@ dpr_get_template <- function(regex){
 #' * build_output          : ../, where the package should be save if the tarball is built
 #'
 #' @title dpr_yaml_defaults
-#' @return a list containing default yaml key-value pairs from datapackager.yml
+#' @return a list containing default yaml key-value pairs from `datapackager.yml`
 #' @export
 dpr_yaml_defaults <- function(){
   return(yaml::read_yaml(dpr_get_template("datapackager.yml$")))
@@ -113,7 +113,7 @@ dpr_description_init_set <- function(desc, pkgp){
   do.call(desc::desc_set, c(desc, file = pkgp))
 }
 
-#' Private. A function that sets datapackager.yml file
+#' Private. A function that sets `datapackager.yml` file
 #' key:values pairs in a new data package.
 #'
 #' @title dpr_yaml_init_set
