@@ -128,7 +128,7 @@ dpr_description_load <- function(path){
 #' @title dpr_yaml_get
 #' @param path The full path to the data package. The default is the
 #'   working directory.
-#' @param ... `datapakager.yml` value overrides. When arguments are
+#' @param ... `datapackager.yml` value overrides. When arguments are
 #'   specified, those arguments are used as the YAML key value pairs instead of
 #'   what is specified by the `datapackager.yml` file. For a list of those
 #'   key value pairs and their purposes, see `?dpr_yaml_defaults`.
@@ -154,7 +154,7 @@ dpr_yaml_get <- function(path=".", ...){
 #' @title dpr_yaml_set
 #' @param path The full path to the data package. The default is the working
 #'   directory.
-#' @param ... `datapakager.yml` value overrides. When arguments are specified,
+#' @param ... `datapackager.yml` value overrides. When arguments are specified,
 #'   those arguments are used as the YAML key value pairs instead of what is
 #'   specified by the `datapackager.yml`. Note, any values can be set here, but
 #'   only those returned by `dpr_yaml_defaults()` are used by DPR2. See
@@ -172,7 +172,7 @@ dpr_yaml_set <- function(path=".", ...){
 #' @title dpr_description_set
 #' @param path The full path to the data package. The default is the working
 #'   directory.
-#' @param ... datapakager.yml value overrides. When arguments are specified,
+#' @param ... datapackager.yml value overrides. When arguments are specified,
 #'   those arguments are used as the YAML key value pairs instead of what is
 #'   specified by the `datapackager.yml`. See `?dpr_description_defaults` for
 #'   the default values that can be set.
@@ -214,7 +214,7 @@ dpr_save <- function(objects, path = dpr_path(), envir = parent.frame()){
   invisible(objects)
 }
 
-#' Construct path from data package directory
+#' Construct path from data package directory.
 #'
 #' @param ... Trailing path components passed to `file.path()`. All arguments must
 #'   be the same length or length one.
