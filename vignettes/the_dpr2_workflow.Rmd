@@ -36,7 +36,7 @@ In this workflow, processing scripts are written to transform source data into a
 
 ## The DPR2 YAML and API
 
-DPR2 was designed so that any package building behavior configurations can be stored in a package's `datapackager.yml` file that lives at the data package source's root directory. This file is generated when the data package is initialized and is maintained by the user. The DPR2 API is designed around this concept, much like the original DataPackageR, however DPR2 also allows for changing the values in that file in an adhoc fashion by using the ellipsis operator in all its function calls that access the values in the configuration yaml file. 
+DPR2 was designed so that any package building behavior configurations can be stored in a package's `datapackager.yml` file that lives at the data package source's root directory. This file is generated when the data package is initialized and is maintained by the user. The DPR2 API is designed around this concept, much like the original DataPackageR; however, DPR2 also allows for changing the values in that file in an adhoc fashion by using the ellipsis operator in all its function calls that access the values in the configuration YAML file. 
 
 ## Initializing a DPR2 package
 
