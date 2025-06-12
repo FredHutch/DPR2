@@ -108,7 +108,7 @@ dpr_yaml_check <- function(yml){
 
 }
 
-#' Private. Load the package DESCRIPTION file into memory.
+#' Private. Load the package `DESCRIPTION` file into memory.
 #'
 #' @title dpr_description_load
 #' @param path the package path
@@ -167,7 +167,7 @@ dpr_yaml_set <- function(path=".", ...){
   yaml::write_yaml(new, file.path(path, "datapackager.yml"))
 }
 
-#' Write new DESCRIPTION file with new or modified key:value pairs.
+#' Write new `DESCRIPTION` file with new or modified key:value pairs.
 #'
 #' @title dpr_description_set
 #' @param path The full path to the data package. The default is the working
@@ -275,10 +275,10 @@ dpr_objects <- function(path = "."){
   dpr_added(path, "data", "objects")
 }
 
-#' Private. Writes added file
+#' Private. Writes added file.
 #'
 #' @title write_added_file
-#' @param added_file the path of the file to hash and add to added
+#' @param added_file the path of the file to hash and add
 #' @param added_type the added type, either 'objects' or 'scripts'
 #' @param path path to a DPR2 data package
 #' @noRd
