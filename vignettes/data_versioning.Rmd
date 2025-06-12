@@ -68,7 +68,7 @@ git2r::commit(repo = path, message="Trees subsetting")
 
 ```
 
-Printing the data object history from a data package under version control and comparing those to the current version of the data package. Here we use the `dpr_data_history` function to get a listing of `rda` files and when they were created, get their git SHA-1 hashes, then fetch those versions using `dpr_recall_data_versions`.
+One feature that DPR2 offers is the ability to print the history of data objects from a version-controlled data package and compare them to the current version. Here we use the `dpr_data_history` function to get a listing of `rda` files, when they were created, and their git SHA-1 hashes.  We can then fetch specific versions using `dpr_recall_data_versions`.
 
 ```{r}
 
