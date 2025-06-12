@@ -83,8 +83,6 @@ cat(
 
 `dpr_path()` is used to refer to other paths within processing scripts and `dpr_save()` to save objects to the `data` directory. Objects saved this way are saved as single object `rda` files, a requirement for DPR2.
 
-DPR2 maintains the DataPackageR functions `project_path`, `project_data_path` and `project_extdata_path` to ensure compatibility with scripts written for DataPackageR, but they are not recommended to use for new scripts as these functions may be removed from future versions of DPR2.
-
 Once a script is added to the processing directory, DPR2 must know that it is a script the user wants processed when the package is built. 
 
 ```{r}

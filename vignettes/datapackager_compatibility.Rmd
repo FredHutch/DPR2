@@ -74,3 +74,5 @@ dpr_yaml_get(dpr1_path)
 ```
 
 DataPackageR used the `data-raw` directory to store data processing scripts. DPR2 uses a new `processing` directory to store those; however, this is configurable in the DPR2 `datapackager.yml` file, and thus converted data packages have this set to the default DataPackageR `data-raw` path.
+
+DPR2 maintains the DataPackageR functions `project_path`, `project_data_path` and `project_extdata_path` to ensure compatibility with scripts written for DataPackageR, but they are not recommended to use for new scripts as these functions may be removed from future versions of DPR2. Many DataPackageR packages may use these, so these have been maintained to ensure minimal changes are required to those processing scripts to function as a DPR2 package.
