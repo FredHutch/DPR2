@@ -215,7 +215,7 @@ dpr_is_dpr1 <- function(path="."){
 }
 
 #' Private. A function to verify whether a specified directory contains a DPR2
-#' package or not
+#' package or not.
 #'
 #' @title dpr_is_dpr2
 #' @param path path to datapackage
@@ -231,7 +231,9 @@ dpr_is_dpr2 <- function(path="."){
 }
 
 #' Private. Throw warning when using deprecated [project_path()] wrappers for
-#' DPR1 compatibility
+#' DPR1 compatibility.
+#'
+#' @title legacy_path_helper_warning
 #' @param fn_nm a function name to show with warning message
 #' @noRd
 legacy_path_helper_warning <- function(fn_nm){
