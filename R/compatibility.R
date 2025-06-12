@@ -21,7 +21,7 @@ dpr1_yaml_load <- function(path="."){
   return(yml)
 }
 
-#' Private. Converts a DataPackageR DATADIGEST file to a DPR2
+#' Private. Converts a DataPackageR `DATADIGEST` file to a DPR2
 #' data_digest directory. Returns a named list of file and their
 #' digest values.
 #'
@@ -151,7 +151,7 @@ dpr1_clean <- function(path){
 
 #' Convert a repository from DataPackageR to DPR2.
 #'
-#' This is a mildly destructive process which convert, adds, and
+#' This is a mildly destructive process which converts, adds, and
 #' removes files to take information from a DataPackageR repository
 #' and put it in the DPR2 format. This function also removes those
 #' files that are no longer needed from DataPackageR by DPR2. This
@@ -160,7 +160,7 @@ dpr1_clean <- function(path){
 #' the folder `inst/extdata/Logfiles`, and any file in `inst/doc` with
 #' the same name as an `R` or `Rmd` file found in the `data-raw`
 #' or`Logfiles` folders. Modifications to the package `DESCRIPTION`
-#' file are also, made, removing its `Date`, and `DataVersion`
+#' file are also made, removing its `Date`, and `DataVersion`
 #' fields.
 #' @title dpr_convert
 #' @param path a path value to init at a specific path, when using the
@@ -215,7 +215,7 @@ dpr_is_dpr1 <- function(path="."){
 }
 
 #' Private. A function to verify whether a specified directory contains a DPR2
-#' package or not
+#' package or not.
 #'
 #' @title dpr_is_dpr2
 #' @param path path to datapackage
@@ -231,7 +231,9 @@ dpr_is_dpr2 <- function(path="."){
 }
 
 #' Private. Throw warning when using deprecated [project_path()] wrappers for
-#' DPR1 compatibility
+#' DPR1 compatibility.
+#'
+#' @title legacy_path_helper_warning
 #' @param fn_nm a function name to show with warning message
 #' @noRd
 legacy_path_helper_warning <- function(fn_nm){

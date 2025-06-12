@@ -108,7 +108,7 @@ dpr_yaml_check <- function(yml){
 
 }
 
-#' Private. Load the package DESCRIPTION file into memory.
+#' Private. Load the package `DESCRIPTION` file into memory.
 #'
 #' @title dpr_description_load
 #' @param path the package path
@@ -128,7 +128,7 @@ dpr_description_load <- function(path){
 #' @title dpr_yaml_get
 #' @param path The full path to the data package. The default is the
 #'   working directory.
-#' @param ... `datapakager.yml` value overrides. When arguments are
+#' @param ... `datapackager.yml` value overrides. When arguments are
 #'   specified, those arguments are used as the YAML key value pairs instead of
 #'   what is specified by the `datapackager.yml` file. For a list of those
 #'   key value pairs and their purposes, see `?dpr_yaml_defaults`.
@@ -154,7 +154,7 @@ dpr_yaml_get <- function(path=".", ...){
 #' @title dpr_yaml_set
 #' @param path The full path to the data package. The default is the working
 #'   directory.
-#' @param ... `datapakager.yml` value overrides. When arguments are specified,
+#' @param ... `datapackager.yml` value overrides. When arguments are specified,
 #'   those arguments are used as the YAML key value pairs instead of what is
 #'   specified by the `datapackager.yml`. Note, any values can be set here, but
 #'   only those returned by `dpr_yaml_defaults()` are used by DPR2. See
@@ -167,12 +167,12 @@ dpr_yaml_set <- function(path=".", ...){
   yaml::write_yaml(new, file.path(path, "datapackager.yml"))
 }
 
-#' Write new DESCRIPTION file with new or modified key:value pairs.
+#' Write new `DESCRIPTION` file with new or modified key:value pairs.
 #'
 #' @title dpr_description_set
 #' @param path The full path to the data package. The default is the working
 #'   directory.
-#' @param ... datapakager.yml value overrides. When arguments are specified,
+#' @param ... datapackager.yml value overrides. When arguments are specified,
 #'   those arguments are used as the YAML key value pairs instead of what is
 #'   specified by the `datapackager.yml`. See `?dpr_description_defaults` for
 #'   the default values that can be set.
@@ -214,7 +214,7 @@ dpr_save <- function(objects, path = dpr_path(), envir = parent.frame()){
   invisible(objects)
 }
 
-#' Construct path from data package directory
+#' Construct path from data package directory.
 #'
 #' @param ... Trailing path components passed to `file.path()`. All arguments must
 #'   be the same length or length one.
@@ -275,10 +275,10 @@ dpr_objects <- function(path = "."){
   dpr_added(path, "data", "objects")
 }
 
-#' Private. Writes added file
+#' Private. Writes added file.
 #'
 #' @title write_added_file
-#' @param added_file the path of the file to hash and add to added
+#' @param added_file the path of the file to hash and add
 #' @param added_type the added type, either 'objects' or 'scripts'
 #' @param path path to a DPR2 data package
 #' @noRd

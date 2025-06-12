@@ -1,5 +1,5 @@
 #' Private. A function for updating the data digest components by generating
-#' checksums for all .rda files in the specified directory
+#' checksums for all .rda files in the specified directory.
 #'
 #' @title dpr_update_data_digest
 #' @param path path to data package
@@ -23,7 +23,7 @@ dpr_update_data_digest <- function(path=".", yml){
 
 }
 
-#' Private. Verifies if necessary conditions are met for accessing Git features
+#' Private. Verifies if necessary conditions are met for accessing Git features.
 #'
 #' @title dpr_check_git
 #' @param path path to data package
@@ -170,7 +170,7 @@ dpr_envs_to_checksums <- function(envs){
 }
 
 #' Private. From a vector of hashes load the data and generate the checksum for
-#' the objects in memory.  Return md5 hash of R file loaded into memory from the
+#' the objects in memory. Return md5 hash of R file loaded into memory from the
 #' path provided.
 #'
 #' @title dpr_hashes_to_checksums
