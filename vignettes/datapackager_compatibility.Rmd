@@ -26,7 +26,7 @@ file.copy(
 )
 ```
 
-To convert a DataPackageR package to use DPR2 simply run `dpr_convert(path)`, setting the path to the DataPackageR package, whereas the default path is the current working directory.
+To convert a DataPackageR package to use DPR2 simply run `dpr_convert(path)`, setting the path to the DataPackageR package, with the default path being the current working directory.
 
 ```{r}
 ## copy test package to temp directory
