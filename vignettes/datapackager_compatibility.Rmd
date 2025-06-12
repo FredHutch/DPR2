@@ -73,4 +73,4 @@ dpr_data_digest(dpr1_path)
 dpr_yaml_get(dpr1_path)
 ```
 
-DataPackageR used the `data-raw` directory to store data processing scripts. DPR2 uses a new `processing` directory to store those, however this is configurable in the DPR2 `datapackager.yml` file, and thus converted data packages has this set to the default DataPackageR `data-raw` path.,
+DataPackageR used the `data-raw` directory to store data processing scripts. DPR2 uses a new `processing` directory to store those; however, this is configurable in the DPR2 `datapackager.yml` file, and thus converted data packages have this set to the default DataPackageR `data-raw` path.
