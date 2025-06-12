@@ -83,7 +83,7 @@ dataversions <- dpr_recall_data_versions(c(firstIrisHash, lastIrisHash), path)
 
 ```
 
-We can then compare the first object check sums between the first and last objects created, and those with the current data_digest. 
+We can use the `dpr_data_digest` function to get a table of the current hashes recorded in the data package. The last object's checksum should match what is in the `dpr_data_digest` output table.
 
 ```{r}
 
