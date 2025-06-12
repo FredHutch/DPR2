@@ -27,7 +27,7 @@ This vignette demonstrates the DPR2 workflow for building data packages. We will
 1. Create a folder with the name of the new data package.
 2. Start an R session with that folder set as the working directory.
 3. Load the DPR2 library with `library(DPR2)`
-4. Initialize the data data package with `dpr_init()`
+4. Initialize the data package with `dpr_init()`
 5. Add any nessessary source data to the folder `inst/extdata`
 6. Add your processing scripts to the folder `processing`
 7. Build the data package with `dpr_build()`
