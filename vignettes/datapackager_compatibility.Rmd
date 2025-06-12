@@ -45,7 +45,7 @@ library(DPR2)
 dpr_convert(dpr1_path)
 ```
 
-Notice that the above conversion does do a bit of digest validation, where in the above example on of the tracked files has a different checksum than what is reported in the digest. 
+Notice that the above conversion does do a bit of digest validation, where in the above example, one of the tracked files has a different checksum than what is reported in the digest. 
 
 Converting a package using `dpr_convert()` deletes several files created by DataPackageR that DPR2 does not use. 
 
