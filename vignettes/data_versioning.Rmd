@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-DPR2 offers features to facilitate tracking data versioning throughout a project's lifecycle. This vignette will cover the those features.
+DPR2 offers features to facilitate tracking data versioning throughout a project's lifecycle. This vignette will cover those features.
 
 ```{r echo = FALSE, results = 'hide'}
 
