@@ -138,7 +138,7 @@ vignette(package="my_data_package")
 
 # Using Git
 
-It is highly recommended that git is used along side of DPR2. Git version control allows users to store versions of data and processing scripts in a fashion that is easy revert and recall from. DPR2 was built to allow parallel version of an analysis to be merge together reconciling differences using git. DPR2 offers a handful of tools to simplify recalling different versions of a dataset which is explained in the [Data Versioning](data_versioning.html) vignette. To learn about how to use git in general see the free book [Pro Git](https://git-scm.com/book/en/v2).
+It is highly recommended that git be used alongside DPR2. Git version control allows users to store versions of data and processing scripts in a fashion that is easy to revert to and recall from. DPR2 was built to allow parallel versions of an analysis to be merged together, reconciling differences using git. DPR2 offers a handful of tools to simplify recalling different versions of a dataset, which is explained in the [Data Versioning](data_versioning.html) vignette. To learn about how to use git in general, see the free book [Pro Git](https://git-scm.com/book/en/v2).
 
 # Using Renv
 
