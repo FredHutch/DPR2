@@ -47,14 +47,19 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install apt dependencies for all Linux runners
-        if: ${{ contains( matrix.config.os, 'ubuntu') }}
+      - name: Install statsrv packages
+        if: ${{ matrix.config.r == '4.0.4' }}
         run: |
-          sudo apt install -y libgit2-dev
+          sudo apt install -y libx11-dev libcurl4-openssl-dev libssl-dev libgit2-dev libssh2-1-dev libicu-dev libxml2-dev
+          R -q -e 'utils::install.packages(c("remotes", "rcmdcheck"))'
+          R -q -e 'remotes::install_version("gh", "1.4.1")'
+          R -q -e 'utils::install.packages(c("rmarkdown", "roxygen2", "yaml", "DataPackageR", "git2r", "testthat", "lubridate"))'
+        # previous line can be unhardcoded more easily (cf. VISCtemplates) once DPR2 is a public repo
 
       - uses: r-lib/actions/setup-tinytex@v2
 
       - uses: r-lib/actions/setup-r-dependencies@v2
+        if: ${{ matrix.config.r != '4.0.4' }}
         with:
           extra-packages: any::rcmdcheck
           needs: check
