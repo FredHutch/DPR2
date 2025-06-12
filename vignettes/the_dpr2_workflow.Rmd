@@ -100,7 +100,7 @@ dpr_add_scripts("my_process.Rmd")
 * build the package tarball 
 * install the package in the current R environment
 
-`dpr_render` can be used before `dpr_build` if the user doesn't immediately want to build the package, but instead is interested if the package can be built successfully or if the associated vignettes are rendered correctly.
+`dpr_render` can be used before `dpr_build` if the user doesn't immediately want to build the package, but instead is interested in checking if the package can be built successfully or if the associated vignettes are rendered correctly.
 
 ```{r render}
 dpr_render()
