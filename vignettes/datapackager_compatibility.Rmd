@@ -59,7 +59,7 @@ Converting a package using `dpr_convert()` deletes several files created by Data
 
 `dpr_convert()`  also modifies the package's DataPackageR `DESCRIPTION` file, removing its `Date`, and `DataVersion` fields.
 
-Although the `DATADIGEST` file is deleted, DPR2 does maintain that information, but uses a directory found in `inst` to do so, and DPR2 provides the `dpr_data_digest` function for assembling the contents of the new data digest format into a tablular object. See [Data Versioning](data_versioning.html) for more information regarding how to use the new data digest format.
+Although the `DATADIGEST` file is deleted, DPR2 does maintain that information, but uses a directory found in `inst` to do so. DPR2 provides the `dpr_data_digest` function for assembling the contents of the new data digest format into a tabular object. See [Data Versioning](data_versioning.html) for more information regarding how to use the new data digest format.
 
 ```r
 ## view the new data digest
