@@ -32,7 +32,7 @@ This vignette demonstrates the DPR2 workflow for building data packages. We will
 6. Add your processing scripts to the folder `processing`
 7. Build the data package with `dpr_build()`
 
-In this workflow, processing scripts are written to transform source data into analysis data. Static vignettes and documentation are rendered from those script and any data that is generated can be saved to the package use `dpr_save()`.
+In this workflow, processing scripts are written to transform source data into analysis data. Static vignettes and documentation are rendered from those scripts, and any data that is generated can be saved to the package using `dpr_save()`.
 
 ## The DPR2 YAML and API
 
