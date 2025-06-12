@@ -85,7 +85,7 @@ get_callr_globals <- function(session){
   return(session$run(function() as.list(globalenv())))
 }
 
-#' Private. Render in separate callr R process(es) with error handling
+#' Private. Render in separate callr R process(es) with error handling.
 #'
 #' @param files_to_process Character vector of file paths to be rendered
 #' @param render_args Named list of arguments to be passed to
