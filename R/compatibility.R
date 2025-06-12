@@ -151,7 +151,7 @@ dpr1_clean <- function(path){
 
 #' Convert a repository from DataPackageR to DPR2.
 #'
-#' This is a mildly destructive process which convert, adds, and
+#' This is a mildly destructive process which converts, adds, and
 #' removes files to take information from a DataPackageR repository
 #' and put it in the DPR2 format. This function also removes those
 #' files that are no longer needed from DataPackageR by DPR2. This
@@ -160,7 +160,7 @@ dpr1_clean <- function(path){
 #' the folder `inst/extdata/Logfiles`, and any file in `inst/doc` with
 #' the same name as an `R` or `Rmd` file found in the `data-raw`
 #' or`Logfiles` folders. Modifications to the package `DESCRIPTION`
-#' file are also, made, removing its `Date`, and `DataVersion`
+#' file are also made, removing its `Date`, and `DataVersion`
 #' fields.
 #' @title dpr_convert
 #' @param path a path value to init at a specific path, when using the
