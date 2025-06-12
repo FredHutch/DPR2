@@ -34,7 +34,7 @@ dpr_purge_data_directory <- function(path=".", yml){
 #' @param path the data package path to save the processed vignettes to.
 #' @param processing_dir the location processing scripts are in.
 #' @param vignette_tempdir the temp location vignettes were saved to.
-#' @return does not return anything. Modifies the vignette `.Rmd` files as a side effect. 
+#' @return No return value. Modifies vignette files as a side effect.
 #' @noRd
 process_vignettes <- function(path, processing_dir, vignette_tempdir){
   vignettes_dir <- file.path(path, 'vignettes')
@@ -78,8 +78,8 @@ process_vignettes <- function(path, processing_dir, vignette_tempdir){
 
 #' Private. A function to fetch all global objects from a callr session.
 #'
-#' @param session a callr session
-#' @return a list of objects
+#' @param session a callr session object
+#' @return a list of objects in the global environment
 #' @noRd
 get_callr_globals <- function(session){
   return(session$run(function() as.list(globalenv())))
@@ -236,7 +236,7 @@ dpr_render <- function(path=".", ...){
 #' `dpr_build` wraps many DPR2 processes in a single call: renders
 #' processing scripts, updates data digest, builds package to an installable
 #' tarball, and installs the tarball. Each of these processes can be
-#' controlled from the `datapackager.yml` file. Only th processing script
+#' controlled from the `datapackager.yml` file. Only the processing script
 #' rendering function is exported to users. See `dpr_render` for more
 #' information regarding rendering. For more information regarding
 #' configuration options, see `?dpr_yaml_defaults`.
