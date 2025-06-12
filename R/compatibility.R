@@ -21,7 +21,7 @@ dpr1_yaml_load <- function(path="."){
   return(yml)
 }
 
-#' Private. Converts a DataPackageR DATADIGEST file to a DPR2
+#' Private. Converts a DataPackageR `DATADIGEST` file to a DPR2
 #' data_digest directory. Returns a named list of file and their
 #' digest values.
 #'
