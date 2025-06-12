@@ -17,7 +17,7 @@ dpr_check_dpr <- function(path){
   }
 }
 
-#' Private. Updates .Rbuildignore and .gitignore to use DPR2 practices.
+#' Private. Updates `.Rbuildignore` and `.gitignore` to use DPR2 practices.
 #'
 #' @title dpr_update_ignores
 #' @param path the package path
@@ -45,7 +45,7 @@ dpr_update_ignores <- function(path){
   )
 }
 
-#' A private function that returns a full path of file from installed templates
+#' Private. A function that returns file paths from the installed `templates`
 #' directory.
 #'
 #' @title dpr_get_template
@@ -58,11 +58,11 @@ dpr_get_template <- function(regex){
 }
 
 #' This function returns default key value pairs for a DPR2 datapackager.yml
-#' file. These defaults are the same for each package and are read from the the
+#' file. These defaults are the same for each package and are read from the
 #' DPR2 installation directory.
 #'
 #' The keys returned here are required for all DPR2 data packages but the users
-#' may set valid value to them by using `dpr_yaml_set(...)` or simply editing
+#' may set valid values to them by using `dpr_yaml_set(...)` or simply editing
 #' the `datapackager.yml` file manually. Below is a list of the keys, their
 #' default values, and any other valid values when applicable.
 #'
@@ -87,10 +87,10 @@ dpr_yaml_defaults <- function(){
 }
 
 #' This function returns default key:value pairs for the data package
-#' DESCRIPTION file.
+#' `DESCRIPTION` file.
 #'
 #' @title dpr_description_defaults
-#' @return a list containing default metadata from the DESCRIPTION file
+#' @return a list containing default metadata from the `DESCRIPTION` file
 #' @export
 dpr_description_defaults <- function(){
   defd <- dpr_get_template("DESCRIPTION")
@@ -101,12 +101,12 @@ dpr_description_defaults <- function(){
   )
 }
 
-#' Private. A function that sets and generates a DESCRIPTION file key:values
+#' Private. A function that sets and generates a `DESCRIPTION` file key:values
 #' pairs in a new data package.
 #'
 #' @title dpr_description_init_set
 #' @param desc an R desc object containing a list of metadata fields and
-#'   corresponding values to set in the DESCRIPTION file
+#'   corresponding values to set in the `DESCRIPTION` file
 #' @param pkgp the package path
 #' @noRd
 dpr_description_init_set <- function(desc, pkgp){
@@ -128,29 +128,29 @@ dpr_yaml_init_set <- function(yml, pkgp){
 
 #' A function that provides a convenient way to initialize a YAML configuration
 #' by merging default settings with user specific values to the
-#' datapackager.yml file's key:value pairs. If no  arguments are provided, it
-#' will return the `datapackager.yml` file  default values. see `?dpr_yaml_defaults`
+#' `datapackager.yml` file's key:value pairs. If no  arguments are provided, it
+#' will return the `datapackager.yml` file  default values. See `?dpr_yaml_defaults`
 #' for a list of default values, or call this function with no arguments.
 #'
 #' @title dpr_yaml_init
-#' @param ... Arguments are treated as key value pairs for the datapackager.yml
+#' @param ... Arguments are treated as key value pairs for the `datapackager.yml`
 #'   file.
-#' @return A list of key:value pairs for generating a datapackager.yml file.
+#' @return A list of key:value pairs for generating a `datapackager.yml` file.
 #' @export
 dpr_yaml_init <- function(...){
   utils::modifyList(dpr_yaml_defaults(), list(...), keep.null = TRUE)
 }
 
 #' A function that provides a convenient way to initialize a package's
-#' DESCRIPTION file by merging default settings with user specific values to the
-#' DESCRIPTION file's key:value pairs. If no arguments are provided, it will
+#' `DESCRIPTION` file by merging default settings with user specific values to the
+#' `DESCRIPTION` file's key:value pairs. If no arguments are provided, it will
 #' return the default values. See `dpr_description_defaults()` for a list of
 #' default values, or call this function with no arguments.
 #'
 #' @title dpr_description_init
 #' @param ... Arguments are treated as key value pairs for the package
-#'   DESCRIPTION file.
-#' @return A list of key:value pairs for generating a DESCRIPTION file.
+#'   `DESCRIPTION` file.
+#' @return A list of key:value pairs for generating a `DESCRIPTION` file.
 #' @author jmtaylor
 #' @export
 dpr_description_init <- function(...){
@@ -162,7 +162,7 @@ dpr_description_init <- function(...){
 
 #' Initialize a data package by creating a structured directory skeleton for a
 #' new R package. Sets up essential directories, initializes package metadata in
-#' datapackager.yml and DESCRIPTION files as described by [dpr_yaml_init()] and
+#' the `datapackager.yml` and `DESCRIPTION` files as described by [dpr_yaml_init()] and
 #' [dpr_description_init()] function calls.
 #'
 #' @title dpr_create
@@ -218,13 +218,13 @@ dpr_create <- function(path = ".", yaml = dpr_yaml_init(), desc = dpr_descriptio
 
 }
 
-#' A wrapper for dpr_create that uses the parent directory as the location to
+#' A wrapper for `dpr_create` that uses the parent directory as the location to
 #' create the data package, setting the package name as the current directory.
 #'
 #' @title dpr_init
 #' @author jmtaylor
-#' @param path a path value to init at a specific path, when using the default
-#'   the current working directory is used.
+#' @param path a path value to init at a specific path. The default
+#'   path is the current working directory.
 #' @param yaml A returned list from [dpr_yaml_init()]
 #' @param desc A returned list from [dpr_description_init()]. The default
 #'   argument sets the package name to the name of the directory containing the
