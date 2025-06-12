@@ -110,11 +110,16 @@ writeLines(irisScript, irisPath)
 
 ```
 
+```{r}
+
+dpr_render(path)
+
+```
+
 Once we have rendered and changes are detected, we can compare datasets using `dpr_compare_data_digest`.
 
 ```{r}
 
-dpr_render(path)
 dpr_compare_data_digest(path)
 
 ```
