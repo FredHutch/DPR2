@@ -57,7 +57,7 @@ Converting a package using `dpr_convert()` deletes several files created by Data
 * `inst/extdata/Logfiles`, 
 * any file in `inst/doc` with the same name as an `R` or `Rmd` file found in the `data-raw` or`Logfiles`
 
-`dpr_convert()`  also modifies the package `DESCRIPTION`, removeing its `Date`, and `DataVersion` fields.
+`dpr_convert()`  also modifies the package's DataPackageR `DESCRIPTION` file, removing its `Date`, and `DataVersion` fields.
 
 Although the `DATADIGEST` file is deleted, DPR2 does maintain that information, but uses a directory found in `inst` to do so, and DPR2 provides the `dpr_data_digest` function for assembling the contents of the new data digest format into a tablular object. See [Data Versioning](data_versioning.html) for more information regarding how to use the new data digest format.
 
