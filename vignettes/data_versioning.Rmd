@@ -93,7 +93,7 @@ dpr_data_digest(path)
 
 ```
 
-Rendering a package before building it and comparing the object checksums between the refreshed object in the data directory and the the last recorded checksums in the data digest.
+Below, we render a package before building it to compare the object checksums between the refreshed object in the data directory.
 
 ```{r}
 
