@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 ## Converting a DataPackageR data package to use DPR2
 
-Sometimes users may encounter datapackages created by DataPackageR. DPR2 has the function `dpr_convert` which converts a DataPackageR package into a DPR2 package. In this example we will copy out DataPackageR test package to a temp directory to demonstrate the DPR2 conversion function.
+Sometimes users may encounter datapackages created by DataPackageR. DPR2 has the function `dpr_convert` which converts a DataPackageR package into a DPR2 package. In this example we will copy our DataPackageR test package to a temp directory to demonstrate the DPR2 conversion function.
 
 ```{r echo = T}
 file.copy(
