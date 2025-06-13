@@ -16,6 +16,9 @@ dpr2 <- "../tests/testthat/dpr2package"
 path <- file.path(tempdir(), "dpr2package")
 file.copy(dpr2, tempdir(), recursive = TRUE)
 
+dpr_init(path)
+dpr_add_scripts(list.files(file.path(path, "processing")), path)
+
 git2r::init(path = path, branch="main")
 git2r::add(repo = path, path = ".")
 Sys.sleep(1) # odb_blobs appears to be ordered by when, and the smallest unit is 1 sec, adding pauses to get correct sorting
@@ -95,7 +98,7 @@ dpr_data_digest(path)
 
 Below, we render a package before building it to compare the object checksums between the refreshed object in the data directory.
 
-```{r}
+```{r, echo = F}
 
 irisPath <- file.path(path, "processing/iris.R")
 irisScript <- readLines(irisPath)
