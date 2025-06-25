@@ -154,7 +154,7 @@ cat(
 
 DPR2 leverages `dpr_compare_data_digest()` to compare the checksums of objects in the `data/` directory with their recorded digests. This allows DPR2 to update `.R` documentation files only when changes are detected in the underlying data. If no new objects have been added and no existing objects have changed, DPR2 outputs a message indicating that no data documentation was generated.
 
-Since existing documentation files are overwritten when a checksum change is detected, users are encouraged to save any custom edits such as descriptions, source references, or links so they can be copied into the updated version if needed.
+Since existing documentation files are overwritten when a checksum change is detected, users are encouraged to save any custom edits such as descriptions, source references, or links so they can be copied into the updated version if needed. If data does not change, no documentation will be overwritten.
 
 ```{r, include=FALSE}
 code_block <- c(
