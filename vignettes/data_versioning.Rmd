@@ -16,7 +16,10 @@ dpr2 <- "../tests/testthat/dpr2package"
 path <- file.path(tempdir(), "dpr2package")
 file.copy(dpr2, tempdir(), recursive = TRUE)
 
-dpr_init(path)
+suppressWarnings(
+  dpr_init(path)
+)
+
 dpr_add_scripts(list.files(file.path(path, "processing")), path)
 
 git2r::init(path = path, branch="main")
@@ -93,6 +96,17 @@ We can use the `dpr_data_digest` function to get a table of the current hashes r
 digest::digest(dataversions[[1]][[1]])
 digest::digest(dataversions[[2]][[1]])
 dpr_data_digest(path)
+
+```
+
+We can inspect the changes between the two versions using `diffdf::diffdf`.
+
+```{r}
+
+diffdf::diffdf(
+  dataversions[[1]][[1]],
+  dataversions[[2]][[1]]
+)
 
 ```
 
