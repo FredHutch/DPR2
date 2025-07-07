@@ -84,8 +84,24 @@ test_that("check that delete_unused_doc_files accurately deletes unused R doc fi
   # should have removed df1.R
   expect_true(!"df1.R" %in% list.files(file.path(path, "R")))
 
+  # test that non-data doc files do not get removed
+  writeLines(
+    c(
+      "#' Example function",
+      "#' @param x input",
+      "#' @return output",
+      "ex_func <- function(x) {x + 1}"
+    ),
+    file.path(path, "R/test_func.R")
+  )
+
+  delete_unused_doc_files(path)
+
+  expect_true("test_func.R" %in% list.files(file.path(path, "R")))
+
   unlink(path, recursive = TRUE)
   cleanup(tdir)
+
 })
 
 test_that("check that write_doc_file writes documentation files correctly", {
