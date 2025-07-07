@@ -98,7 +98,7 @@ testthat::test_that("checking package data history with git", {
   Sys.sleep(1)
   git2r::commit(repo = path, message="commit 4")
 
-  writeLines(gsub("save\\(yml", "save(yml, objYml1", readLines(script)), script)
+  writeLines(gsub("save\\(myyaml", "save(myyaml, objYml1", readLines(script)), script)
   expect_warning(
     dpr_build(path)
   )
@@ -110,7 +110,7 @@ testthat::test_that("checking package data history with git", {
   expect_warning(
     dataHistory <- dpr_data_history(path=path, include_checksums=TRUE)
   )
-  
+
   expect_equal( ncol(dataHistory), 5 )
   expect_equal( nrow(dataHistory), 10 )
   expect_true( all(row.names(dataHistory) == 1:nrow(dataHistory)) )
@@ -134,7 +134,7 @@ testthat::test_that("checking package data history with git", {
 
   expect_true(
     all(
-      c("mydataframe", "df") == sapply(dpr_recall_data_versions(fullHash, path), names)
+      c("mydataframe", "mydataframe_rmd") == sapply(dpr_recall_data_versions(fullHash, path), names)
     )
   )
 

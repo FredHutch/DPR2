@@ -268,8 +268,7 @@ dpr_objects <- function(path = "."){
 #' @param path path to a DPR2 data package
 #' @noRd
 write_added_file <- function(added_file, added_type, path = "."){
-  writeBin(
-    raw(),
+  file.create(
     file.path(path, dpr_yaml_get(path)$to_build_directory, added_type, paste0(basename(added_file), "_"))
   )
 }
@@ -363,3 +362,12 @@ dpr_rm_scripts <- function(scripts, path = "."){
 dpr_rm_objects <- function(objects, path = "."){
   dpr_rm_added(objects, "objects", path)
 }
+
+#' Construct path from data package directory
+#'
+#' @param ... Trailing path components passed to `file.path()`. All arguments must
+#'   be the same length or length one.
+#' @return The normalized path with the additional path components appended.
+#'   Throws an error if no root is found.
+#' @export
+dpr_path <- function(...) rprojroot::find_package_root_file(...)
