@@ -1,0 +1,72 @@
+---
+title: "DataPackageR Compatibility"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{DataPackageR Compatibility}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Converting a DataPackageR data package to use DPR2
+
+Sometimes users may encounter datapackages created by DataPackageR. DPR2 has the function `dpr_convert` which converts a DataPackageR package into a DPR2 package. In this example we will copy our DataPackageR test package to a temp directory to demonstrate the DPR2 conversion function.
+
+To convert a DataPackageR package to use DPR2 simply run `dpr_convert(path)`, setting the path to the DataPackageR package, with the default path being the current working directory.
+
+```{r echo = F, results = F}
+## copy test package to temp directory
+file.copy(
+  "../tests/testthat/dpr1package/",
+  tempdir(),
+  recursive = TRUE
+)
+
+dpr1_path <- file.path(tempdir(), "dpr1package")
+```
+
+```{r}
+## load DPR2 
+library(DPR2)
+
+## convert DataPackageR package to the DPR2 format 
+dpr_convert(dpr1_path)
+```
+
+This conversion does data digest validation, where in the above example, one of the tracked files has a different checksum than what is reported in the digest. 
+
+Converting a package using `dpr_convert()` deletes several files created by DataPackageR that DPR2 does not use: 
+
+* `DATADIGEST`
+* `NEWS.md`
+* `Read-and-delete-me`,
+* `R/documentation.R`
+* `data-raw/documentation.R`,
+* `inst/extdata/Logfiles`, 
+* any file in `inst/doc` with the same name as an `R` or `Rmd` file found in the `data-raw` or`Logfiles`
+
+`dpr_convert()`  also modifies the package's DataPackageR `DESCRIPTION` file, removing its `Date`, and `DataVersion` fields.
+
+Although the `DATADIGEST` file is deleted, DPR2 does maintain that information, but uses a directory found in `inst` to do so. DPR2 provides the `dpr_data_digest` function for assembling the contents of the new data digest format into a tabular object. See [Data Versioning](data_versioning.html) for more information regarding how to use the new data digest format.
+
+```{r}
+## view the new data digest
+dpr_data_digest(dpr1_path)
+```
+
+`dpr_convert` also translates the orginal `DataPackageR` yaml file into a DPR2 compatible format. Examining the `datapackager.yml` file, we see the yaml configuration for the DataPackageR package is converted to DPR2 compatible settings.
+
+```{r}
+## view the new yaml file
+dpr_yaml_get(dpr1_path)
+```
+
+DataPackageR used the `data-raw` directory to store data processing scripts. DPR2 uses a new `processing` directory to store those; however, this is configurable in the DPR2 `datapackager.yml` file, and thus converted data packages have this set to the default DataPackageR `data-raw` path.
+
+DPR2 maintains the DataPackageR functions `project_path`, `project_data_path` and `project_extdata_path` to ensure compatibility with scripts written for DataPackageR, but they are not recommended to use for new scripts as these functions may be removed from future versions of DPR2. Many DataPackageR packages may use these, so these have been maintained to ensure minimal changes are required to those processing scripts to function in a DPR2 package.

@@ -26,6 +26,9 @@ Imports:
 License: MIT + file LICENSE
 Suggests:
     DataPackageR,
+    diffdf,
     git2r (>= 0.33.0),
-    testthat,
-    lubridate
+    knitr,
+    lubridate,
+    testthat
+VignetteBuilder: knitr
