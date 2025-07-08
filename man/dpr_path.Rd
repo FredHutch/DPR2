@@ -5,6 +5,8 @@
 \title{Construct path from data package directory}
 \usage{
 dpr_path(...)
+
+dpr_path(...)
 }
 \arguments{
 \item{...}{Trailing path components passed to \code{file.path()}. All arguments must
@@ -13,7 +15,12 @@ be the same length or length one.}
 \value{
 The normalized path with the additional path components appended.
 Throws an error if no root is found.
+
+The normalized path with the additional path components appended.
+Throws an error if no root is found.
 }
 \description{
+Construct path from data package directory
+
 Construct path from data package directory
 }

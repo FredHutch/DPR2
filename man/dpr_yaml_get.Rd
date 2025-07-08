@@ -10,17 +10,19 @@ dpr_yaml_get(path = ".", ...)
 \item{path}{The full path to the data package. The default is the
 working directory.}
 
-\item{...}{datapakager.yml value overrides. When arguments are
-specified, those arguments are used as the YAML key:value
-pairs instead of what is specified by the \code{datapackager.yml}.}
+\item{...}{\code{datapakager.yml} value overrides. When arguments are
+specified, those arguments are used as the YAML key value pairs instead of
+what is specified by the \code{datapackager.yml} file. For a list of those
+key value pairs and their purposes, see \code{?dpr_yaml_defaults}.}
 }
 \value{
 list
 }
 \description{
-Get the current datapackager.yml key:value pairs and temporarily
+Get the current \code{datapackager.yml} key:value pairs and temporarily
 add to or modify those with with new values. All additions and
-modifications happen only in memory, not on disc.
+modifications happen only in memory, not on disc. To set on disc,
+see \code{?dpr_yaml_set}.
 }
 \author{
 jmtaylor

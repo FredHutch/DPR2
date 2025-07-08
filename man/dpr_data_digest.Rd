@@ -17,6 +17,3 @@ corresponding hash values extracted from the data digest
 Return the current hashes recorded to the data digest directory generated
 during the last build.
 }
-\author{
-jmtaylor
-}

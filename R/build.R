@@ -32,7 +32,9 @@ dpr_purge_data_directory <- function(path=".", yml){
 #' Private. A function for making vignette files from rendered processing scripts.
 #'
 #' @param path the data package path to save the processed vignettes to.
-#' @param temp the temp location vignettes were saved to.
+#' @param processing_dir the location processing scripts are in.
+#' @param vignette_tempdir the temp location vignettes were saved to.
+#' @return No return value. Modifies vignette files as a side effect.
 #' @noRd
 process_vignettes <- function(path, processing_dir, vignette_tempdir){
   vignettes_dir <- file.path(path, 'vignettes')
@@ -74,22 +76,22 @@ process_vignettes <- function(path, processing_dir, vignette_tempdir){
   }
 }
 
-#' Private. A function for fetch all global objects from a callr session.
+#' Private. A function to fetch all global objects from a callr session.
 #'
-#' @param session a callr session
-#' @return a list of objects
+#' @param session a callr session object
+#' @return a list of objects in the global environment
 #' @noRd
 get_callr_globals <- function(session){
   return(session$run(function() as.list(globalenv())))
 }
 
-#' Private. Render in separate callr R process(es) with error handling
+#' Private. Render in separate callr R process(es) with error handling.
 #'
 #' @param files_to_process Character vector of file paths to be rendered
-#' @param process_args Named list of arguments to be passed to
+#' @param render_args Named list of arguments to be passed to
 #'   [rmarkdown::render()]
 #' @param render_mode The render environment mode from datapackager.yml
-#'   \code{render_env_mode}
+#'   `render_env_mode`
 #' @return A list of objects created by all of the processing files
 #' @noRd
 callr_render <- function(files_to_process, render_args, render_mode){
@@ -127,18 +129,27 @@ callr_render <- function(files_to_process, render_args, render_mode){
   return(objs)
 }
 
-#' Process and render all processing scripts defined in the datapackager.yml
+#' Process and render all processing scripts defined in the `datapackager.yml`
 #' configuration file. Does not build or install the data package. For full
-#' package build and installation, use the dpr_build function.
+#' package build and installation, use the `dpr_build` function.
 #'
+#' `dpr_render` is the primary process that renders processing
+#' scripts to vignettes and data. This function can be run in two modes:
+#' isolate or share. This mode is set in the `datapackager.yml` file's
+#' `render_env_mode`'s value.  When the `isolate` mode is set, each
+#' processing script is run in a separate R session. When the `share`
+#' mode is set, each process is run in the same session, which enables each
+#' process to use variables defined by previous processing scripts for the
+#' current `dpr_render` call.
 #' @title dpr_render
-#' @param path The relative path to the data package. The default is the
-#'   working directory.
-#' @param ... datapakager.yml value overrides. When arguments are
-#'   specified, those arguments are used as the YAML key value pairs
-#'   instead of what is specified by the `datapackager.yml`.
+#' @param path The relative path to the data package. The default is the working
+#'   directory.
+#' @param ... `datapackager.yml` value overrides. When arguments are
+#'   specified, those arguments are used as the YAML key value pairs instead of
+#'   what is specified by the `datapackager.yml` file. For a list of those
+#'   key value pairs and their purposes, see `?dpr_yaml_defaults`.
 #' @return does not return anything but performs rendering, processing and
-#' data-saving operation defined in configuration file
+#'   data-saving operations as defined in `datapackager.yml`
 #' @author jmtaylor
 #' @export
 dpr_render <- function(path=".", ...){
@@ -160,7 +171,7 @@ dpr_render <- function(path=".", ...){
 
   # Prepare to render
   if(is.null(yml$process_on_build) | length(yml$process_on_build) == 0){
-    stop("No files specified to process in `to_build/scripts`. See datapackager.yml file.")
+    stop("No files specified to process in `to_build/scripts`. See `?dpr_add_scripts`.")
   }
 
   vignette_tempdir <- tempfile()
@@ -217,16 +228,27 @@ dpr_render <- function(path=".", ...){
   }
 }
 
-#' Process, render and build data package.
+#' Build the data package. This includes processing and rendering all processing
+#' scripts defined in the `datapackager.yml` configuration file and
+#' additionally will build and install the data package if configured to do so
+#' in the `datapackager.yml`.
 #'
+#' `dpr_build` wraps many DPR2 processes in a single call: renders
+#' processing scripts, updates data digest, builds package to an installable
+#' tarball, and installs the tarball. Each of these processes can be
+#' controlled from the `datapackager.yml` file. Only the processing script
+#' rendering function is exported to users. See `dpr_render` for more
+#' information regarding rendering. For more information regarding
+#' configuration options, see `?dpr_yaml_defaults`.
 #' @title dpr_build
-#' @param path The relative path to the data package. The default is the
-#'   working directory.
-#' @param ... datapackager.yml value overrides. When arguments are specified,
-#'   those arguments are used as the YAML key value pairs instead of what is
-#'   specified by the `datapackager.yml`.
-#' @return does not return any value. It performs rendering, building and
-#'   installing the package based on the configuration file
+#' @param path The relative path to the data package. The default is the working
+#'   directory.
+#' @param ... `datapakager.yml` value overrides. When arguments are
+#'   specified, those arguments are used as the YAML key value pairs instead of
+#'   what is specified by the `datapackager.yml` file. For a list of those
+#'   key value pairs and their purposes, see `?dpr_yaml_defaults`.
+#' @return does not return anything but performs rendering, processing and
+#'   data-saving operations as defined in datapackager.yml`
 #' @author jmtaylor
 #' @export
 dpr_build <- function(path=".", ...){

@@ -17,9 +17,12 @@ Convert a repository from DataPackageR to DPR2.
 This is a mildly destructive process which convert, adds, and
 removes files to take information from a DataPackageR repository
 and put it in the DPR2 format. This function also removes those
-files that are no longer needed from DataPackageR by DPR2. <specify
-specifically what is removed, added, and changed>
-}
-\author{
-jmtaylor
+files that are no longer needed from DataPackageR by DPR2. This
+includes files \code{DATADIGEST}, \code{NEWS.md}, \code{Read-and-delete-me},
+\code{R/documentation.R}, and \code{data-raw/documentation.R}, in addition to
+the folder \code{inst/extdata/Logfiles}, and any file in \code{inst/doc} with
+the same name as an \code{R} or \code{Rmd} file found in the \code{data-raw}
+or\code{Logfiles} folders. Modifications to the package \code{DESCRIPTION}
+file are also, made, removeing its \code{Date}, and \code{DataVersion}
+fields.
 }

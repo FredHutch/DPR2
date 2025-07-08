@@ -1,7 +1,8 @@
-#' Private. Generate Documentation Files for All .Rda Data Objects
+#' Private. Generate Documentation Files for All .Rda Data Objects.
 #'
-#' Finds all `.rda` data objects in the data folder, generates documentation using `template_doc_block`,
-#' and writes documentation to `.R` files using `write_doc_file`.
+#' Finds all `.rda` data objects in the data folder, generates
+#' documentation using `template_doc_block`, and writes documentation
+#' to `.R` files using `write_doc_file`.
 #'
 #' @param path Path to data package.
 #' @return Creates `.R` files with documentation for each `.rda` data object.
@@ -96,7 +97,7 @@ generate_all_docs <- function(path = ".") {
 
 }
 
-#' Private. Write Roxygen Documentation to an .R File
+#' Private. Write Roxygen Documentation to an .R File.
 #'
 #' Writes the generated roxygen documentation block to an .R file in the R directory.
 #'
@@ -110,7 +111,7 @@ write_doc_file <- function(out_dir, doc_block, object_name) {
   writeLines(doc_block, con = doc_path)
 }
 
-#' Private. Generate Roxygen Documentation Block for a Data Object
+#' Private. Generate Roxygen Documentation Block for a Data Object.
 #'
 #' Creates a roxygen-style documentation block for a given data object, including details on format,
 #' fields, and source.

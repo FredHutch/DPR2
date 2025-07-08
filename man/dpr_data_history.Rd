@@ -21,6 +21,3 @@ of creation and md5 checksum of the file
 Return the history of all the former and current files in the \code{data}
 directory.
 }
-\author{
-jmtaylor
-}

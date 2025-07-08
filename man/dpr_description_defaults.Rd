@@ -13,6 +13,3 @@ a list containing default metadata from the DESCRIPTION file
 This function returns default key:value pairs for the data package
 DESCRIPTION file.
 }
-\author{
-jmtaylor
-}
