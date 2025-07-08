@@ -124,6 +124,8 @@ write_doc_file <- function(out_dir, doc_block, object_name) {
 template_doc_block <- function(object, object_name) {
   # begin roxygen comment block
   doc_block <- c(
+    "# This is data documentation created by DPR2. Do not delete this line.",
+    "",
     paste0("#' ", object_name),
     "#'",
     "#' A detailed description of the data",
@@ -198,7 +200,7 @@ delete_unused_doc_files <- function(path = ".") {
                         return("")
                       })
 
-    any(grepl("#' @format", lines)) && !any(grepl("<-\\s*function", lines))
+    any(grepl("# This is data documentation created by DPR2. Do not delete this line.", lines))
   }, logical(1))
 
   data_doc_files <- doc_files[is_data_doc]

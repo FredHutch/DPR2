@@ -194,7 +194,7 @@ test_that("check that template_doc_block generates documentation correctly", {
   doc_block <- template_doc_block(df, object_name)
 
   # check that content is correct
-  expect_true(grepl(object_name, doc_block[1]))
+  expect_true(grepl(object_name, doc_block[3]))
   expect_true(any(grepl("\\\\describe\\{", doc_block)))
   expect_true(any(grepl("\\\\item\\{x\\}", doc_block)))
   expect_true(any(grepl("\\\\item\\{y\\}", doc_block)))
