@@ -31,6 +31,12 @@ testthat::test_that("checking package build", {
   datn <- list.files(file.path(path, "data"))
   expect_true(all(datn == c("mydataframe_rmd.rda", "myyaml_rmd.rda")))
 
+  ## test timeout
+  expect_error(
+    dpr_build(path, process_on_build = "02.R", r_session_wait_timeout = 0),
+    "Could not start R session, timed out"
+  )
+
   dpr_build(path, process_on_build = "02.R")
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)

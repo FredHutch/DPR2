@@ -3,6 +3,7 @@ purge_data_directory: yes
 process_directory: processing
 render_on_build: yes
 render_env_mode: isolate
+r_session_wait_timeout: 3000
 write_to_vignettes: yes
 write_data_docs: yes
 to_build_directory: inst/to_build

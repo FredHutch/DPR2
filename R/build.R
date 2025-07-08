@@ -92,10 +92,11 @@ get_callr_globals <- function(session){
 #'   [rmarkdown::render()]
 #' @param render_mode The render environment mode from datapackager.yml
 #'   `render_env_mode`
+#' @param r_session_wait_timeout Number of milliseconds to wait for r session
 #' @return A list of objects created by all of the processing files
 #' @noRd
-callr_render <- function(files_to_process, render_args, render_mode){
-  rs <- callr::r_session$new()
+callr_render <- function(files_to_process, render_args, render_mode, r_session_wait_timeout){
+  rs <- callr::r_session$new(wait=TRUE, wait_timeout=r_session_wait_timeout)
   on.exit(rs$close())
 
   if (render_mode == "isolate") objs <- list()
@@ -117,8 +118,10 @@ callr_render <- function(files_to_process, render_args, render_mode){
     if (render_mode == "isolate"){
       # Earlier object(s) with same name are overwritten here
       objs <- utils::modifyList(objs, get_callr_globals(rs), keep.null = TRUE)
-      rs$close()
-      rs <- callr::r_session$new()
+      if (length(files_to_process) > 1){
+        rs$close()
+        rs <- callr::r_session$new(wait=TRUE, wait_timeout=r_session_wait_timeout)
+      }
     }
 
   }
@@ -187,7 +190,8 @@ dpr_render <- function(path=".", ...){
   objects <- callr_render(
     file.path(path, yml$process_directory, yml$process_on_build),
     render_args,
-    yml$render_env_mode
+    yml$render_env_mode,
+    yml$r_session_wait_timeout
   )
 
   # parent.env(env) will be emptyenv(). See ?as.environment
