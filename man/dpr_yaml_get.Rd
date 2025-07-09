@@ -10,7 +10,7 @@ dpr_yaml_get(path = ".", ...)
 \item{path}{The full path to the data package. The default is the
 working directory.}
 
-\item{...}{\code{datapakager.yml} value overrides. When arguments are
+\item{...}{\code{datapackager.yml} value overrides. When arguments are
 specified, those arguments are used as the YAML key value pairs instead of
 what is specified by the \code{datapackager.yml} file. For a list of those
 key value pairs and their purposes, see \code{?dpr_yaml_defaults}.}

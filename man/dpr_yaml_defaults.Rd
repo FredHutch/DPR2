@@ -7,16 +7,16 @@
 dpr_yaml_defaults()
 }
 \value{
-a list containing default yaml key-value pairs from datapackager.yml
+a list containing default yaml key-value pairs from \code{datapackager.yml}
 }
 \description{
-This function returns default key value pairs for a DPR2 datapackager.yml
-file. These defaults are the same for each package and are read from the the
+This function returns default key value pairs for a DPR2 \code{datapackager.yml}
+file. These defaults are the same for each package and are read from the
 DPR2 installation directory.
 }
 \details{
 The keys returned here are required for all DPR2 data packages but the users
-may set valid value to them by using \code{dpr_yaml_set(...)} or simply editing
+may set valid values to them by using \code{dpr_yaml_set(...)} or simply editing
 the \code{datapackager.yml} file manually. Below is a list of the keys, their
 default values, and any other valid values when applicable.
 \itemize{

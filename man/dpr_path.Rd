@@ -2,7 +2,7 @@
 % Please edit documentation in R/utility.R
 \name{dpr_path}
 \alias{dpr_path}
-\title{Construct path from data package directory}
+\title{Construct path from data package directory.}
 \usage{
 dpr_path(...)
 
@@ -20,7 +20,7 @@ The normalized path with the additional path components appended.
 Throws an error if no root is found.
 }
 \description{
-Construct path from data package directory
+Construct path from data package directory.
 
 Construct path from data package directory
 }

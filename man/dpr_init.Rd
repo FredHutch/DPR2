@@ -11,8 +11,8 @@ dpr_init(
 )
 }
 \arguments{
-\item{path}{a path value to init at a specific path, when using the default
-the current working directory is used.}
+\item{path}{a path value to init at a specific path. The default
+path is the current working directory.}
 
 \item{yaml}{A returned list from \code{\link[=dpr_yaml_init]{dpr_yaml_init()}}}
 
@@ -21,7 +21,7 @@ argument sets the package name to the name of the directory containing the
 data package.}
 }
 \description{
-A wrapper for dpr_create that uses the parent directory as the location to
+A wrapper for \code{dpr_create} that uses the parent directory as the location to
 create the data package, setting the package name as the current directory.
 }
 \author{
