@@ -7,9 +7,9 @@
 dpr_description_defaults()
 }
 \value{
-a list containing default metadata from the DESCRIPTION file
+a list containing default metadata from the \code{DESCRIPTION} file
 }
 \description{
 This function returns default key:value pairs for the data package
-DESCRIPTION file.
+\code{DESCRIPTION} file.
 }

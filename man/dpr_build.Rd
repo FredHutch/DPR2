@@ -29,7 +29,7 @@ in the \code{datapackager.yml}.
 \code{dpr_build} wraps many DPR2 processes in a single call: renders
 processing scripts, updates data digest, builds package to an installable
 tarball, and installs the tarball. Each of these processes can be
-controlled from the \code{datapackager.yml} file. Only th processing script
+controlled from the \code{datapackager.yml} file. Only the processing script
 rendering function is exported to users. See \code{dpr_render} for more
 information regarding rendering. For more information regarding
 configuration options, see \code{?dpr_yaml_defaults}.

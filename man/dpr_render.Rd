@@ -22,14 +22,14 @@ data-saving operations as defined in \code{datapackager.yml}
 \description{
 Process and render all processing scripts defined in the \code{datapackager.yml}
 configuration file. Does not build or install the data package. For full
-package build and installation, use the dpr_build function.
+package build and installation, use the \code{dpr_build} function.
 }
 \details{
 \code{dpr_render} is the primary process that renders processing
 scripts to vignettes and data. This function can be run in two modes:
 isolate or share. This mode is set in the \code{datapackager.yml} file's
 \code{render_env_mode}'s value.  When the \code{isolate} mode is set, each
-processing script is run in a seperate R session. When the \code{share}
+processing script is run in a separate R session. When the \code{share}
 mode is set, each process is run in the same session, which enables each
 process to use variables defined by previous processing scripts for the
 current \code{dpr_render} call.
