@@ -125,6 +125,8 @@ write_doc_file <- function(out_dir, doc_block, object_name) {
 template_doc_block <- function(object, object_name) {
   # begin roxygen comment block
   doc_block <- c(
+    "# This is data documentation created by DPR2. Do not delete this line.",
+    "",
     paste0("#' ", object_name),
     "#'",
     "#' A detailed description of the data",
@@ -191,7 +193,20 @@ delete_unused_doc_files <- function(path = ".") {
   doc_files <- tools::file_path_sans_ext(list.files(doc_path, all.files = TRUE, no.. = TRUE))
   data_path <- file.path(path, "data")
   data_files <- tools::file_path_sans_ext(list.files(data_path, all.files = TRUE, no.. = TRUE))
-  remove_files <- setdiff(doc_files, data_files)
+  # only select files that have data documentation
+  is_data_doc <- vapply(paste0(doc_files, ".R"), function(file) {
+    full_path <- file.path(doc_path, file)
+    lines <- tryCatch(readLines(full_path, warn = FALSE),
+                      error = function(e) {
+                        return("")
+                      })
+
+    any(grepl("# This is data documentation created by DPR2. Do not delete this line.", lines))
+  }, logical(1))
+
+  data_doc_files <- doc_files[is_data_doc]
+
+  remove_files <- setdiff(data_doc_files, data_files)
 
   if (length(remove_files) > 0) {
     remove_files <- paste0(remove_files, ".R")
