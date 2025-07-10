@@ -33,7 +33,9 @@ testthat::test_that("checking package build", {
 
   ## test timeout
   expect_error(
-    dpr_build(path, process_on_build = "02.R", r_session_wait_timeout = 0),
+    capture.output(
+      dpr_build(path, process_on_build = "02.R", r_session_wait_timeout = 0)
+    ),
     "Could not start R session, timed out"
   )
 
