@@ -118,7 +118,7 @@ callr_render <- function(files_to_process, render_args, render_mode, r_session_w
     if (render_mode == "isolate"){
       # Earlier object(s) with same name are overwritten here
       objs <- utils::modifyList(objs, get_callr_globals(rs), keep.null = TRUE)
-      if ( file_to_process != files_to_process[[ length(files_to_process) ]] ){
+      if ( file_to_process != files_to_process[ length(files_to_process) ] ){
         rs$close()
         rs <- callr::r_session$new(wait=TRUE, wait_timeout=r_session_wait_timeout)
       }
