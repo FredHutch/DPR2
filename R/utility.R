@@ -44,6 +44,7 @@ dpr_yaml_load <- function(path="."){
     yml <- yaml::read_yaml(file.path(path, "datapackager.yml"))
     yml$objects <- gsub("\\.rda_$", "",  list.files(file.path(path, yml$to_build_directory, "objects")), ignore.case=TRUE)
     yml$process_on_build <- gsub("_$", "",  list.files(file.path(path, yml$to_build_directory, "scripts")))
+    yml$r_session_wait_timeout <- ifelse(is.null(yml$r_session_wait_timeout), 3000, yml$r_session_wait_timeout)
     return( yml )
   }
   stop("`datapackager.yml` is invalid or missing.")
