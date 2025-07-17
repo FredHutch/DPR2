@@ -74,7 +74,7 @@ createPkg <- function(temp_dir, package_name, more_args = list()){
     c(
       "library(DPR2)",
       "mymatrix <- matrix(1:16, nrow=4)",
-      "mydataframe <- data.frame(x=1:5, y=LETTERS[1:5])",
+      "mydataframe <- data.frame(x=1:3, y=LETTERS[1:3])",
       "dpr_save('mymatrix')"
     ),
     file.path(path, "processing/02.R")
