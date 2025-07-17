@@ -180,6 +180,16 @@ testthat::test_that("checking package build", {
 
 })
 
+testthat::test_that("checking write_data_docs warning", {
+  path <- file.path(tdir, pkgn)
+  createPkg(tdir, pkgn)
+  expect_warning(
+    dpr_build(path, process_on_build = "01.R", objects = "objYml1", write_data_docs = FALSE),
+    "`write_data_docs` is set to FALSE. Objects are being saved, but data documentation is not being updated. Existing documentation may be outdated."
+    )
+  unlink(path, recursive = TRUE)
+})
+
 testthat::test_that("checking package render",{
   expect_true(TRUE)
   ## render DPR2 package - renders all processing scripts, but does not build, renders in working env
