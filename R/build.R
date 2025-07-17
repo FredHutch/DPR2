@@ -230,6 +230,10 @@ dpr_render <- function(path=".", ...){
       )
     }
   }
+
+  if(!yml$write_data_docs & length(saved_objects) > 0){
+    warning("`write_data_docs` is set to FALSE. Objects are being saved, but data documentation is not being updated. Existing documentation may be outdated.")
+  }
 }
 
 #' Build the data package. This includes processing and rendering all processing
