@@ -41,11 +41,12 @@ testthat::test_that("checking package build", {
   )
   dpr_yaml_set(path, r_session_wait_timeout = 3000)
 
-  dpr_build(path, process_on_build = "02.R")
+  ## test tabular objects made in isolate can be overwritten, count vignettes, check data save 
+  dpr_build(path, process_on_build = c("01.R", "02.R"))
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)
   datn <- list.files(file.path(path, "data"))
-  expect_true(datn == "mymatrix.rda")
+  expect_true(all(datn == c("mydataframe.rda", "mymatrix.rda", "myyaml.rda")))
 
   dpr_build(path, process_on_build = "A1.R", build_tarball = TRUE)
   vign <- list.files(file.path(path, "vignettes"))
