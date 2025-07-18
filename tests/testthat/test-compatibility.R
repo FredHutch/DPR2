@@ -1,18 +1,16 @@
 testthat::test_that("checking DataPackageR compatibility functions", {
 
-  tdir <- getPkgDir()
-
-  file.copy(test_path("dpr1package"), tdir, recursive = TRUE)
-  path1 <- file.path(tdir, "dpr1package/")
+  path1 <- file.path(tempdir(), "dpr1package")
+  file.copy(test_path("dpr1package"), tempdir(), recursive = TRUE)
 
   expect_error(
     dpr_build(path1),
-    "Rendering a data package using DPR2 when the yaml is from DataPackageR"
+    "Rendering a data package using DPR2 when the yaml is from DataPackageR."
   )
 
   expect_error(
     dpr_render(path1),
-    "Rendering a data package using DPR2 when the yaml is from DataPackageR"
+    "Rendering a data package using DPR2 when the yaml is from DataPackageR."
   )
 
   expect_error(
@@ -20,9 +18,8 @@ testthat::test_that("checking DataPackageR compatibility functions", {
     "Attemping to load a yaml of a DataPackageR package"
   )
 
-  pkgn <- "testPkg"
-  path2 <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn)
+  path2 <- copyPkg("dpr2test")
+  on.exit(unlink(path2, recursive = TRUE))
 
   expect_error(
     dpr_convert(path2),
@@ -123,7 +120,5 @@ testthat::test_that("checking DataPackageR compatibility functions", {
   )
 
   dpr_build(path1)
-
-  cleanup(tdir)
 
 })

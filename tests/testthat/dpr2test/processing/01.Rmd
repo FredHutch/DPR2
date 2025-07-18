@@ -1,0 +1,12 @@
+---
+title: test report
+---
+test text
+```{r}
+library(DPR2)
+library(yaml)
+mydataframe_rmd  <- data.frame(x=1:10, y=LETTERS[1:10])
+myyaml_rmd <- as.yaml(mydataframe_rmd)
+save(mydataframe_rmd,  file=dpr_path('data', 'mydataframe_rmd.rda'))
+save(myyaml_rmd, file=dpr_path('data', 'myyaml_rmd.rda'))
+```

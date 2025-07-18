@@ -1,16 +1,16 @@
-tdir <- getPkgDir()
-on.exit(cleanup(tdir))
+pkgn <- "dpr2TestCreate"
+on.exit(unlink(tempdir(), recursive = TRUE))
 
 test_that("check default package name warning", {
   pkgn <- "testPackage"
   expect_silent(
-    dpr_create(tdir, desc=dpr_description_init(Package = pkgn))
+    dpr_create(tempdir(), desc=dpr_description_init(Package = pkgn))
   )
-  dpr_create(tdir, desc=dpr_description_init())
-  unlink(file.path(tdir, pkgn), recursive = TRUE)
+  dpr_create(tempdir(), desc=dpr_description_init())
+  unlink(file.path(tempdir(), pkgn), recursive = TRUE)
   unlink(
     file.path(
-      tdir,
+      tempdir(),
       suppressWarnings({dpr_description_init()$Package})
     ),
     recursive = TRUE
@@ -21,7 +21,7 @@ test_that("check DESCRIPTION file has populated fields", {
   pkgn <- "DescripPackage"
   pkgt <- "A package for testing description writing"
   dpr_create(
-    tdir,
+    tempdir(),
     desc = dpr_description_init(
       Package = pkgn,
       Title   = pkgt,
@@ -30,12 +30,12 @@ test_that("check DESCRIPTION file has populated fields", {
   )
 
   defi <- DPR2:::dpr_description_defaults()
-  desc <- desc:::desc(file.path(tdir, pkgn))
+  desc <- desc:::desc(file.path(tempdir(), pkgn))
 
   expect_true(desc$get("Package")     == pkgn)
   expect_true(desc$get("Title")       == pkgt)
   expect_true(desc$get("Description") == defi$Description)
-  unlink(file.path(tdir, pkgn), recursive = TRUE)
+  unlink(file.path(tempdir(), pkgn), recursive = TRUE)
 
 })
 
@@ -43,7 +43,7 @@ test_that("check datapackager.yml and ignores", {
 
   pkgn = "testing"
   dpr_create(
-    tdir,
+    tempdir(),
     yaml=dpr_yaml_init(process_directory = "data-raw"),
     desc=dpr_description_init(Package = pkgn)
   )
@@ -59,18 +59,18 @@ test_that("check datapackager.yml and ignores", {
 
   expect_true(
     all(
-      rIgnore %in% readLines(file.path(tdir, pkgn, ".Rbuildignore"))
+      rIgnore %in% readLines(file.path(tempdir(), pkgn, ".Rbuildignore"))
     )
   )
 
   expect_true(
     all(
-      gIgnore %in% readLines(file.path(tdir, pkgn, ".gitignore"))
+      gIgnore %in% readLines(file.path(tempdir(), pkgn, ".gitignore"))
     )
   )
 
   ## yml names manually set but have the manual values, other values unchanged
-  yml <- dpr_yaml_get(file.path(tdir, "testing"))
+  yml <- dpr_yaml_get(file.path(tempdir(), "testing"))
   ymlInit <- dpr_yaml_init()
 
   expect_true(yml$process_directory == "data-raw")
@@ -83,13 +83,13 @@ test_that("check datapackager.yml and ignores", {
     )
   )
 
-  unlink(file.path(tdir, pkgn), recursive = TRUE)
+  unlink(file.path(tempdir(), pkgn), recursive = TRUE)
 })
 
 test_that("init populates exisiting directory", {
 
   pkgn <- "initExist"
-  path <- file.path(tdir, pkgn)
+  path <- file.path(tempdir(), pkgn)
   dir.create(path)
   wd <- getwd()
 
