@@ -20,17 +20,23 @@ may set valid values to them by using \code{dpr_yaml_set(...)} or simply editing
 the \code{datapackager.yml} file manually. Below is a list of the keys, their
 default values, and any other valid values when applicable.
 \itemize{
-\item source_data_directory : inst/extdata, the location where source data for processing scripts
-\item purge_data_directory  : TRUE, whether to delete all contents of the \code{data} directory when the package is rendered
-\item process_directory     : processing, where to find the processing scripts to render
-\item process_on_build      : NULL, which processing scripts to run from the \code{process_directory} location when the package is rendered
-\item render_on_build       : TRUE, whether to render the processing scripts when the package is built or not
-\item render_env_mode       : isolate, valid values are "isolate" or "share" which determine if each processing script is run in its own R session (isolate) or the same R session (share). No option allows processing scripts to be run in the current session.
-\item write_to_vignettes    : TRUE, if vignettes should be generated when rendering
-\item write_docs            : TRUE, if data documentation should be generated when whendering
-\item data_digest_directory : inst/data_digest, the location of the \code{data_digest} folder.
-\item build_tarball         : FALSE, if a package tarball should be built when the package is built
-\item install_on_build      : FALSE, if the package should be installed when the package is built
-\item build_output          : ../, where the package should be save if the tarball is built
+\item \code{source_data_directory} : \code{inst/extdata}, the location where source data for processing scripts
+\item \code{purge_data_directory}  : \code{TRUE}, whether to delete all contents of the \code{data} directory when the package is rendered
+\item \code{process_directory}     : \code{processing}, where to find the processing scripts to render
+\item \code{render_on_build}       : \code{TRUE}, whether to render the processing scripts when the package is built or not
+\item \code{render_env_mode}       : \code{isolate}, valid values are "isolate" or "share" which determine if each processing script is run in its own R session (isolate) or the same R session (share). No option allows processing scripts to be run in the current session.
+\item \code{write_to_vignettes}    : \code{TRUE}, if vignettes should be generated when rendering
+\item \code{write_data_docs}       : \code{TRUE}, if data documentation should be generated when whendering
+\item \code{to_build_directory}    : \code{inst/to_build}, the location of the tracking directory for what script are built and objects are saved.
+\item \code{build_tarball}         : \code{FALSE}, if a package tarball should be built when the package is built
+\item \code{install_on_build}      : \code{FALSE}, if the package should be installed when the package is built
+\item \code{build_output}          : \verb{../}, where the package should be save if the tarball is built relative to the package root
+}
+
+There are also optional values can will be used but are not required.
+\itemize{
+\item \code{process_on_build}       : a character vector of which processing scripts to run from the \code{process_directory} location when the package is rendered. These overwrite what scripts have been assigned in \code{inst/to_build/scripts} with \code{dpr_add_scripts}.
+\item \code{objects}                : which objecsts to save from the processing scripts environmetnts. These values overwrite what objects have been assigned in \code{inst/to_build/objects} with \code{dpr_add_objects}.
+\item \code{r_session_wait_timeout} : How long should a callr session wait before timing out. Add this to \code{datapackager.yml} if \code{dpr_build} or \code{dpr_render} return timeout errors. Units are in milliseconds with the default being 3000. A value of 5000 or higher will most likely prevent timeout errors.
 }
 }
