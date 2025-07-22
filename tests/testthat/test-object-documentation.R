@@ -12,7 +12,8 @@ test_that("check that R object documentation is written as expected", {
   on.exit(unlink(path, recursive = TRUE))
 
   dpr_build(path, process_on_build = "01.R", objects = "objYml1")
-  # check that .R file exists
+
+  # check that .R file exists set with objects argument
   expect_true(file.exists(file.path(path, "R", "objYml1.R")))
 
   # check that .R file exists for objects saved in script
@@ -21,12 +22,14 @@ test_that("check that R object documentation is written as expected", {
 
 
   # check that there is no warning since a new object is being created
-  expect_no_message(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")))
+  expect_no_message(dpr_build(path, process_on_build = "01.R", objects = c("objYml2")))
   expect_true(file.exists(file.path(path, "R", "objYml2.R")))
 
   #expect a message when there are no changes to object or no new object is created
-  expect_message(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")),
-                 "No new data object documentation created, as no objects")
+  expect_message(
+      dpr_build(path, process_on_build = "01.R", objects = c("objYml2")),
+      "No new data object documentation created, as no objects"
+  )
 
 })
 

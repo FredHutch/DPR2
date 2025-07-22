@@ -1,5 +1,6 @@
 test_that("check DESCRIPTION file has populated fields", {
   pkgn <- "DescripPackage"
+  on.exit(unlink(file.path(tempdir(), pkgn), recursive = TRUE))
   pkgt <- "A package for testing description writing"
   dpr_create(
     tempdir(),
@@ -16,7 +17,6 @@ test_that("check DESCRIPTION file has populated fields", {
   expect_true(desc$get("Package")     == pkgn)
   expect_true(desc$get("Title")       == pkgt)
   expect_true(desc$get("Description") == defi$Description)
-  unlink(file.path(tempdir(), pkgn), recursive = TRUE)
 
 })
 
