@@ -72,7 +72,7 @@ dpr1_yaml_convert <- function(path="."){
 dpr1_data_digest_convert <- function(path="."){
 
   dig <- dpr1_data_digest_load(path)
-  rda <- gsub("\\.rda", "", basename(dpr_list_rda(path)), ignore.case=TRUE)
+  rda <- gsub("\\.rda$", "", basename(dpr_list_rda(path)), ignore.case=TRUE)
 
   # to check if the objects in dpr digest are the same names as the files in data
   found <- names(dig) %in% rda

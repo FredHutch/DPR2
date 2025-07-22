@@ -54,7 +54,7 @@ generate_all_docs <- function(path = ".") {
   # select only those objects that differ between digest file and data directory
   no_change <- tryCatch({
     digest_data <- dpr_compare_data_digest(path) #function returns error if no digest source is found. Will cause issues when building a brand new pkg.
-    gsub(".rda", "", digest_data$name[digest_data$same == TRUE])
+    gsub("\\.rda$", "", digest_data$name[digest_data$same == TRUE])
   },
   error = function(e) {
     if (grepl("No digest files found. Has any data been added to the data package yet?", e$message)) {
