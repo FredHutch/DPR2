@@ -1,15 +1,11 @@
 # keep this line first in test-build.R file
 attached_before_test_builds <- names(sessionInfo()$otherPkgs)
 
-tdir <- getPkgDir()
-pkgn <- "testPkg"
-on.exit(cleanup(tdir))
-
 testthat::test_that("checking package build", {
 
-  path <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn)
-
+  path <- copyPkg("dpr2test")
+  on.exit(unlink(path, recursive = TRUE))
+  
   rda_to_restore <- file.path(path, 'data', 'restore_me.rda')
   file.create(rda_to_restore)
   expect_error(
@@ -46,7 +42,7 @@ testthat::test_that("checking package build", {
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)
   datn <- list.files(file.path(path, "data"))
-  expect_true(all(datn == c("mydataframe.rda", "mymatrix.rda", "myyaml.rda")))
+  expect_true(all(datn == c("mydataframe.rda", "mymatrix.rda", "myotherdata.rda", "myyaml.rda")))
 
   dpr_build(path, process_on_build = "A1.R", build_tarball = TRUE)
   vign <- list.files(file.path(path, "vignettes"))
@@ -64,16 +60,16 @@ testthat::test_that("checking package build", {
   expect_true(all(c("objYml1.rda", "objYml2.rda") %in% datn))
   expect_true(
     all(
-      datn %in% c("mydataframe.rda", "myyaml.rda", "objYml1.rda", "objYml2.rda")
+      datn %in% c("mydataframe.rda", "myotherdata.rda", "myyaml.rda", "objYml1.rda", "objYml2.rda")
     )
   )
 
   ## looking for both objects when set in the yaml and not passed as build arguments
-  dpr_rm_scripts("01.Rmd", path)
+  dpr_add_scripts( "01.R", path )
   dpr_add_objects( c("objYml1", "objYml2"), path )
   dpr_rm_objects("objYml1", path)
   expect_equal(
-    sum(dpr_scripts(path)$is_added), 2
+    sum(dpr_scripts(path)$is_added), 1
   )
   expect_equal(
     sum(dpr_objects(path)$is_added), 1
@@ -103,7 +99,7 @@ testthat::test_that("checking package build", {
   expect_length(
     list.files(
       file.path(path,".."),
-      "testPkg.*\\.tar\\.gz"
+      "dpr2test.*\\.tar\\.gz"
     ), 1L
   )
 
@@ -150,8 +146,8 @@ testthat::test_that("checking package build", {
   unlink(path, recursive = TRUE)
 
   ## check that when nothing is set to process_on_build, error is as expected
-  path <- file.path(tdir, "NoProcess")
-  dpr_create(tdir, desc=dpr_description_init(Package=basename(path)))
+  path <- file.path(tempdir(), "NoProcess")
+  dpr_create(tempdir(), desc=dpr_description_init(Package=basename(path)))
   expect_error(
     dpr_build(path),
     "No files specified to process"
@@ -159,8 +155,8 @@ testthat::test_that("checking package build", {
 
   unlink(path, recursive = TRUE)
 
-  path <- file.path(tdir, "WrongYaml")
-  dpr_create(tdir, desc=dpr_description_init(Package=basename(path)))
+  path <- file.path(tempdir(), "WrongYaml")
+  dpr_create(tempdir(), desc=dpr_description_init(Package=basename(path)))
   ypth <- file.path(path, "datapackager.yml")
   yfil <- readLines(ypth)
   writeLines(gsub("render_on_build", "rnder_n_bild", yfil), ypth)
@@ -169,8 +165,8 @@ testthat::test_that("checking package build", {
     "yaml.*not found.*render_on_build"
   )
 
-  path <- file.path(tdir, "multi")
-  dpr_create(tdir, desc=dpr_description_init(Package=basename(path)))
+  path <- file.path(tempdir(), "multi")
+  dpr_create(tempdir(), desc=dpr_description_init(Package=basename(path)))
   writeLines("x <- 1; y <- 1; save(x, y, file= 'data/multi.rda')", file.path(path, "processing/multi.R"))
   expect_warning(
     dpr_build(path, process_on_build = "multi.R"),
@@ -182,13 +178,12 @@ testthat::test_that("checking package build", {
 })
 
 testthat::test_that("checking write_data_docs warning", {
-  path <- file.path(tdir, pkgn)
-  createPkg(tdir, pkgn)
+  path <- copyPkg("dpr2test")
+  on.exit(unlink(path, recursive = TRUE))
   expect_warning(
     dpr_build(path, process_on_build = "01.R", objects = "objYml1", write_data_docs = FALSE),
     "`write_data_docs` is set to FALSE. Objects are being saved, but data documentation is not being updated. Existing documentation may be outdated."
     )
-  unlink(path, recursive = TRUE)
 })
 
 testthat::test_that("checking package render",{
