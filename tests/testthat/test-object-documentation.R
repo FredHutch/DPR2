@@ -17,6 +17,8 @@ test_that("check that R object documentation is written as expected", {
 
   # check that .R file exists for objects saved in script
   expect_true(file.exists(file.path(path, "R", "mydataframe.R")))
+  expect_true(file.exists(file.path(path, "R", "myotherdata.R")))
+
 
   # check that there is no warning since a new object is being created
   expect_no_message(dpr_build(path, process_on_build = "01.R", objects = c("objYml1", "objYml2")))

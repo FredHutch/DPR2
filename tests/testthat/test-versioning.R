@@ -12,8 +12,8 @@ testthat::test_that("checking package data hashes report", {
 
   dpr_render(path)
 
-  expect_equal(nrow(dpr_data_checksums(path)), 2)
-  expect_equal(nrow(dpr_data_digest(path)), 2)
+  expect_equal(nrow(dpr_data_checksums(path)), 3)
+  expect_equal(nrow(dpr_data_digest(path)), 3)
 
   comp <- dpr_compare_data_digest(path)
   expect_true(!comp[comp$name == "mydataframe.rda", "same"])
@@ -92,9 +92,14 @@ testthat::test_that("checking package data history with git", {
   )
 
   expect_equal( ncol(dataHistory), 5 )
-  expect_equal( nrow(dataHistory), 4 ) # 2 versions of mydatapackage, 2 versions of myyaml
+  expect_equal( nrow(dataHistory), 6 )
   expect_true( all(row.names(dataHistory) == 1:nrow(dataHistory)) )
   expect_true( any(grepl("No checksum computed", dataHistory$object_checksum)) )
+
+  ## checking that two identical object with diffenent names produce the differnt sha1 but same checksum
+  expect_true(
+      any(table(dataHistory$object_checksum) > 1)
+  )
 
   ## test recall objects are correctly named
   fullHash <- dataHistory$blob_git_sha1[c(1,2)]
@@ -104,7 +109,7 @@ testthat::test_that("checking package data history with git", {
 
   expect_true(
     all(
-      c("mydataframe", "myyaml") == sapply(dpr_recall_data_versions(fullHash, path), names)
+      c("mydataframe", "myotherdata") == sapply(dpr_recall_data_versions(fullHash, path), names)
     )
   )
 

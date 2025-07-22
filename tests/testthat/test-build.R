@@ -42,7 +42,7 @@ testthat::test_that("checking package build", {
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)
   datn <- list.files(file.path(path, "data"))
-  expect_true(all(datn == c("mydataframe.rda", "mymatrix.rda", "myyaml.rda")))
+  expect_true(all(datn == c("mydataframe.rda", "mymatrix.rda", "myotherdata.rda", "myyaml.rda")))
 
   dpr_build(path, process_on_build = "A1.R", build_tarball = TRUE)
   vign <- list.files(file.path(path, "vignettes"))
@@ -60,7 +60,7 @@ testthat::test_that("checking package build", {
   expect_true(all(c("objYml1.rda", "objYml2.rda") %in% datn))
   expect_true(
     all(
-      datn %in% c("mydataframe.rda", "myyaml.rda", "objYml1.rda", "objYml2.rda")
+      datn %in% c("mydataframe.rda", "myotherdata.rda", "myyaml.rda", "objYml1.rda", "objYml2.rda")
     )
   )
 
