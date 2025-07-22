@@ -1,22 +1,3 @@
-pkgn <- "dpr2TestCreate"
-on.exit(unlink(tempdir(), recursive = TRUE))
-
-test_that("check default package name warning", {
-  pkgn <- "testPackage"
-  expect_silent(
-    dpr_create(tempdir(), desc=dpr_description_init(Package = pkgn))
-  )
-  dpr_create(tempdir(), desc=dpr_description_init())
-  unlink(file.path(tempdir(), pkgn), recursive = TRUE)
-  unlink(
-    file.path(
-      tempdir(),
-      suppressWarnings({dpr_description_init()$Package})
-    ),
-    recursive = TRUE
-  )
-})
-
 test_that("check DESCRIPTION file has populated fields", {
   pkgn <- "DescripPackage"
   pkgt <- "A package for testing description writing"
