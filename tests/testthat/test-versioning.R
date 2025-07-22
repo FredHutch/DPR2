@@ -113,12 +113,12 @@ testthat::test_that("checking package data history with git", {
     )
   )
 
-  expect_equal(
-    length(dpr_recall_data_versions(fullHash, path)), 2
+  expect_length(
+    dpr_recall_data_versions(fullHash, path), 2
   )
 
-  expect_equal(
-    length(dpr_recall_data_versions(subHash, path)), 2
+  expect_length(
+    dpr_recall_data_versions(subHash, path), 2
   )
 
   expect_error(
@@ -133,8 +133,8 @@ testthat::test_that("checking package data history with git", {
 
   ## check that behavior multiple objects are saved
   lastHash <- tail(dataHistory,1)$blob_git_sha1
-  expect_equal(
-    length(dpr_recall_data_versions(lastHash, path)[[1]]), 2
+  expect_length(
+    dpr_recall_data_versions(lastHash, path)[[1]], 2
   )
 
   expect_true(
