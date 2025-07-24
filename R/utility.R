@@ -306,7 +306,7 @@ dpr_add_scripts <- function(scripts, path = "."){
   process_files <- list.files(file.path(path, yml$process_directory))
   for( pro in scripts ) {
     if( !pro %in% process_files )
-      stop(sprintf("`%s` not found in the process directory described in `datapackage.yml`. ", pro))
+      stop(sprintf("`%s` not found in the process directory described in `datapackager.yml`. ", pro))
     write_added_file(file.path(path, yml$process_directory, pro), "scripts", path)
   }
 }
