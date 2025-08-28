@@ -13,16 +13,48 @@ knitr::opts_chunk$set(
 )
 ```
 
-# DPR2
+# DPR2 - DataPackageR 2
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/FredHutch/DPR2/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/FredHutch/DPR2/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/FredHutch/DPR2/graph/badge.svg)](https://app.codecov.io/gh/FredHutch/DPR2)
 <!-- badges: end -->
 
-The goal of DPR2 is to ...
+R Packages are the most accessible way of extending the R language.
 
-## Installation
+A **data package** is an R package that primarily provides data rather than code.
+
+Adding data to a package is as easy as putting data into the `data` directory of a package's source. Doing simply that however fails to inform users how those data were created, a critical component of reproducible research and information transparency.
+
+DPR2 - DataPackageR 2 - is designed to make data packages that are reproducible and transparent, and a new implementation of the concepts and workflows found in the R package .
+
+DPR2 offers:
+
+* source data and processing script storage
+* data object and vignette rendering
+* data object documentation
+
+The entire process from initializing a new data package, to processing data, to building the data package for sharing has been wrapped in convenient functions with a streamlined workflow.
+
+## Working as a team with data processing isolation
+
+DPR2 lets data packages be worked on by teams **developing different datasets at the same time using git branching**.
+
+Data processing scripts, which are stored in the package source, are built by **running each script in its own R process** by default, a good practice when making reproducible data. If desired, a shared processing environment can be used when configured in the DPR2 yaml configuration file.
+
+## Data versioning
+
+DPR2 presents a **data digest**, an object that tracks the **md5 checksums** of the data being generated and shared.
+
+When using git with DPR2, DPR2 offers functions that allow users to **recall data objects** from the git history. This allows users to easily compare datasets that may have changed throughout the data package development process.
+
+## Data documentation
+
+Users can access a help file for data objects using the help operator `?` on the object name, e.g. `?mtcars`.
+
+Like DataPackageR, DPR2 offers a convenient way to generate the necessary files for making data documentation that can be accessed using the help operator after the package is built.
+
+# Installation
 
 You can install the development version of DPR2 from [GitHub](https://github.com/) with:
 
@@ -31,17 +63,28 @@ You can install the development version of DPR2 from [GitHub](https://github.com
 remotes::install_github("FredHutch/DPR2")
 ```
 
-## Example
+# Examples
 
-This is a basic example which shows you how to solve a common problem:
+For a full explanation of the DPR2 workflow, see the package vignettes.
 
-```{r example}
-library(DPR2)
-## basic example code
+## Create a data package
+
+Create a new empty data package with then package name "MyAnalysis":
+
+```r
+DPR2::dpr_create(desc = dpr_description_init(Package = "MyAnalysis"))
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+Create a new data package in the current working directory using the directory name as the package name:
 
-```{r cars}
-pi
+```r
+DPR2::dpr_init()
+```
+
+## Building a data package
+
+Once code and data are added, the package can be built:
+
+```r
+DPR2::dpr_build()
 ```
