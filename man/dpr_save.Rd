@@ -4,22 +4,34 @@
 \alias{dpr_save}
 \title{dpr_save}
 \usage{
-dpr_save(objects, path = dpr_path(), envir = parent.frame())
+dpr_save(
+  objects,
+  path = dpr_path(),
+  envir = parent.frame(),
+  ascii = FALSE,
+  compress = !ascii
+)
 }
 \arguments{
 \item{objects}{Character vector of object names to be saved from the
 environment specified in \code{envir}.}
 
-\item{path}{The path to the data package. Defaults to \code{dpr_path()}.}
+\item{path}{The path to the data package. Defaults to \code{\link[=dpr_path]{dpr_path()}}.}
 
 \item{envir}{The environment to search for objects to save. Defaults to
 calling environment.}
+
+\item{ascii}{Argument passed to \code{\link[=save]{save()}}. Modifying this default is for
+advanced use only.}
+
+\item{compress}{Argument passed to \code{\link[=save]{save()}}. Modifying this default is for
+advanced use only.}
 }
 \value{
 The original \code{objects} argument, invisibly.
 }
 \description{
-\code{dpr_save} is vecotorized so users may pass a character vector
+\code{dpr_save} is vectorized so users may pass a character vector
 of object names found in the calling environment to save to the \code{data}
 directory when the package is built. All objects are saved as single object
 \code{Rda} files by the object names that are passed.
