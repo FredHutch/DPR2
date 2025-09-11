@@ -1,5 +1,5 @@
 source_data_directory: inst/extdata
-purge_data_directory: yes
+purge_data_directory: no
 process_directory: processing
 render_on_build: yes
 render_env_mode: isolate

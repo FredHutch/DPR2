@@ -21,7 +21,7 @@ the \code{datapackager.yml} file manually. Below is a list of the keys, their
 default values, and any other valid values when applicable.
 \itemize{
 \item \code{source_data_directory} : \code{inst/extdata}, the location where source data for processing scripts
-\item \code{purge_data_directory}  : \code{TRUE}, whether to delete all contents of the \code{data} directory when the package is rendered
+\item \code{purge_data_directory}  : \code{FALSE}, whether to delete all contents of the \code{data} directory when the package is rendered
 \item \code{process_directory}     : \code{processing}, where to find the processing scripts to render
 \item \code{render_on_build}       : \code{TRUE}, whether to render the processing scripts when the package is built or not
 \item \code{render_env_mode}       : \code{isolate}, valid values are "isolate" or "share" which determine if each processing script is run in its own R session (isolate) or the same R session (share). No option allows processing scripts to be run in the current session.

@@ -67,7 +67,7 @@ dpr_get_template <- function(regex){
 #' default values, and any other valid values when applicable.
 #'
 #' * `source_data_directory` : `inst/extdata`, the location where source data for processing scripts
-#' * `purge_data_directory`  : `TRUE`, whether to delete all contents of the `data` directory when the package is rendered
+#' * `purge_data_directory`  : `FALSE`, whether to delete all contents of the `data` directory when the package is rendered
 #' * `process_directory`     : `processing`, where to find the processing scripts to render
 #' * `render_on_build`       : `TRUE`, whether to render the processing scripts when the package is built or not
 #' * `render_env_mode`       : `isolate`, valid values are "isolate" or "share" which determine if each processing script is run in its own R session (isolate) or the same R session (share). No option allows processing scripts to be run in the current session.
