@@ -8,7 +8,7 @@ testthat::test_that("dpr_save() always saves binary/gzip RDAs", {
     on.exit(unlink(tf, recursive = TRUE))
     td <- file.path(tf, 'data')
     dir.create(td, recursive = TRUE)
-    DPR2::dpr_save('df', tf, ...)
+    dpr_save('df', tf, ...)
     digest::digest(file = file.path(td, 'df.rda'))
   }
 
