@@ -37,7 +37,7 @@ testthat::test_that("checking package build", {
   )
   dpr_yaml_set(path, r_session_wait_timeout = 3000)
 
-  ## test tabular objects made in isolate can be overwritten, count vignettes, check data save 
+  ## test tabular objects made in isolate can be overwritten, count vignettes, check data save
   dpr_build(path, process_on_build = c("01.R", "02.R"))
   vign <- list.files(file.path(path, "vignettes"))
   expect_true(length(vign) == 2)
