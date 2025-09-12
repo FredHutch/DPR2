@@ -18,6 +18,7 @@ Imports:
     desc,
     digest,
     pkgbuild,
+    pkgload,
     rmarkdown,
     roxygen2,
     rprojroot,

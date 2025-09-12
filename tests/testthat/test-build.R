@@ -195,11 +195,16 @@ testthat::test_that("checking package render",{
 })
 
 # Keep this test last in test-build.R file
-testthat::test_that("R/Rmd library() calls not attached to main R process",{
+testthat::test_that("search path cleanup occurred",{
+  # R/Rmd library() calls not attached to main R process
   attached_in_scripts <- c('yaml', 'lubridate')
   pkgs_to_check <- setdiff(attached_in_scripts, attached_before_test_builds)
   skip_if(length(pkgs_to_check) == 0L, 'pkgs already attached before testing')
   expect_false(
     any(pkgs_to_check %in% sub("^package:", "", grep("^package:", search(), value = TRUE)))
+  )
+  # package loaded via roxygenize side effect is unloaded
+  expect_false(
+    'dpr2test' %in% sub("^package:", "", grep("^package:", search(), value = TRUE))
   )
 })

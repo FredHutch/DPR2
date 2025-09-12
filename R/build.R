@@ -223,11 +223,19 @@ dpr_render <- function(path=".", ...){
   if(yml$write_data_docs){
     if(!data_is_empty(path=path)){
       generate_all_docs(path=path)
-      suppressPackageStartupMessages(
-        suppressMessages(
-          roxygen2::roxygenize(path)
+      local({
+        # clean up search path mess left behind by roxygen2::roxygenize()
+        on.exit({
+          if (basename(path) %in% names(utils::sessionInfo()$otherPkgs)){
+            pkgload::unload(basename(path))
+          }
+        })
+        suppressPackageStartupMessages(
+          suppressMessages(
+            roxygen2::roxygenize(path)
+          )
         )
-      )
+      })
     }
   }
 
