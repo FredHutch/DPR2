@@ -191,26 +191,59 @@ dpr_description_set <- function(path=".", ...){
   )
 }
 
+#' Internal helper for dpr_save warning. Is RDA file gzip-compressed?
+#'
+#' @param rda_path Path to RDA file
+#' @return TRUE if RDA file is gzip-compressed, else FALSE
+#' @noRd
+is_rda_compressed <- function(rda_path) {
+  con <- file(rda_path, "rb")
+  on.exit(close(con))
+  header <- readBin(con, "raw", 2)
+  # https://docs.fileformat.com/compression/gz/#gz-file-header
+  identical(header, as.raw(c(0x1F, 0x8B)))
+}
+
 #' A convenience function for writing data objects to the package data
 #' directory.
 #'
-#' @description `dpr_save` is vecotorized so users may pass a character vector
+#' @description `dpr_save` is vectorized so users may pass a character vector
 #'   of object names found in the calling environment to save to the `data`
 #'   directory when the package is built. All objects are saved as single object
 #'   `Rda` files by the object names that are passed.
 #' @title dpr_save
 #' @param objects Character vector of object names to be saved from the
 #'   environment specified in `envir`.
-#' @param path The path to the data package. Defaults to `dpr_path()`.
+#' @param path The path to the data package. Defaults to [dpr_path()].
 #' @param envir The environment to search for objects to save. Defaults to
 #'   calling environment.
+#' @param ascii Argument passed to [save()]. Modifying this default is for
+#'   advanced use only.
+#' @param compress Argument passed to [save()]. Modifying this default is for
+#'   advanced use only.
 #' @returns The original `objects` argument, invisibly.
 #' @export
-dpr_save <- function(objects, path = dpr_path(), envir = parent.frame()){
+dpr_save <- function(objects, path = dpr_path(), envir = parent.frame(),
+                     ascii = FALSE, compress = !ascii){
   if(!is.character(objects))
     stop("Only character vectors allowed.")
   for(obj in objects){
-    save(list=obj, file = file.path(path, "data", paste0(obj, ".rda")), envir=envir)
+    rda_file <- paste0(obj, ".rda")
+    rda_path <- file.path(path, "data", rda_file)
+    if (compress && file.exists(rda_path) && ! is_rda_compressed(rda_path)){
+      warning(
+        sprintf(
+          "Overwriting uncompressed %s with gzip-compressed version", rda_file
+        )
+      )
+    }
+    save(
+      list = obj,
+      file = rda_path,
+      envir = envir,
+      ascii = ascii,
+      compress = compress
+    )
   }
   invisible(objects)
 }
