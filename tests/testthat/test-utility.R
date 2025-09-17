@@ -39,3 +39,12 @@ testthat::test_that("dpr_save() always saves binary/gzip RDAs", {
     )
   })
 })
+
+testthat::test_that("is_rda_compressed works", {
+  tf <- tempfile()
+  on.exit(unlink(tf))
+  save(letters, file = tf, ascii = FALSE, compress = TRUE)
+  expect_true(is_rda_compressed(tf))
+  save(letters, file = tf, ascii = FALSE, compress = FALSE)
+  expect_false(is_rda_compressed(tf))
+})
