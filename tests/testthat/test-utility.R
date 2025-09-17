@@ -1,6 +1,6 @@
 testthat::test_that("dpr_save() always saves binary/gzip RDAs", {
-  old_save_option <- getOption("save.defaults")
-  on.exit(options(save.defaults = old_save_option))
+  old_option <- getOption("save.defaults")
+  on.exit(options(save.defaults = old_option))
 
   check_fn <- function(...){
     df <- data.frame(1:10)
@@ -12,15 +12,10 @@ testthat::test_that("dpr_save() always saves binary/gzip RDAs", {
     digest::digest(file = file.path(td, 'df.rda'))
   }
 
-  # force dpr_save warnings to occur during this test section
-  old_warn_option <- getOption('dpr_save_warn_regardless')
-  on.exit(options(dpr_save_warn_regardless = old_warn_option), add = TRUE)
-  options(dpr_save_warn_regardless = TRUE)
-
   # mimic serialization overrides forced by Rstudio server
   # https://github.com/rstudio/rstudio/issues/16419
   options(save.defaults = list(ascii = FALSE, compress = FALSE))
-  hash_rstudio <- expect_warning(check_fn(), 'RStudio Server')
+  hash_rstudio <- check_fn()
   # mimic default serialization options in base R save()
   options(save.defaults = NULL)
   hash_r <- check_fn()

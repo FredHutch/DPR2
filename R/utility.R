@@ -214,41 +214,6 @@ dpr_save <- function(objects, path = dpr_path(), envir = parent.frame(),
                      ascii = FALSE, compress = !ascii){
   if(!is.character(objects))
     stop("Only character vectors allowed.")
-
-  # emit warning when overriding existing save options
-  save_options <- getOption('save.defaults')
-  if (is.null(save_options)){
-    ascii_option <- FALSE
-    compress_option <- TRUE
-  } else {
-    ascii_option <-
-      if (is.null(save_options$ascii)) FALSE else save_options$ascii
-    compress_option <-
-      if (is.null(save_options$compress)) TRUE else save_options$compress
-  }
-  if (
-    # warn when default dpr_save() args override options setting
-    # don't warn when user has customized dpr_save() arguments
-    # don't warn during unit tests except when actively testing this warning
-    (ascii != ascii_option || compress != compress_option) &&
-    (ascii == FALSE && compress == TRUE) &&
-    (
-      ! identical(Sys.getenv("TESTTHAT"), "true") ||
-      ! is.null(getOption('dpr_save_warn_regardless'))
-    )
-  ){
-    warning(
-      sprintf(
-        paste(
-          'Using ascii = %s and compress = %s for save(), overriding',
-          'getOption("save.defaults"). This warning is expected in RStudio Server'
-        ),
-        ascii,
-        compress
-      )
-    )
-  }
-
   for(obj in objects){
     save(
       list = obj,
