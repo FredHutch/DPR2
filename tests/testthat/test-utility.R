@@ -23,4 +23,19 @@ testthat::test_that("dpr_save() always saves binary/gzip RDAs", {
   # can still customize serialization via dpr_save arguments
   hash_custom <- check_fn(ascii = FALSE, compress = FALSE)
   expect_false(hash_r == hash_custom)
+  # warn when overwriting uncompressed RDA with compressed RDA
+  local({
+    df <- data.frame(1:10)
+    tf <- tempfile()
+    on.exit(unlink(tf, recursive = TRUE))
+    td <- file.path(tf, 'data')
+    dir.create(td, recursive = TRUE)
+    # this mimics having a legacy uncompressed RDA
+    dpr_save('df', tf, ascii = FALSE, compress = FALSE)
+    # this mimics overwriting that with DPR2 gzip-compressed RDA
+    expect_warning(
+      dpr_save('df', tf),
+      'Overwriting uncompressed'
+    )
+  })
 })

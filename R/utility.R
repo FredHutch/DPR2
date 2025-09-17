@@ -191,6 +191,19 @@ dpr_description_set <- function(path=".", ...){
   )
 }
 
+#' Internal helper for dpr_save warning. Is RDA file gzip-compressed?
+#'
+#' @param rda_path Path to RDA file
+#' @return TRUE if RDA file is gzip-compressed, else FALSE
+#' @noRd
+is_rda_compressed <- function(rda_path) {
+  con <- file(rda_path, "rb")
+  on.exit(close(con))
+  header <- readBin(con, "raw", 2)
+  # https://docs.fileformat.com/compression/gz/#gz-file-header
+  identical(header, as.raw(c(0x1F, 0x8B)))
+}
+
 #' A convenience function for writing data objects to the package data
 #' directory.
 #'
@@ -215,9 +228,18 @@ dpr_save <- function(objects, path = dpr_path(), envir = parent.frame(),
   if(!is.character(objects))
     stop("Only character vectors allowed.")
   for(obj in objects){
+    rda_file <- paste0(obj, ".rda")
+    rda_path <- file.path(path, "data", rda_file)
+    if (compress && file.exists(rda_path) && ! is_rda_compressed(rda_path)){
+      warning(
+        sprintf(
+          "Overwriting uncompressed %s with gzip-compressed version", rda_file
+        )
+      )
+    }
     save(
       list = obj,
-      file = file.path(path, "data", paste0(obj, ".rda")),
+      file = rda_path,
       envir = envir,
       ascii = ascii,
       compress = compress
