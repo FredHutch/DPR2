@@ -24,9 +24,9 @@ jobs:
       contents: write
     steps:
       - name: configure git user for tests
-          run: |
-            git config --global user.name notauser
-            git config --global user.email notauser@notauser.com
+        run: |
+          git config --global user.name notauser
+          git config --global user.email notauser@notauser.com
       - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
