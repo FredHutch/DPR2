@@ -9,4 +9,6 @@ objYml1 <- 'test objects values 1'
 objYml2 <- 'test objects values 2'
 dpr_save('mydataframe')
 dpr_save('myotherdata')
+# Using save() is not a best practice, but needed for a unit test.
+# use dpr_save() instead.
 save(myyaml, file=dpr_path('data', 'myyaml.rda'))
