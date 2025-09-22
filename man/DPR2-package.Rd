@@ -8,6 +8,13 @@
 \description{
 Build automation and dataset tracking for R data packages. Based on DataPackageR.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://fredhutch.github.io/DPR2/}
+}
+
+}
 \author{
 \strong{Maintainer}: Jason Taylor \email{jmtaylor@fredhutch.org}
 

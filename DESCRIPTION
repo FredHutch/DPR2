@@ -33,3 +33,4 @@ Suggests:
     lubridate,
     testthat
 VignetteBuilder: knitr
+URL: https://fredhutch.github.io/DPR2/

@@ -1,0 +1,13 @@
+url: https://fredhutch.github.io/DPR2/
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+    - introduction_to_dpr2
+    - the_dpr2_workflow
+    - data_documentation
+    - data_versioning
+    - datapackager_compatibility
+template:
+  bootstrap: 5
+
