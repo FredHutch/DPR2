@@ -255,7 +255,7 @@ TestPKG
     └── mtcars.R
 ```
 
-Finally, it's important to note that DPR2 will ***not*** write data documentation for `.rda` files that have more than one object saved, or if the object in the `.rda` file does not match the `.rda` file name. This is due to the unclear mapping between the filename and object name. Warning messages will be outputted to alert the user of this.
+Finally, it's important to note that DPR2 will ***not*** write data documentation for `.rda` files that have more than one object saved, or if the object in the `.rda` file does not match the `.rda` file name. This is due to the unclear mapping between the filename and object name. Warning messages will be outputted to alert the user of this. To enforce best practices, use `dpr_save()`, not `save()`, to write RDA files.
 
 ```{r, echo=FALSE}
 

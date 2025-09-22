@@ -28,7 +28,7 @@ This vignette demonstrates the DPR2 workflow for building data packages. We will
 2. Start an R session with that folder set as the working directory.
 3. Load the DPR2 library with `library(DPR2)`
 4. Initialize the data package with `dpr_init()`
-5. Add any nessessary source data to the folder `inst/extdata`
+5. Add any necessary source data to the folder `inst/extdata`
 6. Add your processing scripts to the folder `processing`
 7. Build the data package with `dpr_build()`
 
@@ -81,7 +81,7 @@ cat(
 )
 ```
 
-`dpr_path()` is used to refer to other paths within processing scripts and `dpr_save()` to save objects to the `data` directory. Objects saved this way are saved as single object `rda` files, a requirement for DPR2.
+`dpr_path()` is used to refer to other paths within processing scripts and `dpr_save()` to save objects to the `data` directory. Objects saved this way always follow DPR2 best practices, including saving as single-object `rda` files.
 
 Once a script is added to the processing directory, DPR2 must know that it is a script the user wants processed when the package is built. 
 
