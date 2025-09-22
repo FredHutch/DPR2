@@ -1,5 +1,5 @@
 library(DPR2)
 letters <- as.list(LETTERS)
 ourLetters <- c('d', 'p', 'r')
-save(letters, file=dpr_path('data', 'letters.rda'))
+dpr_save('letters')
 dpr_save('ourLetters')
