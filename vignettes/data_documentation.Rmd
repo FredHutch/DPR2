@@ -266,6 +266,7 @@ code_block <- c(
   "mtcars_df <- mtcars",
   "mtcars_df$efficiency <- mtcars$mpg / mtcars$hp",
   "",
+  "# next line is not a best practice! Use dpr_save() instead.",
   "save('mtcars_df', file=dpr_path('data', 'my_df.rda'))",
   "dpr_save('mtcars')"
 )
