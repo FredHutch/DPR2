@@ -1,0 +1,13 @@
+pandoc: 3.1.11
+pkgdown: 2.1.3
+pkgdown_sha: ~
+articles:
+  data_documentation: data_documentation.html
+  data_versioning: data_versioning.html
+  datapackager_compatibility: datapackager_compatibility.html
+  introduction_to_dpr2: introduction_to_dpr2.html
+  the_dpr2_workflow: the_dpr2_workflow.html
+last_built: 2025-09-22T23:51Z
+urls:
+  reference: https://fredhutch.github.io/DPR2/reference
+  article: https://fredhutch.github.io/DPR2/articles
