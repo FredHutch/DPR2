@@ -3,11 +3,10 @@
 #' @title dpr_purge_data_directory
 #' @param path A character string specifying the directory path of the data
 #'   package. The default is the working directory
-#' @param yml an R yaml list object
 #' @return Invisibly, a vector of paths of backup copies of purged files
 #' @author jmtaylor
 #' @noRd
-dpr_purge_data_directory <- function(path=".", yml){
+dpr_purge_data_directory <- function(path="."){
   datadir <- file.path(path, "data")
   files_to_purge <- file.path(datadir, list.files(datadir))
 
@@ -162,7 +161,7 @@ dpr_render <- function(path=".", ...){
   yml <- dpr_yaml_get(path, ...)
 
   if(yml$purge_data_directory){
-    purge_backup_files <- dpr_purge_data_directory(path, yml)
+    purge_backup_files <- dpr_purge_data_directory(path)
     purge_restore <- TRUE
     on.exit({
       # conditionally restore from backup
