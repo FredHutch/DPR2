@@ -55,3 +55,7 @@ testthat::test_that("dpr_yaml_load errors on invalid datapackager.yml file", {
   on.exit(unlink(td))
   expect_error(dpr_yaml_load(td), 'invalid or missing')
 })
+
+testthat::test_that("dpr_save erroron invalid input", {
+  expect_error(dpr_save(0L), 'Only character vectors allowed')
+})
