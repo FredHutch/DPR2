@@ -225,6 +225,21 @@ testthat::test_that("install_on_build works when keeping tarball",{
   })
 })
 
+testthat::test_that("install_on_build works when not keeping tarball",{
+  path <- copyPkg("dpr2test")
+  on.exit(unlink(path, recursive = TRUE))
+  dpr_add_scripts('02.R', path)
+  dpr_add_objects('mymatrix', path)
+  withr::with_temp_libpaths({
+    dpr_build(path, install_on_build = TRUE, build_tarball = FALSE)
+    expect_true('dpr2test' %in% rownames(installed.packages(.libPaths()[1])))
+    tarball_file <- list.files(
+      dirname(path), '^dpr2test.*\\.tar\\.gz$', full.names = TRUE
+    )
+    expect_length(tarball_file, 0L)
+  })
+})
+
 # Keep this test last in test-build.R file
 testthat::test_that("search path cleanup occurred",{
   # R/Rmd library() calls not attached to main R process

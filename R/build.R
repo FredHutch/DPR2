@@ -294,6 +294,7 @@ dpr_build <- function(path=".", ...){
         quiet = quiet
       )
       utils::install.packages(pkgp, repo=NULL, quiet = quiet)
+      file.remove(pkgp)
     }
   }
 }
