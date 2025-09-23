@@ -194,6 +194,20 @@ testthat::test_that("checking package render",{
 
 })
 
+testthat::test_that("dpr_purge_data_directory errors on incomplete purge",{
+  tf <- tempfile()
+  td <- file.path(tf, 'data')
+  file_path <- file.path(td, 'file.txt')
+  dir.create(td, recursive = TRUE)
+  on.exit({
+    unlink(tf, recursive = TRUE, force = TRUE)
+  })
+  file.create(file_path)
+  Sys.chmod(td, "0555") # for unix
+  Sys.chmod(file_path, "0444") # for Windows
+  expect_error(dpr_purge_data_directory(tf), 'Error purging')
+})
+
 # Keep this test last in test-build.R file
 testthat::test_that("search path cleanup occurred",{
   # R/Rmd library() calls not attached to main R process
