@@ -31,6 +31,7 @@ Suggests:
     git2r (>= 0.33.0),
     knitr,
     lubridate,
-    testthat
+    testthat,
+    withr
 VignetteBuilder: knitr
 URL: https://fredhutch.github.io/DPR2/
