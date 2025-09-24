@@ -48,3 +48,14 @@ testthat::test_that("is_rda_compressed works", {
   save(letters, file = tf, ascii = FALSE, compress = FALSE)
   expect_false(is_rda_compressed(tf))
 })
+
+testthat::test_that("dpr_yaml_load errors on invalid datapackager.yml file", {
+  td <- tempfile()
+  dir.create(td)
+  on.exit(unlink(td))
+  expect_error(dpr_yaml_load(td), 'invalid or missing')
+})
+
+testthat::test_that("dpr_save erroron invalid input", {
+  expect_error(dpr_save(0L), 'Only character vectors allowed')
+})

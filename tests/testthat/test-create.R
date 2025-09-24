@@ -109,3 +109,9 @@ test_that("no dpr_(description_)_init warning about default package name", {
   setwd(twd)
   expect_no_warning(dpr_init())
 })
+
+test_that("dpr_create throws error on non-existent directory", {
+  expect_error(
+    dpr_create(tempfile(), 'does not point to an existing directory')
+  )
+})

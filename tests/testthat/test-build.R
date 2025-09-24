@@ -5,7 +5,7 @@ testthat::test_that("checking package build", {
 
   path <- copyPkg("dpr2test")
   on.exit(unlink(path, recursive = TRUE))
-  
+
   rda_to_restore <- file.path(path, 'data', 'restore_me.rda')
   file.create(rda_to_restore)
   expect_error(
@@ -192,6 +192,52 @@ testthat::test_that("checking package render",{
   ## check that dpr_render does not build package
   ## check that working env contains render generated var names
 
+})
+
+testthat::test_that("dpr_purge_data_directory errors on incomplete purge",{
+  tf <- tempfile()
+  td <- file.path(tf, 'data')
+  file_path <- file.path(td, 'file.txt')
+  dir.create(td, recursive = TRUE)
+  on.exit({
+    unlink(tf, recursive = TRUE, force = TRUE)
+  })
+  file.create(file_path)
+  Sys.chmod(td, "0555") # for unix
+  Sys.chmod(file_path, "0444") # for Windows
+  expect_error(dpr_purge_data_directory(tf), 'Error purging')
+})
+
+testthat::test_that("install_on_build works when keeping tarball",{
+  path <- copyPkg("dpr2test")
+  on.exit(unlink(path, recursive = TRUE))
+  dpr_add_scripts('02.R', path)
+  dpr_add_objects('mymatrix', path)
+  withr::with_temp_libpaths({
+    dpr_build(path, install_on_build = TRUE, build_tarball = TRUE)
+    expect_true('dpr2test' %in% rownames(installed.packages(.libPaths()[1])))
+    tarball_file <- list.files(
+      dirname(path), '^dpr2test.*\\.tar\\.gz$', full.names = TRUE
+    )
+    exsts <- file.exists(tarball_file)
+    expect_true(exsts)
+    if (exsts) file.remove(tarball_file)
+  })
+})
+
+testthat::test_that("install_on_build works when not keeping tarball",{
+  path <- copyPkg("dpr2test")
+  on.exit(unlink(path, recursive = TRUE))
+  dpr_add_scripts('02.R', path)
+  dpr_add_objects('mymatrix', path)
+  withr::with_temp_libpaths({
+    dpr_build(path, install_on_build = TRUE, build_tarball = FALSE)
+    expect_true('dpr2test' %in% rownames(installed.packages(.libPaths()[1])))
+    tarball_file <- list.files(
+      dirname(path), '^dpr2test.*\\.tar\\.gz$', full.names = TRUE
+    )
+    expect_length(tarball_file, 0L)
+  })
 })
 
 # Keep this test last in test-build.R file
