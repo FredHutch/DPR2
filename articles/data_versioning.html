@@ -87,12 +87,12 @@ using <code>dpr_recall_data_versions</code>.</p>
 <span><span class="co">## 5 4924f0aa284e1741a00d34198e168b522461e4b5    mazda.rda notauser</span></span>
 <span><span class="co">## 6 43eee6c599938b35df657acccfcb913be479fc4d    trees.rda notauser</span></span>
 <span><span class="co">##                  when                  object_checksum</span></span>
-<span><span class="co">## 1 2025-09-22 23:51:25 1a8558f6a03c6e7cd0fde036018388b0</span></span>
-<span><span class="co">## 2 2025-09-22 23:51:25 70b01998e5dd4243758e76b5312ee606</span></span>
-<span><span class="co">## 3 2025-09-22 23:51:25 370a7132861fb520bd721d9bcbe008a4</span></span>
-<span><span class="co">## 4 2025-09-22 23:51:28 e1279ff5a8c8ab9b255ce78f2cb08479</span></span>
-<span><span class="co">## 5 2025-09-22 23:51:30 8bf6afe5717bceebb76ed9bf069d4274</span></span>
-<span><span class="co">## 6 2025-09-22 23:51:33 b311633cdf60bc0ab9dd5de7a92bc282</span></span></code></pre>
+<span><span class="co">## 1 2025-09-24 20:35:09 1a8558f6a03c6e7cd0fde036018388b0</span></span>
+<span><span class="co">## 2 2025-09-24 20:35:09 70b01998e5dd4243758e76b5312ee606</span></span>
+<span><span class="co">## 3 2025-09-24 20:35:09 370a7132861fb520bd721d9bcbe008a4</span></span>
+<span><span class="co">## 4 2025-09-24 20:35:12 e1279ff5a8c8ab9b255ce78f2cb08479</span></span>
+<span><span class="co">## 5 2025-09-24 20:35:15 8bf6afe5717bceebb76ed9bf069d4274</span></span>
+<span><span class="co">## 6 2025-09-24 20:35:18 b311633cdf60bc0ab9dd5de7a92bc282</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">irisAreas</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[</span><span class="va">history</span><span class="op">$</span><span class="va">name</span> <span class="op">==</span> <span class="st">"irisArea.rda"</span>,<span class="op">]</span></span>
 <span><span class="va">firstIrisHash</span> <span class="op">&lt;-</span> <span class="va">irisAreas</span><span class="op">[</span><span class="va">irisAreas</span><span class="op">$</span><span class="va">when</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">irisAreas</span><span class="op">$</span><span class="va">when</span><span class="op">)</span>, <span class="st">"blob_git_sha1"</span><span class="op">]</span></span>
