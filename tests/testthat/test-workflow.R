@@ -9,4 +9,15 @@ testthat::test_that("checking package workflow", {
   )
   dpr_add_scripts(list.files(file.path(new, "processing")), path = new)
   dpr_build(new)
+  expect_error(
+    dpr_add_scripts("not_real.R", path=new),
+    "^`not_real.R` not found.+"
+  )
+  write_added_file("missing.R", "scripts", path = new)
+  write_added_file("not_real.R", "scripts", path = new)
+  expect_warning(
+    dpr_scripts(path = new),
+    "Items being added not found.+removing with.+: missing.R, not_real.R"
+  )
+
 })
