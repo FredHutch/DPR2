@@ -269,7 +269,7 @@ dpr_added <- function(path, items_path, add_type){
   added <- gsub("_$", "", list.files(file.path(path, dpr_yaml_load(path)$to_build_directory, add_type)))
   missing <- added[!added %in% items]
   if( length(missing) > 0 ){
-    warning("Items being added not found. Consider removing with `dpr_rm_%s`.", add_type)
+    warning(sprintf("Items being added not found. Consider removing with `dpr_rm_%s`: ", add_type), paste(missing, collapse = ", "))
   }
 
   out <- data.frame(is_added = items %in% added)
