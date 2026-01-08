@@ -40,17 +40,20 @@ process_vignettes <- function(path, processing_dir, vignette_tempdir){
   if (!dir.exists(vignettes_dir)) dir.create(vignettes_dir)
 
   srcs <- list.files(file.path(path, processing_dir), full.names = TRUE)
+  md_files <- list.files(vignettes_tempdir, pattern = '\\.md$', full.names = TRUE, ignore.case = TRUE)
+  file.rename(md_files, sub('\\.md$', '.Rmd', md_files))
+
+  tempnames <- list.files(vignette_tempdir, full.names = TRUE)
+
   file.copy(
-    list.files(vignette_tempdir, full.names = TRUE),
+    tempnames,
     vignettes_dir,
     recursive = TRUE
   )
 
-  md_files <- list.files(vignettes_dir, pattern = '\\.md$', full.names = TRUE)
-  file.rename(md_files, sub('\\.md$', '.Rmd', md_files))
+  vigs <- file.path(vignettes_dir, basename(tempnames))
 
-  rmds <- list.files(vignettes_dir, pattern = '\\.Rmd$', full.names = TRUE)
-  for(vig in rmds){
+  for(vig in vigs[!file.info(vigs)$isdir]){
     lins <- readLines(vig)
     vignette_yml <- "%%\\VignetteIndexEntry{%s}\n%%\\VignetteEngine{knitr::rmarkdown}\n%%\\VignetteEncoding{UTF-8}\n"
 
