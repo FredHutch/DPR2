@@ -32,17 +32,17 @@ dpr_purge_data_directory <- function(path="."){
 #'
 #' @param path the data package path to save the processed vignettes to.
 #' @param processing_dir the location processing scripts are in.
-#' @param vignette_tempdir the temp location vignettes were saved to.
+#' @param vignettes_tempdir the temp location vignettes were saved to.
 #' @return No return value. Modifies vignette files as a side effect.
 #' @noRd
-process_vignettes <- function(path, processing_dir, vignette_tempdir){
+process_vignettes <- function(path, processing_dir, vignettes_tempdir){
   vignettes_dir <- file.path(path, 'vignettes')
   if (!dir.exists(vignettes_dir)) dir.create(vignettes_dir)
 
   md_files <- list.files(vignettes_tempdir, pattern = '\\.md$', full.names = TRUE, ignore.case = TRUE)
   file.rename(md_files, sub('\\.md$', '.Rmd', md_files))
 
-  tempnames <- list.files(vignette_tempdir, full.names = TRUE)
+  tempnames <- list.files(vignettes_tempdir, full.names = TRUE)
 
   file.copy(
     tempnames,
