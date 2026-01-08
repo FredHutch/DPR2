@@ -62,7 +62,7 @@ process_vignettes <- function(path, processing_dir, vignette_tempdir){
 
       yml_idx <- which(grepl("^---$", src))
       if(length(yml_idx)== 0)  yml_idx <- c(0, 0)
-      rmd_yml <- yaml::read_yaml(text = src[seq_len(yml_idx[2])])
+      rmd_yml <- yaml::read_yaml(text = src[seq(yml_idx[1], yml_idx[2])])
 
       rmd_yml$vignette <-
         sprintf(
