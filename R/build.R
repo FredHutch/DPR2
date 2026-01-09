@@ -39,7 +39,6 @@ process_vignettes <- function(path, processing_dir, vignette_tempdir){
   vignettes_dir <- file.path(path, 'vignettes')
   if (!dir.exists(vignettes_dir)) dir.create(vignettes_dir)
 
-  srcs <- list.files(file.path(path, processing_dir), full.names = TRUE)
   md_files <- list.files(vignettes_tempdir, pattern = '\\.md$', full.names = TRUE, ignore.case = TRUE)
   file.rename(md_files, sub('\\.md$', '.Rmd', md_files))
 
@@ -52,6 +51,8 @@ process_vignettes <- function(path, processing_dir, vignette_tempdir){
   )
 
   vigs <- file.path(vignettes_dir, basename(tempnames))
+
+  srcs <- list.files(file.path(path, processing_dir), full.names = TRUE)
 
   for(vig in vigs[!file.info(vigs)$isdir]){
     lins <- readLines(vig)
