@@ -149,14 +149,14 @@ testthat::test_that("checking package build", {
   dpr_add_scripts(scripts, path)
   dpr_build(path)
   all_vignettes <- list.files(file.path(path, "vignettes"), full.names = T)
-  before <- file.info(all_vignettes)
+  before <- file.mtime(all_vignettes)
 
   dpr_rm_scripts(scripts[c(1,3)], path)
   dpr_build(path)
-  after <- file.info(all_vignettes)
+  after <- file.mtime(all_vignettes)
 
-  expect_true(any(before$ctime == after$ctime))
-  expect_false(all(before$ctime == after$ctime))
+  expect_true(any(before == after))
+  expect_false(all(before == after))
 
   unlink(path, recursive = TRUE)
 
