@@ -1,0 +1,171 @@
+# DPR2 - DataPackageR 2
+
+R Packages are the most accessible way of extending the R language.
+
+A **data package** is an R package that primarily provides data rather
+than code.
+
+Adding data to a package is as easy as putting data into the `data`
+directory of a package’s source. Doing simply that however fails to
+inform users how those data were created, a critical component of
+reproducible research and information transparency.
+
+DPR2 - DataPackageR 2 - is designed to make data packages that are
+reproducible and transparent, and a new implementation of the concepts
+and workflows found in the R package .
+
+DPR2 offers:
+
+- source data and processing script storage
+- data object and vignette rendering
+- data object documentation
+
+The entire process from initializing a new data package, to processing
+data, to building the data package for sharing has been wrapped in
+convenient functions with a streamlined workflow.
+
+## Working as a team with data processing isolation
+
+DPR2 lets data packages be worked on by teams **developing different
+datasets at the same time using git branching**.
+
+Data processing scripts, which are stored in the package source, are
+built by **running each script in its own R process** by default, a good
+practice when making reproducible data. If desired, a shared processing
+environment can be used when configured in the DPR2 yaml configuration
+file.
+
+## Data versioning
+
+DPR2 presents a **data digest**, an object that tracks the **md5
+checksums** of the data being generated and shared.
+
+When using git with DPR2, DPR2 offers functions that allow users to
+**recall data objects** from the git history. This allows users to
+easily compare datasets that may have changed throughout the data
+package development process.
+
+## Data documentation
+
+Users can access a help file for data objects using the help operator
+`?` on the object name,
+e.g. [`?mtcars`](https://rdrr.io/r/datasets/mtcars.html).
+
+Like DataPackageR, DPR2 offers a convenient way to generate the
+necessary files for making data documentation that can be accessed using
+the help operator after the package is built.
+
+# Installation
+
+You can install the development version of DPR2 from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("FredHutch/DPR2")
+```
+
+# Examples
+
+For a full explanation of the DPR2 workflow, see the package vignettes.
+
+## Create a data package
+
+Create a new empty data package with then package name “MyAnalysis”:
+
+``` r
+DPR2::dpr_create(desc = dpr_description_init(Package = "MyAnalysis"))
+```
+
+Create a new data package in the current working directory using the
+directory name as the package name:
+
+``` r
+DPR2::dpr_init()
+```
+
+## Building a data package
+
+Once code and data are added, the package can be built:
+
+``` r
+DPR2::dpr_build()
+```
+
+# Package index
+
+## All functions
+
+- [`dpr_add_objects()`](https://fredhutch.github.io/DPR2/reference/dpr_add_objects.md)
+  : dpr_add_objects
+- [`dpr_add_scripts()`](https://fredhutch.github.io/DPR2/reference/dpr_add_scripts.md)
+  : dpr_add_scripts
+- [`dpr_build()`](https://fredhutch.github.io/DPR2/reference/dpr_build.md)
+  : dpr_build
+- [`dpr_checksum_files()`](https://fredhutch.github.io/DPR2/reference/dpr_checksum_files.md)
+  : dpr_checksum_files
+- [`dpr_compare_data_digest()`](https://fredhutch.github.io/DPR2/reference/dpr_compare_data_digest.md)
+  : dpr_compare_data_digest
+- [`dpr_convert()`](https://fredhutch.github.io/DPR2/reference/dpr_convert.md)
+  : dpr_convert
+- [`dpr_create()`](https://fredhutch.github.io/DPR2/reference/dpr_create.md)
+  : dpr_create
+- [`dpr_data_checksums()`](https://fredhutch.github.io/DPR2/reference/dpr_data_checksums.md)
+  : dpr_data_checksums
+- [`dpr_data_digest()`](https://fredhutch.github.io/DPR2/reference/dpr_data_digest.md)
+  : dpr_data_digest
+- [`dpr_data_history()`](https://fredhutch.github.io/DPR2/reference/dpr_data_history.md)
+  : dpr_data_history
+- [`dpr_description_defaults()`](https://fredhutch.github.io/DPR2/reference/dpr_description_defaults.md)
+  : dpr_description_defaults
+- [`dpr_description_init()`](https://fredhutch.github.io/DPR2/reference/dpr_description_init.md)
+  : dpr_description_init
+- [`dpr_description_set()`](https://fredhutch.github.io/DPR2/reference/dpr_description_set.md)
+  : dpr_description_set
+- [`dpr_init()`](https://fredhutch.github.io/DPR2/reference/dpr_init.md)
+  : dpr_init
+- [`dpr_objects()`](https://fredhutch.github.io/DPR2/reference/dpr_objects.md)
+  : dpr_objects
+- [`dpr_path()`](https://fredhutch.github.io/DPR2/reference/dpr_path.md)
+  : Construct path from data package directory.
+- [`dpr_recall_data_versions()`](https://fredhutch.github.io/DPR2/reference/dpr_recall_data_versions.md)
+  : dpr_recall_data_version
+- [`dpr_render()`](https://fredhutch.github.io/DPR2/reference/dpr_render.md)
+  : dpr_render
+- [`dpr_rm_objects()`](https://fredhutch.github.io/DPR2/reference/dpr_rm_objects.md)
+  : dpr_rm_objects
+- [`dpr_rm_scripts()`](https://fredhutch.github.io/DPR2/reference/dpr_rm_scripts.md)
+  : dpr_rm_scripts
+- [`dpr_save()`](https://fredhutch.github.io/DPR2/reference/dpr_save.md)
+  : dpr_save
+- [`dpr_scripts()`](https://fredhutch.github.io/DPR2/reference/dpr_scripts.md)
+  : dpr_scripts
+- [`dpr_yaml_defaults()`](https://fredhutch.github.io/DPR2/reference/dpr_yaml_defaults.md)
+  : dpr_yaml_defaults
+- [`dpr_yaml_get()`](https://fredhutch.github.io/DPR2/reference/dpr_yaml_get.md)
+  : dpr_yaml_get
+- [`dpr_yaml_init()`](https://fredhutch.github.io/DPR2/reference/dpr_yaml_init.md)
+  : dpr_yaml_init
+- [`dpr_yaml_set()`](https://fredhutch.github.io/DPR2/reference/dpr_yaml_set.md)
+  : dpr_yaml_set
+- [`project_data_path()`](https://fredhutch.github.io/DPR2/reference/project_data_path.md)
+  : Construct path from data package data directory (deprecated)
+- [`project_extdata_path()`](https://fredhutch.github.io/DPR2/reference/project_extdata_path.md)
+  : Construct path from data package inst/extdata directory (deprecated)
+- [`project_path()`](https://fredhutch.github.io/DPR2/reference/project_path.md)
+  : Construct path from data package directory (deprecated)
+
+# Articles
+
+### Articles
+
+- [Introduction to
+  DPR2](https://fredhutch.github.io/DPR2/articles/introduction_to_dpr2.md):
+- [The DPR2
+  Workflow](https://fredhutch.github.io/DPR2/articles/the_dpr2_workflow.md):
+- [Data
+  Documentation](https://fredhutch.github.io/DPR2/articles/data_documentation.md):
+- [Data
+  Versioning](https://fredhutch.github.io/DPR2/articles/data_versioning.md):
+- [DataPackageR
+  Compatibility](https://fredhutch.github.io/DPR2/articles/datapackager_compatibility.md):
