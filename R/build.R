@@ -32,34 +32,34 @@ dpr_purge_data_directory <- function(path="."){
 #'
 #' @param path the data package path to save the processed vignettes to.
 #' @param processing_dir the location processing scripts are in.
-#' @param vignette_tempdir the temp location vignettes were saved to.
+#' @param vignettes_tempdir the temp location vignettes were saved to.
 #' @return No return value. Modifies vignette files as a side effect.
 #' @noRd
-process_vignettes <- function(path, processing_dir, vignette_tempdir){
+process_vignettes <- function(path, processing_dir, vignettes_tempdir){
   vignettes_dir <- file.path(path, 'vignettes')
   if (!dir.exists(vignettes_dir)) dir.create(vignettes_dir)
 
-  srcs <- list.files(file.path(path, processing_dir), full.names = TRUE)
+  md_files <- list.files(vignettes_tempdir, pattern = '\\.md$', full.names = TRUE, ignore.case = TRUE)
+  file.rename(md_files, sub('\\.md$', '.Rmd', md_files))
+
+  tempnames <- list.files(vignettes_tempdir, full.names = TRUE)
+
   file.copy(
-    list.files(vignette_tempdir, full.names = TRUE),
+    tempnames,
     vignettes_dir,
     recursive = TRUE
   )
 
-  md_files <- list.files(vignettes_dir, pattern = '\\.md$', full.names = TRUE)
-  file.rename(md_files, sub('\\.md$', '.Rmd', md_files))
+  vigs <- file.path(vignettes_dir, basename(tempnames))
 
-  rmds <- list.files(vignettes_dir, pattern = '\\.Rmd$', full.names = TRUE)
-  for(vig in rmds){
+  srcs <- list.files(file.path(path, processing_dir), full.names = TRUE)
+
+  for(vig in vigs[!file.info(vigs)$isdir]){
     lins <- readLines(vig)
     vignette_yml <- "%%\\VignetteIndexEntry{%s}\n%%\\VignetteEngine{knitr::rmarkdown}\n%%\\VignetteEncoding{UTF-8}\n"
 
     if (tolower(basename(vig)) %in% tolower(basename(srcs))) { # to check if the vignette was originally an rmd file and that it has a yaml header
-      src <- readLines(srcs[ tolower(basename(srcs)) %in% tolower(basename(vig)) ])
-
-      yml_idx <- which(grepl("^---$", src))
-      if(length(yml_idx)== 0)  yml_idx <- c(0, 0)
-      rmd_yml <- yaml::read_yaml(text = src[seq_len(yml_idx[2])])
+      rmd_yml <- rmarkdown::yaml_front_matter( srcs[ tolower(basename(srcs)) %in% tolower(basename(vig)) ] )
 
       rmd_yml$vignette <-
         sprintf(
