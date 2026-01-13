@@ -59,11 +59,7 @@ process_vignettes <- function(path, processing_dir, vignettes_tempdir){
     vignette_yml <- "%%\\VignetteIndexEntry{%s}\n%%\\VignetteEngine{knitr::rmarkdown}\n%%\\VignetteEncoding{UTF-8}\n"
 
     if (tolower(basename(vig)) %in% tolower(basename(srcs))) { # to check if the vignette was originally an rmd file and that it has a yaml header
-      src <- readLines(srcs[ tolower(basename(srcs)) %in% tolower(basename(vig)) ])
-
-      yml_idx <- which(grepl("^---$", src))
-      if(length(yml_idx) != 2)  yml_idx <- c(0, 0)
-      rmd_yml <- yaml::read_yaml(text = src[yml_idx[1]:yml_idx[2]])
+      rmd_yml <- rmarkdown::yaml_front_matter( srcs[ tolower(basename(srcs)) %in% tolower(basename(vig)) ] )
 
       rmd_yml$vignette <-
         sprintf(
