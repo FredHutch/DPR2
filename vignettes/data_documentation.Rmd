@@ -292,3 +292,7 @@ cat(
 dpr_render(path)
 
 ```
+
+## Understanding Data and Script Documentation
+
+Whenever the package is built, documentation is automatically created or updated for ***all*** data objects found in the `data/` directory. This happens because the build process assumes that every `.rda` file in `data/` should be properly documented to maintain reproducibility. Users should be aware of which `.rda` objects are saved, as any additions or changes will be documented with every build. In contrast, processing script vignettes are only generated for the scripts stored in `inst/to_build/scripts/` at the time of the build. 
