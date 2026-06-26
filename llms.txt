@@ -61,6 +61,7 @@ You can install the development version of DPR2 from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("remotes")
 remotes::install_github("FredHutch/DPR2")
 ```
@@ -74,6 +75,7 @@ For a full explanation of the DPR2 workflow, see the package vignettes.
 Create a new empty data package with then package name “MyAnalysis”:
 
 ``` r
+
 DPR2::dpr_create(desc = dpr_description_init(Package = "MyAnalysis"))
 ```
 
@@ -81,6 +83,7 @@ Create a new data package in the current working directory using the
 directory name as the package name:
 
 ``` r
+
 DPR2::dpr_init()
 ```
 
@@ -89,6 +92,7 @@ DPR2::dpr_init()
 Once code and data are added, the package can be built:
 
 ``` r
+
 DPR2::dpr_build()
 ```
 

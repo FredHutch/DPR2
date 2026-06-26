@@ -37,6 +37,7 @@ that access the values in the configuration YAML file.
 ### Initializing a DPR2 package
 
 ``` r
+
 library(DPR2)
 dpr_init(yaml = dpr_yaml_init(process_on_build = 'my_process.Rmd'))
 ```
@@ -73,6 +74,7 @@ Before a package is built, a processing script must be added to the
 #### Adding an example processing script
 
 ``` r
+
 cat(
   readLines(
     dpr_path('processing', 'my_process.Rmd')
@@ -102,6 +104,7 @@ Once a script is added to the processing directory, DPR2 must know that
 it is a script the user wants processed when the package is built.
 
 ``` r
+
 dpr_add_scripts("my_process.Rmd")
 ```
 
@@ -123,6 +126,7 @@ checking if the package can be built successfully or if the associated
 vignettes are rendered correctly.
 
 ``` r
+
 dpr_render()
 ```
 
@@ -137,6 +141,7 @@ error, `dpr_build` can be used to build and install the package. Users
 also can choose to skip rendering and build the package as is.
 
 ``` r
+
 dpr_build()
 
 # examine data directory
@@ -156,6 +161,7 @@ using
 [`dpr_data_digest()`](https://fredhutch.github.io/DPR2/reference/dpr_data_digest.md)
 
 ``` r
+
 dpr_data_digest()
 #>        name                  data_digest_md5
 #> 1 my_df.rda ac3f4afc00920b7b099f2051a48956b1
@@ -169,6 +175,7 @@ vignettes can be accessed using
 [`vignette()`](https://rdrr.io/r/utils/vignette.html) base functions.
 
 ``` r
+
 data('my_df')
 vignette(package="my_data_package")
 ```

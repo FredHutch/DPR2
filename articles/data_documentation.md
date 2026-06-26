@@ -85,6 +85,7 @@ matrix. These are saved to the `data/` folder using
     dpr_save('mtcars_list')
 
 ``` r
+
 str(mtcars_df)
 #> 'data.frame':    32 obs. of  12 variables:
 #>  $ mpg       : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
@@ -102,6 +103,7 @@ str(mtcars_df)
 ```
 
 ``` r
+
 str(mtcars_list)
 #> List of 4
 #>  $ raw_data          :'data.frame':  32 obs. of  11 variables:
@@ -204,6 +206,7 @@ descriptions, and references. In the example below, we update the
 `@source` tag to link the object back to its processing script.
 
 ``` r
+
 mtcars_block <- readLines(file.path(path, "R", "mtcars_df.R"))
 mtcars_block[grepl("@source", mtcars_block)] <- "#' @source Generated from script mtcars.R"
 writeLines(mtcars_block, file.path(path, "R", "mtcars_df.R"))
@@ -281,6 +284,7 @@ For example, after re-running
 with no changes to the saved objects, users will see the following:
 
 ``` r
+
 dpr_render(path)
 ```
 
@@ -336,6 +340,7 @@ not [`save()`](https://rdrr.io/r/base/save.html), to write RDA files.
     dpr_save('mtcars')
 
 ``` r
+
 dpr_render(path)
 ```
 
@@ -343,3 +348,14 @@ dpr_render(path)
     ## object name 'mtcars_df'. Will skip writing documentation for it.
 
     ## No new data object documentation created, as no objects have been modified and all objects are documented in `.R`.
+
+### Understanding Data and Script Documentation
+
+Whenever the package is built, documentation is automatically created or
+updated for ***all*** data objects found in the `data/` directory. This
+happens because the build process assumes that every `.rda` file in
+`data/` should be properly documented to maintain reproducibility. Users
+should be aware of which `.rda` objects are saved, as any additions or
+changes will be documented with every build. In contrast, processing
+script vignettes are only generated for the scripts stored in
+`inst/to_build/scripts/` at the time of the build.

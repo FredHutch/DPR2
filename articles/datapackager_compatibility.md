@@ -12,6 +12,7 @@ To convert a DataPackageR package to use DPR2 simply run
 the default path being the current working directory.
 
 ``` r
+
 ## load DPR2 
 library(DPR2)
 
@@ -50,6 +51,7 @@ Versioning](https://fredhutch.github.io/DPR2/articles/data_versioning.md)
 for more information regarding how to use the new data digest format.
 
 ``` r
+
 ## view the new data digest
 dpr_data_digest(dpr1_path)
 #>             name                  data_digest_md5
@@ -64,6 +66,7 @@ the yaml configuration for the DataPackageR package is converted to DPR2
 compatible settings.
 
 ``` r
+
 ## view the new yaml file
 dpr_yaml_get(dpr1_path)
 #> $source_data_directory
