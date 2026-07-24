@@ -108,10 +108,9 @@ callr_render <- function(files_to_process, render_args, render_mode, r_session_w
       c(render_args, input = file_to_process)
     )
 
+    # propagate full error stack from subprocess into main process
     if (!is.null(res$error)) {
-      # Include useful debugging info from stderr in the actual error msg
-      res$error$message <- paste0(res$error$message, res$error$stderr)
-      stop(res$error)
+      stop(paste(capture.output(res$error), collapse = '\n'))
     }
 
     if (render_mode == "isolate"){
