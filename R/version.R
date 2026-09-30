@@ -227,17 +227,19 @@ dpr_data_history <- function(path=".", include_checksums=FALSE){
   odb <- git2r::odb_blobs(path)
   odb <- odb[
     odb$path == "data",
-    c("sha", "name", "author", "when")
+    c("sha", "name", "author", "when", "commit")
   ]
 
   if(nrow(odb) == 0)
     stop("No files found at the `data` path commited to the git history.")
 
-  names(odb)[names(odb) == "sha"] <- "blob_git_sha1"
+  names(odb)[names(odb) == "sha"] <- "blob_sha1"
+  names(odb)[names(odb) == "commit"] <- "commit_sha1"
+
   row.names(odb) <- 1:nrow(odb) # resetting the row names after subsetting
 
   if(include_checksums)
-    odb$object_checksum <- dpr_hashes_to_checksums(odb$blob_git_sha1, path)
+    odb$object_checksum <- dpr_hashes_to_checksums(odb$blob_sha1, path)
 
   return(odb)
 }
