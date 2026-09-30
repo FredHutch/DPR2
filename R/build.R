@@ -92,7 +92,7 @@ get_callr_globals <- function(session){
 callr_call <- function(r_session_wait_timeout){
   tryCatch({
     rs <- callr::r_session$new(wait = TRUE, wait_timeout = r_session_wait_timeout)
-  }, error=\(e) {
+  }, error=function(e) {
     if(grepl("Could not start R session, timed out", e$message))
       e$message <- paste0(e$message, "\nSee ?dpr_yaml_defaults to set timeout via r_session_wait_timeout")
     stop(e)
@@ -203,7 +203,7 @@ dpr_render <- function(path=".", ...){
   )
 
   # render and convert to environment
-  objects <- callr_render(
+  objects <- source_render(
     file.path(path, yml$process_directory, yml$process_on_build),
     render_args,
     yml$render_env_mode,
