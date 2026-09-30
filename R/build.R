@@ -203,7 +203,7 @@ dpr_render <- function(path=".", ...){
   )
 
   # render and convert to environment
-  objects <- source_render(
+  objects <- callr_render(
     file.path(path, yml$process_directory, yml$process_on_build),
     render_args,
     yml$render_env_mode,
