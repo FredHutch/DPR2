@@ -68,7 +68,7 @@ There are also optional values can will be used but are not required.
   environments. These values overwrite what objects have been assigned
   in `inst/to_build/objects` with `dpr_add_objects`.
 
-- `r_session_wait_timeout` : How long should a callr session wait before
+- `r_session_wait_timeout` : how long should a callr session wait before
   timing out. Add this to `datapackager.yml` if `dpr_build` or
   `dpr_render` return timeout errors. Units are in milliseconds with the
   default being 3000. A value of 5000 or higher will most likely prevent
