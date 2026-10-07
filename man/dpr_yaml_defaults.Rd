@@ -37,6 +37,6 @@ There are also optional values can will be used but are not required.
 \itemize{
 \item \code{process_on_build}       : a character vector of which processing scripts to run from the \code{process_directory} location when the package is rendered. These overwrite what scripts have been assigned in \code{inst/to_build/scripts} with \code{dpr_add_scripts}.
 \item \code{objects}                : which objects to save from the processing scripts environments. These values overwrite what objects have been assigned in \code{inst/to_build/objects} with \code{dpr_add_objects}.
-\item \code{r_session_wait_timeout} : How long should a callr session wait before timing out. Add this to \code{datapackager.yml} if \code{dpr_build} or \code{dpr_render} return timeout errors. Units are in milliseconds with the default being 3000. A value of 5000 or higher will most likely prevent timeout errors.
+\item \code{r_session_wait_timeout} : how long should a callr session wait before timing out. Add this to \code{datapackager.yml} if \code{dpr_build} or \code{dpr_render} return timeout errors. Units are in milliseconds with the default being 3000. A value of 5000 or higher will most likely prevent timeout errors.
 }
 }
