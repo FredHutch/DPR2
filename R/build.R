@@ -84,14 +84,14 @@ get_callr_globals <- function(session){
   return(session$run(function() as.list(globalenv())))
 }
 
-##' Private. Call callr and check for error messages, append as needed.
+##' Private. Call callr::rsession$new(), catch error messages and modify for the user.
 ##'
-##' @param r_session_wait_timeout numeric, a valid input for r_session$new `wait_timeout`
+##' @param ... arguments to `callr::r_session$new()`
 ##' @return a callr R session object
 ##' @noRd
-callr_call <- function(r_session_wait_timeout){
+rsession_catch_errors <- function(...){
   tryCatch({
-    rs <- callr::r_session$new(wait = TRUE, wait_timeout = r_session_wait_timeout)
+    rs <- callr::r_session$new(...)
   }, error=function(e) {
     if(grepl("Could not start R session, timed out", e$message))
       e$message <- paste0(e$message, "\nSee ?dpr_yaml_defaults to set timeout via r_session_wait_timeout")
@@ -112,7 +112,7 @@ callr_call <- function(r_session_wait_timeout){
 #' @noRd
 callr_render <- function(files_to_process, render_args, render_mode, r_session_wait_timeout){
 
-  rs <- callr_call(r_session_wait_timeout)
+  rs <- rsession_catch_errors(wait = TRUE, wait_timeout = r_session_wait_timeout)
   on.exit(rs$close())
 
   if (render_mode == "isolate") objs <- list()
@@ -136,7 +136,7 @@ callr_render <- function(files_to_process, render_args, render_mode, r_session_w
       objs[names(get_callr_globals(rs))] <- get_callr_globals(rs)
       if ( file_to_process != files_to_process[ length(files_to_process) ] ){
         rs$close()
-        rs <- callr_call(r_session_wait_timeout)
+        rs <- rsession_catch_errors(wait = TRUE, wait_timeout = r_session_wait_timeout)
       }
     }
 
