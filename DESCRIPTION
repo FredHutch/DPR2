@@ -25,9 +25,10 @@ Authors@R:
         ),
         person(
             given = "Nazmus",
-            family = "Salehinn",
+            family = "Salehin",
             role = c("aut"),
-            email = "gsalehinn@fredhutch.org"
+            email = "gsalehin@fredhutch.org",
+            comment = c(ORCID = "0009-0007-2718-8460")
         )
     )
 Description: Build automation and dataset tracking for R data packages. Based on DataPackageR.
