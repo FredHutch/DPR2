@@ -212,8 +212,8 @@ dpr_checksum_files <- function(paths){
 #' @param include_checksums a boolean value indicating if checksums should be
 #'   included in the returned data.frame object; computing checksums is less
 #'   performant
-#' @return a data.frame object with the git hash, file name, author name, time
-#'   of creation and md5 checksum of the file
+#' @return a data.frame object with the git object hash, file name, author name, time
+#'   of creation, md5 checksum of the file if included, and the git commit hash
 #' @export
 dpr_data_history <- function(path=".", include_checksums=FALSE){
   if( !dpr_is(path) )

@@ -14,8 +14,8 @@ included in the returned data.frame object; computing checksums is less
 performant}
 }
 \value{
-a data.frame object with the git hash, file name, author name, time
-of creation and md5 checksum of the file
+a data.frame object with the git object hash, file name, author name, time
+of creation, md5 checksum of the file if included, and the git commit hash
 }
 \description{
 Return the history of all the former and current files in the \code{data}
