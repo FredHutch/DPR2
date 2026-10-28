@@ -91,7 +91,7 @@ testthat::test_that("checking package data history with git", {
     dataHistory <- dpr_data_history(path=path, include_checksums=TRUE)
   )
 
-  expect_equal( ncol(dataHistory), 5 )
+  expect_equal( names(dataHistory), c("blob_sha1", "name", "author", "when", "commit_sha1", "object_checksum") )
   expect_equal( nrow(dataHistory), 6 )
   expect_true( all(row.names(dataHistory) == 1:nrow(dataHistory)) )
   expect_true( any(grepl("No checksum computed", dataHistory$object_checksum)) )
@@ -102,7 +102,7 @@ testthat::test_that("checking package data history with git", {
   )
 
   ## test recall objects are correctly named
-  fullHash <- dataHistory$blob_git_sha1[c(1,2)]
+  fullHash <- dataHistory$blob_sha1[c(1,2)]
   subHash  <- substr(fullHash, 1, 5)
   missHash <- "0000000"
   notHash  <- "qwerty"
@@ -132,7 +132,7 @@ testthat::test_that("checking package data history with git", {
   )
 
   ## check that behavior multiple objects are saved
-  lastHash <- tail(dataHistory,1)$blob_git_sha1
+  lastHash <- tail(dataHistory,1)$blob_sha1
   expect_length(
     dpr_recall_data_versions(lastHash, path)[[1]], 2
   )
