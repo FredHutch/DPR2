@@ -33,7 +33,7 @@ testthat::test_that("checking package build", {
     capture.output(
       dpr_build(path, process_on_build = "02.R")
     ),
-    "Could not start R session, timed out"
+    "Could not start R session, timed out.+dpr_yaml_defaults"
   )
   dpr_yaml_set(path, r_session_wait_timeout = 3000)
 

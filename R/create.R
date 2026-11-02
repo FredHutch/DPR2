@@ -82,7 +82,7 @@ dpr_get_template <- function(regex){
 #'
 #' * `process_on_build`       : a character vector of which processing scripts to run from the `process_directory` location when the package is rendered. These overwrite what scripts have been assigned in `inst/to_build/scripts` with `dpr_add_scripts`.
 #' * `objects`                : which objects to save from the processing scripts environments. These values overwrite what objects have been assigned in `inst/to_build/objects` with `dpr_add_objects`.
-#' * `r_session_wait_timeout` : How long should a callr session wait before timing out. Add this to `datapackager.yml` if `dpr_build` or `dpr_render` return timeout errors. Units are in milliseconds with the default being 3000. A value of 5000 or higher will most likely prevent timeout errors.
+#' * `r_session_wait_timeout` : how long should a callr session wait before timing out. Add this to `datapackager.yml` if `dpr_build` or `dpr_render` return timeout errors. Units are in milliseconds with the default being 3000. A value of 5000 or higher will most likely prevent timeout errors.
 #
 #' @title dpr_yaml_defaults
 #' @return a list containing default yaml key-value pairs from `datapackager.yml`

@@ -1,11 +1,35 @@
 Package: DPR2
 Title: DPR2 // DataPackageR2
-Version: 0.0.0.1000
+Version: 1.0.0
 Authors@R:
-    person(
-        given = "Jason", family = "Taylor",
-        email = "jmtaylor@fredhutch.org",
-        role = c("aut", "cre")
+    c(
+        person(
+            given = "Jason",
+            family = "Taylor",
+            role = c("aut", "cre"),
+            email = "jmtaylor@fredhutch.org"
+        ),
+        person(
+            given = "Dave",
+            family = "Slager",
+            role = c("aut"),
+            email = "dslager@fredhutch.org",
+            comment = c(ORCID = "0000-0003-2525-2039")
+        ),
+        person(
+            given = "Valeria",
+            family = "Duran",
+            role = c("aut"),
+            email = "vduran@fredhutch.org",
+            comment = c(ORCID = "0009-0005-4164-4739")
+        ),
+        person(
+            given = "Nazmus",
+            family = "Salehin",
+            role = c("aut"),
+            email = "gsalehin@fredhutch.org",
+            comment = c(ORCID = "0009-0007-2718-8460")
+        )
     )
 Description: Build automation and dataset tracking for R data packages. Based on DataPackageR.
 Encoding: UTF-8
