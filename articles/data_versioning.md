@@ -16,20 +16,27 @@ history <- dpr_data_history(path=path, include_checksums=TRUE)
 print(history)
 ```
 
-    ##                              blob_git_sha1         name   author
+    ##                                  blob_sha1         name   author
     ## 1 6671c235f6b93ddcbeaa9de483b1decc533c9b97 irisArea.rda notauser
     ## 2 e5cf20020b321ad273a988a94911252d6204582f    mazda.rda notauser
     ## 3 bdcf141805d8ab7303add10533bb33e4cee80499    trees.rda notauser
     ## 4 c5ab415a4c9a7d17d85b684c2d993ecde21556c2 irisArea.rda notauser
     ## 5 b4679a67b25d9ae3fdc492fb64de91800276d990    mazda.rda notauser
     ## 6 6e314bd7f4d5811c9f9ca459eb669034a560121d    trees.rda notauser
-    ##                  when                  object_checksum
-    ## 1 2026-11-02 17:35:38 1a8558f6a03c6e7cd0fde036018388b0
-    ## 2 2026-11-02 17:35:38 70b01998e5dd4243758e76b5312ee606
-    ## 3 2026-11-02 17:35:38 370a7132861fb520bd721d9bcbe008a4
-    ## 4 2026-11-02 17:35:41 e1279ff5a8c8ab9b255ce78f2cb08479
-    ## 5 2026-11-02 17:35:44 8bf6afe5717bceebb76ed9bf069d4274
-    ## 6 2026-11-02 17:35:46 b311633cdf60bc0ab9dd5de7a92bc282
+    ##                  when                              commit_sha1
+    ## 1 2026-11-02 18:16:35 d4705e213ab232794e9cf54fa49a6416c3486bf7
+    ## 2 2026-11-02 18:16:35 d4705e213ab232794e9cf54fa49a6416c3486bf7
+    ## 3 2026-11-02 18:16:35 d4705e213ab232794e9cf54fa49a6416c3486bf7
+    ## 4 2026-11-02 18:16:38 f364719205e6a242b779ad3619f5f2089839b212
+    ## 5 2026-11-02 18:16:41 7cf30d3142e3e0a796b84a51de4e3ffc6611bc35
+    ## 6 2026-11-02 18:16:43 8974a7ff065f524d4634d57e7a3a319ac252cbd8
+    ##                    object_checksum
+    ## 1 1a8558f6a03c6e7cd0fde036018388b0
+    ## 2 70b01998e5dd4243758e76b5312ee606
+    ## 3 370a7132861fb520bd721d9bcbe008a4
+    ## 4 e1279ff5a8c8ab9b255ce78f2cb08479
+    ## 5 8bf6afe5717bceebb76ed9bf069d4274
+    ## 6 b311633cdf60bc0ab9dd5de7a92bc282
 
 ``` r
 
@@ -56,7 +63,7 @@ digest::digest(dataversions[[1]][[1]])
 digest::digest(dataversions[[2]][[1]])
 ```
 
-    ## [1] "e1279ff5a8c8ab9b255ce78f2cb08479"
+    ## [1] "70b01998e5dd4243758e76b5312ee606"
 
 ``` r
 
@@ -80,6 +87,7 @@ diffdf::diffdf(
 ```
 
     ## Warning in diffdf::diffdf(dataversions[[1]][[1]], dataversions[[2]][[1]]): 
+    ## There are rows in BASE that are not in COMPARE !!
     ## There are columns in BASE that are not in COMPARE !!
     ## There are columns in COMPARE that are not in BASE !!
 
@@ -91,25 +99,58 @@ diffdf::diffdf(
     ##   ------------------------------------------------------------
     ##       Name     dataversions[[1]][[1]]  dataversions[[2]][[1]] 
     ##      Class           data.frame              data.frame       
-    ##     Rows(#)             150                     150           
-    ##    Columns(#)            6                       6            
+    ##     Rows(#)             150                      2            
+    ##    Columns(#)            6                       11           
     ##   ------------------------------------------------------------
     ## 
     ## 
+    ## There are rows in BASE that are not in COMPARE !!
+    ## First 10 of 148 rows are shown in table below
+    ##   ===============
+    ##    ..ROWNUMBER.. 
+    ##   ---------------
+    ##          3       
+    ##          4       
+    ##          5       
+    ##          6       
+    ##          7       
+    ##          8       
+    ##          9       
+    ##         10       
+    ##         11       
+    ##         12       
+    ##   ---------------
+    ## 
+    ## 
     ## There are columns in BASE that are not in COMPARE !!
-    ##   ============
-    ##     COLUMNS   
-    ##   ------------
-    ##    Sepal.Area 
-    ##   ------------
+    ##   ==============
+    ##      COLUMNS    
+    ##   --------------
+    ##    Sepal.Length 
+    ##    Sepal.Width  
+    ##    Petal.Length 
+    ##    Petal.Width  
+    ##      Species    
+    ##     Sepal.Area  
+    ##   --------------
     ## 
     ## 
     ## There are columns in COMPARE that are not in BASE !!
-    ##   ============
-    ##     COLUMNS   
-    ##   ------------
-    ##    Petal.Area 
-    ##   ------------
+    ## First 10 of 11 rows are shown in table below
+    ##   =========
+    ##    COLUMNS 
+    ##   ---------
+    ##      mpg   
+    ##      cyl   
+    ##     disp   
+    ##      hp    
+    ##     drat   
+    ##      wt    
+    ##     qsec   
+    ##      vs    
+    ##      am    
+    ##     gear   
+    ##   ---------
 
 Below, we render a package before building it to compare the object
 checksums between the refreshed object in the data directory.
