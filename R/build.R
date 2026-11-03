@@ -64,7 +64,7 @@ process_vignettes <- function(path, processing_dir, vignettes_tempdir){
       rmd_yml$vignette <-
         sprintf(
           vignette_yml,
-          ifelse(!is.null(rmd_yml$title), rmd_yml$title, gsub("\\.rmd$", "", basename(srcs), ignore.case = T))
+          ifelse(!is.null(rmd_yml$title), rmd_yml$title, gsub("\\.rmd$", "", basename(vig), ignore.case = T))
         )
 
     } else {
