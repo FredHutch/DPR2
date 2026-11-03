@@ -35,7 +35,7 @@ dpr_purge_data_directory <- function(path="."){
 #' @param vignettes_tempdir the temp location vignettes were saved to.
 #' @return No return value. Modifies vignette files as a side effect.
 #' @noRd
-process_vignettes <- function(path, processing_dir, vignettes_tempdir){
+process_vignettes <- function(path, processing_dir, processing_scripts, vignettes_tempdir){
   vignettes_dir <- file.path(path, 'vignettes')
   if (!dir.exists(vignettes_dir)) dir.create(vignettes_dir)
 
@@ -52,7 +52,7 @@ process_vignettes <- function(path, processing_dir, vignettes_tempdir){
 
   vigs <- file.path(vignettes_dir, basename(tempnames))
 
-  srcs <- list.files(file.path(path, processing_dir), full.names = TRUE)
+  srcs <- file.path(path, processing_dir, processing_scripts)
 
   for(vig in vigs[!file.info(vigs)$isdir]){
     lins <- readLines(vig)
@@ -217,7 +217,7 @@ dpr_render <- function(path=".", ...){
 
   # transfer vignettes to vignettes/ if desired, now that we're done rendering
   if (yml$write_to_vignettes){
-    process_vignettes(path, yml$process_directory, vignette_tempdir)
+    process_vignettes(path, yml$process_directory, yml$process_on_build, vignette_tempdir)
   }
 
   # now safe to cancel purge restore on exit
