@@ -33,6 +33,10 @@ testthat::test_that("checking package build", {
     grepl("VignetteIndexEntry\\{A1\\}", rmarkdown::yaml_front_matter( file.path(path, "vignettes/A1.Rmd" ) )$vignette)
   )
 
+  expect_error(dpr_build(path, process_on_build = c("01.R", "01.Rmd")),
+               "Cannot build source files with the same filename sans ext. Rename one file or select only one of the conflicting files for this build."
+               )
+
   expect_true(file.exists(ddp))
   vign <- list.files(file.path(path, "vignettes"), full.names = TRUE)
   expect_true(length(vign) == 2)
