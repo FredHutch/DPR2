@@ -57,6 +57,7 @@ process_vignettes <- function(path, processing_dir, vignettes_tempdir){
   for(vig in vigs[!file.info(vigs)$isdir]){
     lins <- readLines(vig)
     vignette_yml <- "%%\\VignetteIndexEntry{%s}\n%%\\VignetteEngine{knitr::rmarkdown}\n%%\\VignetteEncoding{UTF-8}\n"
+    fallback_title <- gsub("\\.rmd$", "", basename(vig), ignore.case = TRUE)
 
     if (tolower(basename(vig)) %in% tolower(basename(srcs))) { # to check if the vignette was originally an rmd file and that it has a yaml header
       rmd_yml <- rmarkdown::yaml_front_matter( srcs[ tolower(basename(srcs)) %in% tolower(basename(vig)) ] )
@@ -64,11 +65,12 @@ process_vignettes <- function(path, processing_dir, vignettes_tempdir){
       rmd_yml$vignette <-
         sprintf(
           vignette_yml,
-          ifelse(!is.null(rmd_yml$title), rmd_yml$title, gsub("\\.rmd$", "", basename(vig), ignore.case = T))
+          ifelse(!is.null(rmd_yml$title), rmd_yml$title, fallback_title)
         )
 
     } else {
-      rmd_yml <- list(title = basename(vig), vignette = sprintf(vignette_yml, basename(vig)))
+      rmd_yml <- list(title = fallback_title,
+                      vignette = sprintf(vignette_yml, fallback_title))
     }
     new_yml <- c("---", unlist(strsplit(yaml::as.yaml(rmd_yml), "\\n")), "---")
     writeLines(c(new_yml, lins), vig)

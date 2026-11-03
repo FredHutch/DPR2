@@ -28,6 +28,11 @@ testthat::test_that("checking package build", {
     grepl("VignetteIndexEntry\\{02 test\\}", rmarkdown::yaml_front_matter( file.path(path, "vignettes/02.Rmd" ) )$vignette)
   )
 
+  dpr_build(path, process_on_build = "A1.R")
+  expect_true(
+    grepl("VignetteIndexEntry\\{A1\\}", rmarkdown::yaml_front_matter( file.path(path, "vignettes/A1.Rmd" ) )$vignette)
+  )
+
   expect_true(file.exists(ddp))
   vign <- list.files(file.path(path, "vignettes"), full.names = TRUE)
   expect_true(length(vign) == 2)
