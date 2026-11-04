@@ -162,7 +162,9 @@ testthat::test_that("checking package build", {
 
 
   ## check that only scripts added have vignettes that are overwritten
-  scripts <- c("01.R", "01.Rmd", "02.R", "A1.R")
+  dpr_rm_scripts("01.R", path)
+
+  scripts <- c("01.Rmd", "02.R", "A1.R")
   dpr_add_scripts(scripts, path)
   dpr_build(path)
   all_vignettes <- list.files(file.path(path, "vignettes"), full.names = T)
