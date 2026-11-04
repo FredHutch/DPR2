@@ -18,14 +18,31 @@ testthat::test_that("checking package build", {
   # auto-creates missing data_digest directory
   ddp <- file.path(path, 'inst', 'data_digest')
   unlink(ddp, recursive = TRUE)
+
+  dpr_build(path, process_on_build = "01.R")
+  expect_true(
+    grepl("VignetteIndexEntry\\{01\\}", rmarkdown::yaml_front_matter( file.path(path, "vignettes/01.Rmd" ) )$vignette)
+  )
+
+  expect_error(dpr_build(path, process_on_build = c("01.R", "01.Rmd")),
+               "Cannot build source files with the same filename sans ext. Rename one file or select only one of the conflicting files for this build."
+  )
+
   dpr_build(path, process_on_build = "01.Rmd")
+  expect_true(
+    grepl("VignetteIndexEntry\\{01\\}", rmarkdown::yaml_front_matter( file.path(path, "vignettes/01.Rmd" ) )$vignette)
+  )
+
+  dpr_build(path, process_on_build = "02.Rmd")
+  expect_true(
+    grepl("VignetteIndexEntry\\{02 test\\}", rmarkdown::yaml_front_matter( file.path(path, "vignettes/02.Rmd" ) )$vignette)
+  )
+
   expect_true(file.exists(ddp))
   vign <- list.files(file.path(path, "vignettes"), full.names = TRUE)
-  expect_true(length(vign) == 1)
-  vignette <- readLines(vign[1])
-  expect_true("vignette: |" %in% vignette & any(grepl("VignetteIndexEntry", vignette)))
+  expect_true(length(vign) == 2)
   datn <- list.files(file.path(path, "data"))
-  expect_true(all(datn == c("mydataframe_rmd.rda", "myyaml_rmd.rda")))
+  expect_true(all(datn == c("mymatrix.rda")))
 
   ## test timeout adjustment by setting then resetting timeout in yaml
   dpr_yaml_set(path, r_session_wait_timeout = 0)
@@ -145,7 +162,9 @@ testthat::test_that("checking package build", {
 
 
   ## check that only scripts added have vignettes that are overwritten
-  scripts <- c("01.R", "01.Rmd", "02.R", "A1.R")
+  dpr_rm_scripts("01.R", path)
+
+  scripts <- c("01.Rmd", "02.R", "A1.R")
   dpr_add_scripts(scripts, path)
   dpr_build(path)
   all_vignettes <- list.files(file.path(path, "vignettes"), full.names = T)
