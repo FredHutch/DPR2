@@ -18,6 +18,16 @@ testthat::test_that("checking package build", {
   # auto-creates missing data_digest directory
   ddp <- file.path(path, 'inst', 'data_digest')
   unlink(ddp, recursive = TRUE)
+
+  dpr_build(path, process_on_build = "01.R")
+  expect_true(
+    grepl("VignetteIndexEntry\\{01\\}", rmarkdown::yaml_front_matter( file.path(path, "vignettes/01.Rmd" ) )$vignette)
+  )
+
+  expect_error(dpr_build(path, process_on_build = c("01.R", "01.Rmd")),
+               "Cannot build source files with the same filename sans ext. Rename one file or select only one of the conflicting files for this build."
+  )
+
   dpr_build(path, process_on_build = "01.Rmd")
   expect_true(
     grepl("VignetteIndexEntry\\{01\\}", rmarkdown::yaml_front_matter( file.path(path, "vignettes/01.Rmd" ) )$vignette)
@@ -27,15 +37,6 @@ testthat::test_that("checking package build", {
   expect_true(
     grepl("VignetteIndexEntry\\{02 test\\}", rmarkdown::yaml_front_matter( file.path(path, "vignettes/02.Rmd" ) )$vignette)
   )
-
-  dpr_build(path, process_on_build = "A1.R")
-  expect_true(
-    grepl("VignetteIndexEntry\\{A1\\}", rmarkdown::yaml_front_matter( file.path(path, "vignettes/A1.Rmd" ) )$vignette)
-  )
-
-  expect_error(dpr_build(path, process_on_build = c("01.R", "01.Rmd")),
-               "Cannot build source files with the same filename sans ext. Rename one file or select only one of the conflicting files for this build."
-               )
 
   expect_true(file.exists(ddp))
   vign <- list.files(file.path(path, "vignettes"), full.names = TRUE)
