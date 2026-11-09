@@ -1,8 +1,8 @@
 configuration:
   files:
-    mtcars.R:
+    mtcars_02.R:
       enabled: yes
-    iris.R:
+    iris_02.R:
       enabled: yes
     trees.Rmd:
       enabled: no
