@@ -431,7 +431,7 @@ is_valid_filename <- function(path = ".", scripts, processing_dir) {
 
   if (anyDuplicated(match_filenms) > 0L) {
     stop(
-      "Cannot add scripts with the same filename ignoring case and extension. Rename one file or select only one of the conflicting files."
+      "Cannot render scripts with the same filename ignoring case and extension. Rename one file or keep only one of the conflicting files."
     )
   }
   invisible(NULL)

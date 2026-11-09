@@ -20,11 +20,11 @@ testthat::test_that("checking package build", {
   unlink(ddp, recursive = TRUE)
 
   expect_error(dpr_build(path, process_on_build = c("01_same_name.R", "01_same_name.Rmd")),
-               "Cannot add scripts with the same filename ignoring case and extension. Rename one file or select only one of the conflicting files."
+               "Cannot render scripts with the same filename ignoring case and extension. Rename one file or keep only one of the conflicting files."
   )
 
   expect_error(dpr_build(path, process_on_build = c("01_same_name.R")),
-               "Cannot add scripts with the same filename ignoring case and extension. Rename one file or select only one of the conflicting files."
+               "Cannot render scripts with the same filename ignoring case and extension. Rename one file or keep only one of the conflicting files."
   )
 
   dpr_build(path, process_on_build = "01.R")
