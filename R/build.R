@@ -54,14 +54,6 @@ process_vignettes <- function(path, processing_dir, processing_scripts, vignette
 
   srcs <- file.path(path, processing_dir, processing_scripts)
 
-  # check that source filenames sans ext are unique
-  srcs_filenames <- tolower(tools::file_path_sans_ext(basename(srcs)))
-  if (anyDuplicated(srcs_filenames)) {
-    stop(
-      "Cannot build source files with the same filename sans ext. Rename one file or select only one of the conflicting files for this build."
-    )
-  }
-
   for(vig in vigs[!file.info(vigs)$isdir]){
     lins <- readLines(vig)
     vignette_yml <- "%%\\VignetteIndexEntry{%s}\n%%\\VignetteEngine{knitr::rmarkdown}\n%%\\VignetteEncoding{UTF-8}\n"
@@ -186,6 +178,9 @@ dpr_render <- function(path=".", ...){
     stop("Rendering a data package using DPR2 when the yaml is from DataPackageR. Must use `dpr_convert()` first. See `?dpr_convert`.")
 
   yml <- dpr_yaml_get(path, ...)
+
+  if(yml$write_to_vignettes)
+    is_valid_vignette_name(path, yml$process_on_build, yml$process_directory)
 
   if(yml$purge_data_directory){
     purge_backup_files <- dpr_purge_data_directory(path)
