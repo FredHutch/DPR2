@@ -414,17 +414,16 @@ dpr_rm_objects <- function(objects, path = "."){
   dpr_rm_added(objects, "objects", path)
 }
 
-#' Private. Check that script filenames are unique ignoring case and extension.
+#' Private. Check that script names to be rendered to vignettes are unique ignoring case and extension.
 #'
-#' @title is_valid_filename
+#' @title is_valid_vignette_name
 #' @param path path to a DPR2 data package
 #' @param scripts a character vector of script files.
 #' @param processing_dir the location processing scripts are in.
-#' @return nothing. Throws an error if duplicate filenames are found.
 #' @noRd
-is_valid_filename <- function(path = ".", scripts, processing_dir) {
+is_valid_vignette_name <- function(path = ".", scripts, processing_dir) {
 
-  build_nms <- tolower(tools::file_path_sans_ext(basename(file.path(path, processing_dir,scripts))))
+  build_nms <- tolower(tools::file_path_sans_ext(basename(file.path(path, processing_dir, scripts))))
   srcs_nms <- tolower(tools::file_path_sans_ext(basename(list.files(file.path(path, processing_dir)))))
 
   match_filenms <- srcs_nms[srcs_nms %in% build_nms]

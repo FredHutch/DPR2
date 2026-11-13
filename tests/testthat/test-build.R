@@ -19,13 +19,22 @@ testthat::test_that("checking package build", {
   ddp <- file.path(path, 'inst', 'data_digest')
   unlink(ddp, recursive = TRUE)
 
-  expect_error(dpr_build(path, process_on_build = c("01_same_name.R", "01_same_name.Rmd")),
-               "Cannot render scripts with the same filename ignoring case and extension. Rename one file or keep only one of the conflicting files."
+  expect_error(
+    dpr_build(path, process_on_build = c("01_same_name.R", "01_same_name.Rmd")),
+    "Cannot render scripts with the same filename ignoring case and extension. Rename one file or keep only one of the conflicting files."
   )
 
-  expect_error(dpr_build(path, process_on_build = c("01_same_name.R")),
-               "Cannot render scripts with the same filename ignoring case and extension. Rename one file or keep only one of the conflicting files."
+  expect_error(
+    dpr_build(path, process_on_build = c("01_same_name.R")),
+    "Cannot render scripts with the same filename ignoring case and extension. Rename one file or keep only one of the conflicting files."
   )
+
+  expect_error(
+    dpr_build(path, write_to_vignettes = TRUE, process_on_build = c("01_same_name.R", "01_same_name.Rmd")),
+    "Cannot render scripts with the same filename ignoring case and extension. Rename one file or keep only one of the conflicting files."
+  )
+
+  dpr_build(path, write_to_vignettes = FALSE, process_on_build = c("01_same_name.R", "01_same_name.Rmd"))
 
   dpr_build(path, process_on_build = "01.R")
   expect_true(

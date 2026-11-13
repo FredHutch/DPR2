@@ -179,7 +179,8 @@ dpr_render <- function(path=".", ...){
 
   yml <- dpr_yaml_get(path, ...)
 
-  is_valid_filename(path, yml$process_on_build, yml$process_directory)
+  if(yml$write_to_vignettes)
+    is_valid_vignette_name(path, yml$process_on_build, yml$process_directory)
 
   if(yml$purge_data_directory){
     purge_backup_files <- dpr_purge_data_directory(path)
