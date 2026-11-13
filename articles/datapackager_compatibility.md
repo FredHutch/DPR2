@@ -106,7 +106,7 @@ dpr_yaml_get(dpr1_path)
 #> [1] "iris"       "mtcars_mod"
 #> 
 #> $process_on_build
-#> [1] "iris.R"   "mtcars.R"
+#> [1] "iris_02.R"   "mtcars_02.R"
 #> 
 #> $r_session_wait_timeout
 #> [1] 3000
