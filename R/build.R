@@ -35,7 +35,7 @@ dpr_purge_data_directory <- function(path="."){
 #' @param vignettes_tempdir the temp location vignettes were saved to.
 #' @return No return value. Modifies vignette files as a side effect.
 #' @noRd
-process_vignettes <- function(path, processing_dir, vignettes_tempdir){
+process_vignettes <- function(path, processing_dir, processing_scripts, vignettes_tempdir){
   vignettes_dir <- file.path(path, 'vignettes')
   if (!dir.exists(vignettes_dir)) dir.create(vignettes_dir)
 
@@ -52,11 +52,12 @@ process_vignettes <- function(path, processing_dir, vignettes_tempdir){
 
   vigs <- file.path(vignettes_dir, basename(tempnames))
 
-  srcs <- list.files(file.path(path, processing_dir), full.names = TRUE)
+  srcs <- file.path(path, processing_dir, processing_scripts)
 
   for(vig in vigs[!file.info(vigs)$isdir]){
     lins <- readLines(vig)
     vignette_yml <- "%%\\VignetteIndexEntry{%s}\n%%\\VignetteEngine{knitr::rmarkdown}\n%%\\VignetteEncoding{UTF-8}\n"
+    fallback_title <- gsub("\\.rmd$", "", basename(vig), ignore.case = TRUE)
 
     if (tolower(basename(vig)) %in% tolower(basename(srcs))) { # to check if the vignette was originally an rmd file and that it has a yaml header
       rmd_yml <- rmarkdown::yaml_front_matter( srcs[ tolower(basename(srcs)) %in% tolower(basename(vig)) ] )
@@ -64,11 +65,12 @@ process_vignettes <- function(path, processing_dir, vignettes_tempdir){
       rmd_yml$vignette <-
         sprintf(
           vignette_yml,
-          ifelse(!is.null(rmd_yml$title), rmd_yml$title, gsub("\\.rmd$", "", basename(src), ignore.case = T))
+          ifelse(!is.null(rmd_yml$title), rmd_yml$title, fallback_title)
         )
 
     } else {
-      rmd_yml <- list(title = basename(vig), vignette = sprintf(vignette_yml, basename(vig)))
+      rmd_yml <- list(title = fallback_title,
+                      vignette = sprintf(vignette_yml, fallback_title))
     }
     new_yml <- c("---", unlist(strsplit(yaml::as.yaml(rmd_yml), "\\n")), "---")
     writeLines(c(new_yml, lins), vig)
@@ -177,6 +179,9 @@ dpr_render <- function(path=".", ...){
 
   yml <- dpr_yaml_get(path, ...)
 
+  if(yml$write_to_vignettes)
+    is_valid_vignette_name(path, yml$process_on_build, yml$process_directory)
+
   if(yml$purge_data_directory){
     purge_backup_files <- dpr_purge_data_directory(path)
     purge_restore <- TRUE
@@ -215,7 +220,7 @@ dpr_render <- function(path=".", ...){
 
   # transfer vignettes to vignettes/ if desired, now that we're done rendering
   if (yml$write_to_vignettes){
-    process_vignettes(path, yml$process_directory, vignette_tempdir)
+    process_vignettes(path, yml$process_directory, yml$process_on_build, vignette_tempdir)
   }
 
   # now safe to cancel purge restore on exit

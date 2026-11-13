@@ -97,7 +97,7 @@ testthat::test_that("checking DataPackageR compatibility functions", {
 
   expect_true(
     all(
-      yml$process_on_build == c("mtcars.R", "iris.R")
+      yml$process_on_build == c("mtcars_02.R", "iris_02.R")
     )
   )
 
