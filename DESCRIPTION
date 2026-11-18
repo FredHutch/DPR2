@@ -1,5 +1,5 @@
 Package: DPR2
-Title: DPR2 // DataPackageR2
+Title: DataPackageR2 - R Data Packaging Based on DataPackageR
 Version: 1.0.0
 Authors@R:
     c(
@@ -31,10 +31,9 @@ Authors@R:
             comment = c(ORCID = "0009-0007-2718-8460")
         )
     )
-Description: Build automation and dataset tracking for R data packages. Based on DataPackageR.
+Description: Build automation and dataset tracking for R data packages.
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Depends:
     R (>= 3.5)
 Imports:
@@ -59,3 +58,4 @@ Suggests:
     withr
 VignetteBuilder: knitr
 URL: https://fredhutch.github.io/DPR2/
+Config/roxygen2/version: 8.1.1

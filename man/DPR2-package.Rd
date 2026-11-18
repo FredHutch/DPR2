@@ -4,9 +4,9 @@
 \name{DPR2-package}
 \alias{DPR2}
 \alias{DPR2-package}
-\title{DPR2: DPR2 // DataPackageR2}
+\title{DPR2: DataPackageR2 - R Data Packaging Based on DataPackageR}
 \description{
-Build automation and dataset tracking for R data packages. Based on DataPackageR.
+Build automation and dataset tracking for R data packages.
 }
 \seealso{
 Useful links:
@@ -20,6 +20,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Jason Taylor \email{jmtaylor@fredhutch.org}
   \item Dave Slager \email{dslager@fredhutch.org} (\href{https://orcid.org/0000-0003-2525-2039}{ORCID})
   \item Valeria Duran \email{vduran@fredhutch.org} (\href{https://orcid.org/0009-0005-4164-4739}{ORCID})
   \item Nazmus Salehin \email{gsalehin@fredhutch.org} (\href{https://orcid.org/0009-0007-2718-8460}{ORCID})
