@@ -1,7 +1,6 @@
-# DPR2: DPR2 // DataPackageR2
+# DPR2: DataPackageR2 - R Data Packaging Based on DataPackageR
 
-Build automation and dataset tracking for R data packages. Based on
-DataPackageR.
+Build automation and dataset tracking for R data packages.
 
 ## See also
 
@@ -14,6 +13,8 @@ Useful links:
 **Maintainer**: Jason Taylor <jmtaylor@fredhutch.org>
 
 Authors:
+
+- Jason Taylor <jmtaylor@fredhutch.org>
 
 - Dave Slager <dslager@fredhutch.org>
   ([ORCID](https://orcid.org/0000-0003-2525-2039))

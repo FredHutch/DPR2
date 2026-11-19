@@ -12,12 +12,12 @@
 
 ## Citation
 
-Taylor J, Slager D, Duran V, Salehin N (2026). *DPR2: DPR2 //
-DataPackageR2*. R package version 1.0.0,
+Taylor J, Slager D, Duran V, Salehin N (2026). *DPR2: DataPackageR2 - R
+Data Packaging Based on DataPackageR*. R package version 1.0.0,
 <https://fredhutch.github.io/DPR2/>.
 
     @Manual{,
-      title = {DPR2: DPR2 // DataPackageR2},
+      title = {DPR2: DataPackageR2 - R Data Packaging Based on DataPackageR},
       author = {Jason Taylor and Dave Slager and Valeria Duran and Nazmus Salehin},
       year = {2026},
       note = {R package version 1.0.0},
